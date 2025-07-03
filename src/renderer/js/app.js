@@ -1,8 +1,12 @@
-// Import modules
+// Import core modules
 import dataStore from "./data/data-store.js";
-import characterManager from "./managers/character-manager.js";
-import npcManager from "./managers/npc-manager.js";
-import environmentManager from "./managers/environment-manager.js";
+import EventBus from "./core/event-bus.js";
+import modalManager from "./ui/modal-manager.js";
+
+// Import component managers
+import characterManager from "./components/character-manager.js";
+import npcManager from "./components/npc-manager.js";
+import environmentManager from "./components/environment-manager.js";
 
 // Main application entry point
 class DMAssistantApp {
@@ -16,6 +20,9 @@ class DMAssistantApp {
       npcs: npcManager,
       environments: environmentManager,
     };
+
+    // Initialize modal manager
+    modalManager.init();
 
     // Navigation items configuration con icone
     this.navigationItems = [
