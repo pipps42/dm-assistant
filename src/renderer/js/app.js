@@ -2,6 +2,7 @@
 import dataStore from "./data/data-store.js";
 import characterManager from "./components/character-manager.js";
 import npcManager from "./components/npc-manager.js";
+import environmentManager from "./components/environment-manager.js";
 
 // Main application entry point
 class DMAssistantApp {
@@ -13,6 +14,7 @@ class DMAssistantApp {
     this.managers = {
       characters: characterManager,
       npcs: npcManager,
+      environments: environmentManager,
     };
 
     // Navigation items configuration
@@ -243,40 +245,6 @@ class DMAssistantApp {
   }
 
   // Temporary placeholder rendering methods - will be moved to separate modules
-  async renderEnvironments() {
-    const contentBody = document.getElementById("content-body");
-    contentBody.innerHTML = `
-            <div class="empty-state">
-                <h3>Modulo Ambientazioni</h3>
-                <p>Modulo in fase di migrazione...</p>
-                <p style="margin-top: 10px; color: var(--text-secondary); font-size: 0.9em;">
-                    Dati disponibili: ${
-                      dataStore.get("environments").length
-                    } ambientazioni
-                </p>
-                <button class="btn btn-secondary mt-2" onclick="app.testDataStore('environments')">
-                    Test DataStore Ambientazioni
-                </button>
-            </div>
-        `;
-  }
-
-  async renderNPCs() {
-    const contentBody = document.getElementById("content-body");
-    contentBody.innerHTML = `
-            <div class="empty-state">
-                <h3>Modulo NPC</h3>
-                <p>Modulo in fase di migrazione...</p>
-                <p style="margin-top: 10px; color: var(--text-secondary); font-size: 0.9em;">
-                    Dati disponibili: ${dataStore.get("npcs").length} NPC
-                </p>
-                <button class="btn btn-secondary mt-2" onclick="app.testDataStore('npcs')">
-                    Test DataStore NPC
-                </button>
-            </div>
-        `;
-  }
-
   async renderBestiary() {
     const contentBody = document.getElementById("content-body");
     contentBody.innerHTML = `
@@ -498,6 +466,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Expose managers globally for onclick handlers
   window.characterManager = characterManager;
   window.npcManager = npcManager;
+  window.environmentManager = environmentManager;
   window.dataStore = dataStore;
 
   await window.app.init();

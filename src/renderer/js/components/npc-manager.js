@@ -175,6 +175,23 @@ class NPCManager {
   }
 
   /**
+   * Open add form with pre-selected environment
+   */
+  openAddFormWithEnvironment(environmentId) {
+    this.openNPCModal();
+
+    // Pre-select environment after modal opens
+    setTimeout(() => {
+      const environmentSelect = document.querySelector(
+        'select[name="environmentId"]'
+      );
+      if (environmentSelect) {
+        environmentSelect.value = environmentId;
+      }
+    }, 100);
+  }
+
+  /**
    * Open NPC modal (add or edit)
    */
   openNPCModal(npc = null) {
