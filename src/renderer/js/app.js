@@ -1,8 +1,8 @@
 // Import modules
 import dataStore from "./data/data-store.js";
-import characterManager from "./components/character-manager.js";
-import npcManager from "./components/npc-manager.js";
-import environmentManager from "./components/environment-manager.js";
+import characterManager from "./managers/character-manager.js";
+import npcManager from "./managers/npc-manager.js";
+import environmentManager from "./managers/environment-manager.js";
 
 // Main application entry point
 class DMAssistantApp {
