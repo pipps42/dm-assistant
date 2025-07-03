@@ -17,11 +17,12 @@ class DMAssistantApp {
       environments: environmentManager,
     };
 
-    // Navigation items configuration
+    // Navigation items configuration con icone
     this.navigationItems = [
       {
         id: "characters",
         icon: "👥",
+        iconName: "users",
         label: "Personaggi",
         title: "Personaggi Giocatori",
         button: "+ Aggiungi Personaggio",
@@ -29,6 +30,7 @@ class DMAssistantApp {
       {
         id: "environments",
         icon: "🗺️",
+        iconName: "map",
         label: "Ambientazioni",
         title: "Ambientazioni & Mappe",
         button: "+ Nuova Ambientazione",
@@ -36,6 +38,7 @@ class DMAssistantApp {
       {
         id: "npcs",
         icon: "🧙",
+        iconName: "wizard",
         label: "NPC",
         title: "NPC",
         button: "+ Nuovo NPC",
@@ -43,6 +46,7 @@ class DMAssistantApp {
       {
         id: "bestiary",
         icon: "👹",
+        iconName: "monster",
         label: "Bestiario",
         title: "Bestiario",
         button: "+ Nuovo Mostro",
@@ -50,11 +54,15 @@ class DMAssistantApp {
       {
         id: "encounters",
         icon: "⚔️",
+        iconName: "swords",
         label: "Incontri",
         title: "Gestione Incontri",
         button: null,
       },
     ];
+
+    // Aggiungi dopo la costruzione
+    this.sidebarCollapsed = false;
   }
 
   async init() {
@@ -79,6 +87,8 @@ class DMAssistantApp {
       // Setup event listeners
       this.setupEventListeners();
 
+      this.setupContextMenu();
+
       // Load initial section
       await this.switchSection("characters");
 
@@ -87,6 +97,12 @@ class DMAssistantApp {
 
       this.isInitialized = true;
       console.log("DM Assistant initialized successfully");
+
+      // Load sidebar state
+      const savedSidebarState = localStorage.getItem("sidebar-collapsed");
+      if (savedSidebarState === "true") {
+        this.toggleSidebar();
+      }
 
       // Render la sezione corrente ora che siamo inizializzati
       await this.renderSection(this.currentSection);
@@ -139,12 +155,15 @@ class DMAssistantApp {
     navMenu.innerHTML = this.navigationItems
       .map(
         (item) => `
-            <div class="nav-item ${
-              item.id === this.currentSection ? "active" : ""
-            }" data-section="${item.id}">
-                <span>${item.icon}</span> ${item.label}
-            </div>
-        `
+        <div class="nav-item ${
+          item.id === this.currentSection ? "active" : ""
+        }" 
+             data-section="${item.id}" 
+             data-label="${item.label}">
+            <span class="nav-icon">${item.icon}</span>
+            <span class="nav-label">${item.label}</span>
+        </div>
+    `
       )
       .join("");
   }
@@ -157,6 +176,11 @@ class DMAssistantApp {
         const section = navItem.dataset.section;
         this.switchSection(section);
       }
+    });
+
+    // Sidebar toggle
+    document.getElementById("sidebar-toggle").addEventListener("click", () => {
+      this.toggleSidebar();
     });
 
     // Add button handler
@@ -180,7 +204,29 @@ class DMAssistantApp {
       if (e.key === "Escape") {
         this.closeModal();
       }
+      // Toggle sidebar con Ctrl+B
+      if (e.ctrlKey && e.key === "b") {
+        e.preventDefault();
+        this.toggleSidebar();
+      }
     });
+  }
+
+  toggleSidebar() {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
+    const sidebar = document.getElementById("sidebar");
+    const mainContent = document.querySelector(".main-content");
+
+    if (this.sidebarCollapsed) {
+      sidebar.classList.add("collapsed");
+      mainContent.classList.add("sidebar-collapsed");
+    } else {
+      sidebar.classList.remove("collapsed");
+      mainContent.classList.remove("sidebar-collapsed");
+    }
+
+    // Salva stato in localStorage
+    localStorage.setItem("sidebar-collapsed", this.sidebarCollapsed);
   }
 
   async switchSection(sectionId) {
@@ -456,6 +502,140 @@ class DMAssistantApp {
   // Get DataStore statistics
   getDataStats() {
     return dataStore.getStats();
+  }
+
+  /**
+   * Setup context menu per le card
+   */
+  setupContextMenu() {
+    document.addEventListener("contextmenu", (e) => {
+      // Trova la card più vicina
+      const card = e.target.closest(".card, .environment-card");
+      if (!card) return;
+
+      e.preventDefault();
+      this.showContextMenu(e, card);
+    });
+
+    // Chiudi context menu cliccando altrove
+    document.addEventListener("click", () => {
+      this.hideContextMenu();
+    });
+  }
+
+  /**
+   * Mostra context menu
+   */
+  showContextMenu(event, card) {
+    this.hideContextMenu(); // Rimuovi eventuali menu esistenti
+
+    const contextMenu = document.createElement("div");
+    contextMenu.className = "context-menu";
+    contextMenu.id = "context-menu";
+
+    // Determina tipo di card e azioni
+    let actions = [];
+
+    if (card.dataset.characterId) {
+      actions = [
+        {
+          label: "Visualizza",
+          action: () =>
+            window.characterManager.viewCharacterDetail(
+              parseInt(card.dataset.characterId)
+            ),
+        },
+        {
+          label: "Modifica",
+          action: () =>
+            window.characterManager.editCharacter(
+              parseInt(card.dataset.characterId)
+            ),
+        },
+        {
+          label: "Elimina",
+          action: () =>
+            window.characterManager.deleteCharacter(
+              parseInt(card.dataset.characterId)
+            ),
+        },
+      ];
+    } else if (card.dataset.npcId) {
+      actions = [
+        {
+          label: "Visualizza",
+          action: () =>
+            window.npcManager.viewNPCDetail(parseInt(card.dataset.npcId)),
+        },
+        {
+          label: "Modifica",
+          action: () => window.npcManager.editNPC(parseInt(card.dataset.npcId)),
+        },
+        {
+          label: "Elimina",
+          action: () =>
+            window.npcManager.deleteNPC(parseInt(card.dataset.npcId)),
+        },
+      ];
+    } else if (card.dataset.environmentId) {
+      actions = [
+        {
+          label: "Visualizza",
+          action: () =>
+            window.environmentManager.showEnvironmentView(
+              parseInt(card.dataset.environmentId)
+            ),
+        },
+        {
+          label: "Modifica",
+          action: () =>
+            window.environmentManager.editEnvironment(
+              parseInt(card.dataset.environmentId)
+            ),
+        },
+        {
+          label: "Elimina",
+          action: () =>
+            window.environmentManager.deleteEnvironment(
+              parseInt(card.dataset.environmentId)
+            ),
+        },
+      ];
+    }
+
+    contextMenu.innerHTML = actions
+      .map(
+        (action) =>
+          `<div class="context-menu-item" onclick="this.click = function(){}; (${action.action.toString()})(); window.app.hideContextMenu();">${
+            action.label
+          }</div>`
+      )
+      .join("");
+
+    // Posiziona il menu
+    contextMenu.style.left = event.pageX + "px";
+    contextMenu.style.top = event.pageY + "px";
+
+    document.body.appendChild(contextMenu);
+
+    // Aggiusta posizione se esce dallo schermo
+    const rect = contextMenu.getBoundingClientRect();
+    if (rect.right > window.innerWidth) {
+      contextMenu.style.left = event.pageX - rect.width + "px";
+    }
+    if (rect.bottom > window.innerHeight) {
+      contextMenu.style.top = event.pageY - rect.height + "px";
+    }
+  }
+
+  /**
+   * Nascondi context menu
+   */
+  hideContextMenu() {
+    const contextMenu = document.getElementById("context-menu");
+    if (contextMenu) {
+      contextMenu.remove();
+    }
   }
 }
 

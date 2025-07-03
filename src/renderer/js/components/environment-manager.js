@@ -832,7 +832,7 @@ class EnvironmentManager {
   }
 
   /**
-   * Show environment in full screen view instead of modal
+   * Show environment view con gestione modal corretta
    */
   async showEnvironmentView(environmentId) {
     try {
@@ -842,9 +842,8 @@ class EnvironmentManager {
         return;
       }
 
-      // Hide main app content and show environment view
+      // Hide main content but keep sidebar
       const mainContent = document.querySelector(".main-content");
-      const sidebar = document.querySelector(".sidebar");
 
       // Create environment view container
       const environmentView = document.createElement("div");
@@ -852,12 +851,12 @@ class EnvironmentManager {
       environmentView.className = "environment-view";
       environmentView.innerHTML = this.generateEnvironmentView(environment);
 
-      // Hide sidebar and main content
-      sidebar.style.display = "none";
+      // Hide main content
       mainContent.style.display = "none";
 
-      // Add environment view to body
-      document.body.appendChild(environmentView);
+      // Add environment view to app container (not body)
+      const appContainer = document.getElementById("app");
+      appContainer.appendChild(environmentView);
 
       // Setup close handler
       this.setupEnvironmentViewHandlers(environment);
@@ -867,6 +866,21 @@ class EnvironmentManager {
         "Errore durante la visualizzazione dell'ambientazione"
       );
     }
+  }
+
+  /**
+   * Close environment view con restore corretto
+   */
+  closeEnvironmentView() {
+    const environmentView = document.getElementById("environment-view");
+    const mainContent = document.querySelector(".main-content");
+
+    if (environmentView) {
+      environmentView.remove();
+    }
+
+    // Restore main content
+    mainContent.style.display = "flex";
   }
 
   /**
@@ -891,10 +905,10 @@ class EnvironmentManager {
                     ← Torna alle Ambientazioni
                 </button>
                 <div class="environment-view-actions">
-                    <button class="btn btn-secondary" onclick="environmentManager.editEnvironment(${
+                    <button class="btn btn-secondary" onclick="environmentManager.editEnvironmentInView(${
                       environment.id
                     })">Modifica</button>
-                    <button class="btn btn-danger" onclick="environmentManager.deleteEnvironment(${
+                    <button class="btn btn-danger" onclick="environmentManager.deleteEnvironmentFromView(${
                       environment.id
                     })">Elimina</button>
                 </div>
@@ -1098,23 +1112,6 @@ class EnvironmentManager {
   }
 
   /**
-   * Close environment view and return to main app
-   */
-  closeEnvironmentView() {
-    const environmentView = document.getElementById("environment-view");
-    const mainContent = document.querySelector(".main-content");
-    const sidebar = document.querySelector(".sidebar");
-
-    if (environmentView) {
-      environmentView.remove();
-    }
-
-    // Restore main app
-    sidebar.style.display = "flex";
-    mainContent.style.display = "flex";
-  }
-
-  /**
    * Create NPC for this environment
    */
   createNPCForEnvironment(environmentId) {
@@ -1131,6 +1128,97 @@ class EnvironmentManager {
         }
       }, 200);
     }, 100);
+  }
+
+  /**
+   * Edit environment dalla view
+   */
+  editEnvironmentInView(environmentId) {
+    const environment = dataStore.findById("environments", environmentId);
+    if (!environment) return;
+
+    // Apri modal nella environment view
+    const modal = document.getElementById("modal");
+    const modalTitle = document.getElementById("modal-title");
+    const modalBody = document.getElementById("modal-body");
+
+    modalTitle.textContent = "Modifica Ambientazione";
+    modalBody.innerHTML = this.generateEnvironmentForm(environment);
+
+    // Show modal
+    modal.style.display = "block";
+    document.body.style.overflow = "hidden";
+
+    // Setup form handlers
+    this.setupFormHandlers(true, environment);
+  }
+
+  /**
+   * Delete environment dalla view
+   */
+  async deleteEnvironmentFromView(environmentId) {
+    const npcs = dataStore.get("npcs");
+    const linkedNPCs = npcs.filter((npc) => npc.environmentId == environmentId);
+
+    let message =
+      "Sei sicuro di voler eliminare questa ambientazione? Questa azione non può essere annullata.";
+    if (linkedNPCs.length > 0) {
+      message += `\n\nATTENZIONE: Ci sono ${linkedNPCs.length} NPC collegati a questa ambientazione. Perderanno il riferimento all'ambientazione.`;
+    }
+
+    const confirmed = await window.app.showConfirmModal(
+      "Elimina Ambientazione",
+      message
+    );
+
+    if (!confirmed) return;
+
+    try {
+      // Remove environment reference from NPCs
+      for (const npc of linkedNPCs) {
+        npc.environmentId = null;
+        await dataStore.update("npcs", npc.id, npc);
+      }
+
+      // Delete environment
+      await dataStore.remove("environments", environmentId);
+
+      // Close environment view and return to main
+      this.closeEnvironmentView();
+      await window.app.switchSection("environments");
+
+      if (linkedNPCs.length > 0) {
+        window.app.showNotification(
+          `Ambientazione eliminata. ${linkedNPCs.length} NPC scollegati.`,
+          "warning"
+        );
+      } else {
+        window.app.showNotification("Ambientazione eliminata", "success");
+      }
+    } catch (error) {
+      console.error("Error deleting environment:", error);
+      window.app.showError("Errore durante l'eliminazione dell'ambientazione");
+    }
+  }
+
+  /**
+   * View NPC dalla environment view
+   */
+  viewNPCFromEnvironment(npcId) {
+    const npc = dataStore.findById("npcs", npcId);
+    if (!npc) return;
+
+    // Apri modal NPC nella environment view
+    const modal = document.getElementById("modal");
+    const modalTitle = document.getElementById("modal-title");
+    const modalBody = document.getElementById("modal-body");
+
+    modalTitle.textContent = npc.name;
+    modalBody.innerHTML = window.npcManager.generateNPCDetailView(npc);
+
+    // Show modal
+    modal.style.display = "block";
+    document.body.style.overflow = "hidden";
   }
 }
 

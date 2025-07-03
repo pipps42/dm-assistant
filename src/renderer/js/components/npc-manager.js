@@ -733,5 +733,9 @@ class NPCManager {
 
 // Create and export singleton instance
 const npcManager = new NPCManager();
+// Esponi metodi per uso esterno
+window.npcManager = npcManager;
+npcManager.generateNPCDetailView =
+  npcManager.generateNPCDetailView.bind(npcManager);
 
 export default npcManager;
