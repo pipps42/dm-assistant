@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D Dungeon Master Assistant</title>
+    <link rel="stylesheet" href="assets/styles/main.css">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+</head>
+<body>
+    <!-- Splash screen mentre l'app si carica -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <h1>🎲 DM Assistant</h1>
+            <p>Caricamento in corso...</p>
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
+    <!-- Main app structure -->
+    <div id="app" class="app" style="display: none;">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="app-title">
+                <h1>🎲 DM Assistant</h1>
+                <div class="app-version" id="app-version"></div>
+            </div>
+            <nav class="nav-menu" id="nav-menu">
+                <!-- Navigation will be populated by JS -->
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-header" id="content-header">
+                <h2 id="section-title">Caricamento...</h2>
+                <button class="btn btn-primary" id="add-button" style="display: none;">+ Aggiungi</button>
+            </div>
+            <div class="content-body" id="content-body">
+                <!-- Content will be dynamically loaded -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Modal Title</h2>
+                <span class="close" id="modal-close">&times;</span>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Modal content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification system -->
+    <div id="notifications" class="notifications"></div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
