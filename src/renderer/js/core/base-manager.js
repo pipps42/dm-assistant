@@ -4,6 +4,7 @@
  */
 import EventBus from "./event-bus.js";
 import dataStore from "../data/data-store.js";
+import modalManager from "../ui/modal-manager.js";
 
 export default class BaseManager {
   constructor(entityTypeOrOptions, legacyConfig = {}) {
@@ -13,13 +14,13 @@ export default class BaseManager {
       this.entityType = entityTypeOrOptions;
       this.config = legacyConfig;
       this.templates = null;
-      this.dataStore = null;
+      this.dataStore = dataStore;
     } else {
       // New pattern: BaseManager({entityType, config, ...})
       this.entityType = entityTypeOrOptions.entityType;
       this.config = entityTypeOrOptions.config || {};
-      this.templates = entityTypeOrOptions.templates;
-      this.dataStore = entityTypeOrOptions.dataStore;
+      this.templates = entityTypeOrOptions.templates || null;
+      this.dataStore = entityTypeOrOptions.dataStore || dataStore;
     }
 
     // Default config
@@ -57,19 +58,22 @@ export default class BaseManager {
    * Get all entities of this type
    */
   getEntities() {
-    return dataStore.get(this.entityType);
+    return this.dataStore.get(this.entityType);
   }
 
   /**
    * Get entity by ID
    */
   getEntity(id) {
-    const entity = dataStore.findById(this.entityType, id);
+    // Converti sempre l'ID in stringa per il confronto
+    const stringId = String(id);
+    const entity = this.dataStore.findById(this.entityType, stringId);
+
     if (!entity) {
-      // Try string/number conversion
-      const altId = typeof id === "string" ? parseInt(id) : String(id);
-      return dataStore.findById(this.entityType, altId);
+      // Log per debug
+      console.warn(`Entity not found: ${this.entityType} with id ${id}`);
     }
+
     return entity;
   }
 
@@ -79,7 +83,7 @@ export default class BaseManager {
   async createEntity(data) {
     try {
       console.log(`Creating ${this.entityType}:`, data);
-      const entity = await dataStore.add(this.entityType, data);
+      const entity = await this.dataStore.add(this.entityType, data);
       console.log(`Created ${this.entityType}:`, entity);
 
       this.eventBus.emit(`${this.entityType}:created`, entity);
@@ -100,7 +104,7 @@ export default class BaseManager {
    */
   async updateEntity(id, data) {
     try {
-      const entity = await dataStore.update(this.entityType, id, data);
+      const entity = await this.dataStore.update(this.entityType, id, data);
       this.eventBus.emit(`${this.entityType}:updated`, entity);
       window.app.showNotification(
         `${this.getEntityDisplayName()} aggiornato con successo!`,
@@ -119,17 +123,20 @@ export default class BaseManager {
    */
   async deleteEntity(id) {
     const entityName = this.getEntityDisplayName();
-    const confirmed = await window.app.showConfirmModal(
-      `Elimina ${entityName}`,
-      `Sei sicuro di voler eliminare questo ${entityName.toLowerCase()}? Questa azione non può essere annullata.`
-    );
+    const confirmed = await modalManager.showConfirm({
+      title: `Elimina ${entityName}`,
+      message: `Sei sicuro di voler eliminare questo ${entityName.toLowerCase()}? Questa azione non può essere annullata.`,
+      confirmText: `Elimina ${entityName}`,
+      cancelText: "Annulla",
+    });
 
     if (!confirmed) return false;
 
     try {
-      await dataStore.remove(this.entityType, id);
+      await this.dataStore.remove(this.entityType, id);
       this.eventBus.emit(`${this.entityType}:deleted`, { id });
       window.app.showNotification(`${entityName} eliminato`, "success");
+      modalManager.close();
       return true;
     } catch (error) {
       console.error(`Error deleting ${this.entityType}:`, error);
@@ -223,8 +230,7 @@ export default class BaseManager {
    * Open add form
    */
   openAddForm() {
-    this.eventBus.emit("modal:open", {
-      type: "form",
+    modalManager.showForm({
       entityType: this.entityType,
       mode: "create",
       title: `Aggiungi ${this.getEntityDisplayName()}`,
@@ -244,7 +250,7 @@ export default class BaseManager {
 
     this.currentEntity = entity;
 
-    this.eventBus.emit("modal:open", {
+    modalManager.open({
       type: "detail",
       entityType: this.entityType,
       entity: entity,
@@ -260,8 +266,7 @@ export default class BaseManager {
     const entity = this.getEntity(id);
     if (!entity) return;
 
-    this.eventBus.emit("modal:open", {
-      type: "form",
+    modalManager.showForm({
       entityType: this.entityType,
       mode: "edit",
       entity: entity,
@@ -334,6 +339,7 @@ export default class BaseManager {
     console.log(`Entity deleted: ${this.entityType}`, data);
     if (this.currentEntity && this.currentEntity.id === data.id) {
       this.currentEntity = null;
+      modalManager.close();
     }
     this.render();
   }

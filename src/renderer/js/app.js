@@ -195,22 +195,8 @@ class DMAssistantApp {
       this.handleAddButton();
     });
 
-    // Modal close handlers
-    document.getElementById("modal-close").addEventListener("click", () => {
-      this.closeModal();
-    });
-
-    document.getElementById("modal").addEventListener("click", (e) => {
-      if (e.target.id === "modal") {
-        this.closeModal();
-      }
-    });
-
     // Keyboard shortcuts
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        this.closeModal();
-      }
       // Toggle sidebar con Ctrl+B
       if (e.ctrlKey && e.key === "b") {
         e.preventDefault();
@@ -307,134 +293,14 @@ class DMAssistantApp {
     }
   }
 
-  // Modal management
-  openModal() {
-    document.getElementById("modal").style.display = "block";
-    document.body.style.overflow = "hidden";
-  }
-
-  closeModal() {
-    document.getElementById("modal").style.display = "none";
-    document.body.style.overflow = "auto";
-  }
-
-  // Custom input modal
-  showInputModal(title, placeholder = "", defaultValue = "") {
-    return new Promise((resolve) => {
-      const modal = document.getElementById("modal");
-      const modalTitle = document.getElementById("modal-title");
-      const modalBody = document.getElementById("modal-body");
-
-      modalTitle.textContent = title;
-      modalBody.innerHTML = `
-                <div class="form-group">
-                    <label class="form-label">${title}</label>
-                    <textarea class="form-textarea" id="input-modal-text" placeholder="${placeholder}" style="min-height: 80px;">${defaultValue}</textarea>
-                </div>
-                <div class="flex gap-1 mt-2" style="justify-content: flex-end;">
-                    <button type="button" class="btn btn-secondary" onclick="window.app.resolveInputModal(null)">Annulla</button>
-                    <button type="button" class="btn btn-primary" onclick="window.app.resolveInputModal(document.getElementById('input-modal-text').value)">Conferma</button>
-                </div>
-            `;
-
-      // Store resolver
-      this.inputModalResolver = resolve;
-
-      // Show modal
-      modal.style.display = "block";
-      document.body.style.overflow = "hidden";
-
-      // Focus input
-      setTimeout(() => {
-        document.getElementById("input-modal-text").focus();
-      }, 100);
-
-      // Handle Enter key
-      document
-        .getElementById("input-modal-text")
-        .addEventListener("keydown", (e) => {
-          if (e.key === "Enter" && e.ctrlKey) {
-            this.resolveInputModal(e.target.value);
-          }
-        });
-    });
-  }
-
-  resolveInputModal(value) {
-    if (this.inputModalResolver) {
-      this.inputModalResolver(value);
-      this.inputModalResolver = null;
-    }
-    this.closeModal();
-  }
-
-  // Custom confirm modal
-  showConfirmModal(title, message) {
-    return new Promise((resolve) => {
-      const modal = document.getElementById("modal");
-      const modalTitle = document.getElementById("modal-title");
-      const modalBody = document.getElementById("modal-body");
-
-      modalTitle.textContent = title;
-      modalBody.innerHTML = `
-                <p style="margin-bottom: 20px; line-height: 1.5;">${message}</p>
-                <div class="flex gap-1" style="justify-content: flex-end;">
-                    <button type="button" class="btn btn-secondary" onclick="window.app.resolveConfirmModal(false)">Annulla</button>
-                    <button type="button" class="btn btn-danger" onclick="window.app.resolveConfirmModal(true)">Conferma</button>
-                </div>
-            `;
-
-      // Store resolver
-      this.confirmModalResolver = resolve;
-
-      // Show modal
-      modal.style.display = "block";
-      document.body.style.overflow = "hidden";
-    });
-  }
-
-  resolveConfirmModal(result) {
-    if (this.confirmModalResolver) {
-      this.confirmModalResolver(result);
-      this.confirmModalResolver = null;
-    }
-    this.closeModal();
-  }
-
   // Modal input method for EventBus
   showModalInput(config) {
-    return new Promise((resolve) => {
-      const modalConfig = {
-        type: "input",
-        title: config.title || "Input",
-        message: config.message || "",
-        label: config.label || config.title,
-        placeholder: config.placeholder || "",
-        defaultValue: config.defaultValue || "",
-        inputType: config.inputType || "textarea",
-        resolver: resolve,
-        ...config,
-      };
-
-      modalManager.open(modalConfig);
-    });
+    return modalManager.showInput(config);
   }
 
   // Modal confirm method for EventBus
   showModalConfirm(config) {
-    return new Promise((resolve) => {
-      const modalConfig = {
-        type: "confirm",
-        title: config.title || "Conferma",
-        message: config.message || "",
-        confirmText: config.confirmText || "Conferma",
-        cancelText: config.cancelText || "Annulla",
-        resolver: resolve,
-        ...config,
-      };
-
-      modalManager.open(modalConfig);
-    });
+    return modalManager.showConfirm(config);
   }
 
   // Notification system
@@ -533,13 +399,12 @@ class DMAssistantApp {
    * Mostra context menu
    */
   showContextMenu(event, card) {
-    this.hideContextMenu(); // Rimuovi eventuali menu esistenti
+    this.hideContextMenu();
 
     const contextMenu = document.createElement("div");
     contextMenu.className = "context-menu";
     contextMenu.id = "context-menu";
 
-    // Determina tipo di card e azioni
     let actions = [];
 
     if (card.dataset.characterId) {
@@ -547,40 +412,32 @@ class DMAssistantApp {
         {
           label: "Visualizza",
           action: () =>
-            window.characterManager.viewCharacterDetail(
-              parseInt(card.dataset.characterId)
-            ),
+            window.characterManager.viewDetail(card.dataset.characterId),
         },
         {
           label: "Modifica",
           action: () =>
-            window.characterManager.editCharacter(
-              parseInt(card.dataset.characterId)
-            ),
+            window.characterManager.editEntity(card.dataset.characterId),
         },
         {
           label: "Elimina",
           action: () =>
-            window.characterManager.deleteCharacter(
-              parseInt(card.dataset.characterId)
-            ),
+            window.characterManager.deleteEntity(card.dataset.characterId),
         },
       ];
     } else if (card.dataset.npcId) {
       actions = [
         {
           label: "Visualizza",
-          action: () =>
-            window.npcManager.viewNPCDetail(parseInt(card.dataset.npcId)),
+          action: () => window.npcManager.viewDetail(card.dataset.npcId),
         },
         {
           label: "Modifica",
-          action: () => window.npcManager.editNPC(parseInt(card.dataset.npcId)),
+          action: () => window.npcManager.editEntity(card.dataset.npcId),
         },
         {
           label: "Elimina",
-          action: () =>
-            window.npcManager.deleteNPC(parseInt(card.dataset.npcId)),
+          action: () => window.npcManager.deleteEntity(card.dataset.npcId),
         },
       ];
     } else if (card.dataset.environmentId) {
@@ -588,23 +445,17 @@ class DMAssistantApp {
         {
           label: "Visualizza",
           action: () =>
-            window.environmentManager.showEnvironmentView(
-              parseInt(card.dataset.environmentId)
-            ),
+            window.environmentManager.viewDetail(card.dataset.environmentId),
         },
         {
           label: "Modifica",
           action: () =>
-            window.environmentManager.editEnvironment(
-              parseInt(card.dataset.environmentId)
-            ),
+            window.environmentManager.editEntity(card.dataset.environmentId),
         },
         {
           label: "Elimina",
           action: () =>
-            window.environmentManager.deleteEnvironment(
-              parseInt(card.dataset.environmentId)
-            ),
+            window.environmentManager.deleteEntity(card.dataset.environmentId),
         },
       ];
     }

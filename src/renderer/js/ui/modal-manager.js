@@ -175,52 +175,6 @@ class ModalManager {
   }
 
   /**
-   * Close current modal
-   */
-  close() {
-    if (this.modalStack.length === 0) return;
-
-    const currentModal = this.modalStack.pop();
-
-    if (this.modalStack.length > 0) {
-      // Show previous modal in stack
-      const previousModal = this.modalStack[this.modalStack.length - 1];
-
-      // Re-render the previous modal
-      this.modalTitle.textContent = previousModal.title;
-      this.modalBody.innerHTML = previousModal.content;
-
-      // Apply size class
-      this.modal.className = `modal modal-${previousModal.size}`;
-
-      // Setup handlers for the previous modal
-      if (previousModal.type === "detail") {
-        this.setupDetailHandlers(previousModal);
-      } else if (previousModal.type === "form") {
-        this.setupFormHandlers(previousModal);
-      } else if (
-        previousModal.type === "confirm" ||
-        previousModal.type === "input"
-      ) {
-        this.setupPromiseHandlers(previousModal);
-      }
-
-      // Emit rendered event
-      this.eventBus.emit("modal:rendered", previousModal);
-    } else {
-      // Close modal completely
-      this.hideModal();
-    }
-
-    // Resolve any pending promises
-    if (currentModal.resolver) {
-      currentModal.resolver(null);
-    }
-
-    this.eventBus.emit("modal:closed", currentModal);
-  }
-
-  /**
    * Show confirmation modal
    */
   showConfirm(config) {
@@ -257,42 +211,6 @@ class ModalManager {
   }
 
   /**
-   * Setup promise-based modal handlers
-   */
-  setupPromiseHandlers(config) {
-    this.modalBody.addEventListener("click", (e) => {
-      const button = e.target.closest("button[data-modal-action]");
-      if (!button) return;
-
-      const action = button.dataset.modalAction;
-      let result = null;
-
-      if (action === "confirm") {
-        if (config.type === "input") {
-          const input = this.modalBody.querySelector("#modal-input");
-          result = input ? input.value : null;
-        } else {
-          result = true;
-        }
-      }
-
-      if (config.resolver) {
-        config.resolver(result);
-      }
-
-      this.close();
-    });
-
-    // Auto-focus input in input modals
-    if (config.type === "input") {
-      setTimeout(() => {
-        const input = this.modalBody.querySelector("#modal-input");
-        if (input) input.focus();
-      }, 100);
-    }
-  }
-
-  /**
    * Show modal
    */
   showModal() {
@@ -312,6 +230,16 @@ class ModalManager {
 
     // Restore focus
     this.restoreFocus();
+  }
+
+  async showForm(config) {
+    return new Promise((resolve) => {
+      this.open({
+        ...config,
+        type: "form",
+        resolver: resolve,
+      });
+    });
   }
 
   /**
@@ -487,7 +415,13 @@ class ModalManager {
    * Setup promise-based modal handlers
    */
   setupPromiseHandlers(config) {
-    this.modalBody.addEventListener("click", (e) => {
+    // Rimuovi eventuali listener precedenti
+    if (this._promiseHandler) {
+      this.modalBody.removeEventListener("click", this._promiseHandler);
+      this._promiseHandler = null;
+    }
+
+    this._promiseHandler = (e) => {
       const button = e.target.closest("button[data-modal-action]");
       if (!button) return;
 
@@ -508,7 +442,9 @@ class ModalManager {
       }
 
       this.close();
-    });
+    };
+
+    this.modalBody.addEventListener("click", this._promiseHandler);
 
     // Auto-focus input in input modals
     if (config.type === "input") {
@@ -517,6 +453,34 @@ class ModalManager {
         if (input) input.focus();
       }, 100);
     }
+  }
+
+  /**
+   * Close current modal
+   */
+  close() {
+    if (this.modalStack.length === 0) return;
+
+    const currentModal = this.modalStack.pop();
+
+    // Rimuovi event listener promise se presente
+    if (this._promiseHandler) {
+      this.modalBody.removeEventListener("click", this._promiseHandler);
+      this._promiseHandler = null;
+    }
+
+    if (this.modalStack.length > 0) {
+      // ...existing code...
+    } else {
+      this.hideModal();
+    }
+
+    // Risolvi la promise se presente (se chiusa senza azione)
+    if (currentModal && currentModal.resolver) {
+      currentModal.resolver(null);
+    }
+
+    this.eventBus.emit("modal:closed", currentModal);
   }
 
   /**
