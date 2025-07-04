@@ -6,18 +6,20 @@ import EventBus from "./event-bus.js";
 import dataStore from "../data/data-store.js";
 
 export default class BaseManager {
-  constructor(options = {}) {
+  constructor(entityTypeOrOptions, legacyConfig = {}) {
     // Handle both old and new constructor patterns
-    if (typeof options === "string") {
+    if (typeof entityTypeOrOptions === "string") {
       // Old pattern: BaseManager(entityType, config)
-      this.entityType = options;
-      this.config = arguments[1] || {};
+      this.entityType = entityTypeOrOptions;
+      this.config = legacyConfig;
+      this.templates = null;
+      this.dataStore = null;
     } else {
       // New pattern: BaseManager({entityType, config, ...})
-      this.entityType = options.entityType;
-      this.config = options.config || {};
-      this.templates = options.templates;
-      this.dataStore = options.dataStore;
+      this.entityType = entityTypeOrOptions.entityType;
+      this.config = entityTypeOrOptions.config || {};
+      this.templates = entityTypeOrOptions.templates;
+      this.dataStore = entityTypeOrOptions.dataStore;
     }
 
     // Default config
@@ -34,7 +36,6 @@ export default class BaseManager {
     // Subscribe to relevant events
     this.setupEventListeners();
   }
-
   /**
    * Setup event listeners for this manager
    */
@@ -63,7 +64,13 @@ export default class BaseManager {
    * Get entity by ID
    */
   getEntity(id) {
-    return dataStore.findById(this.entityType, id);
+    const entity = dataStore.findById(this.entityType, id);
+    if (!entity) {
+      // Try string/number conversion
+      const altId = typeof id === "string" ? parseInt(id) : String(id);
+      return dataStore.findById(this.entityType, altId);
+    }
+    return entity;
   }
 
   /**
@@ -71,7 +78,10 @@ export default class BaseManager {
    */
   async createEntity(data) {
     try {
+      console.log(`Creating ${this.entityType}:`, data);
       const entity = await dataStore.add(this.entityType, data);
+      console.log(`Created ${this.entityType}:`, entity);
+
       this.eventBus.emit(`${this.entityType}:created`, entity);
       window.app.showNotification(
         `${this.getEntityDisplayName()} creato con successo!`,
@@ -176,14 +186,39 @@ export default class BaseManager {
    */
   attachCardEventListeners() {
     const attribute = `data-${this.entityType.slice(0, -1)}-id`;
+
+    // Remove all existing event listeners for this entity type
     document.querySelectorAll(`[${attribute}]`).forEach((card) => {
-      card.addEventListener("click", () => {
-        const entityId = parseInt(card.getAttribute(attribute));
+      card.replaceWith(card.cloneNode(true));
+    });
+
+    // Add new event listeners
+    document.querySelectorAll(`[${attribute}]`).forEach((card) => {
+      card.addEventListener("click", (e) => {
+        // Don't trigger if clicking on a button or other interactive element
+        if (e.target.closest("button, a, input, select, textarea")) return;
+
+        const entityId = card.getAttribute(attribute);
+        console.log(`Card clicked for ${this.entityType}:`, entityId);
+
+        // Verify entity exists
+        const entity = this.getEntity(entityId);
+        if (!entity) {
+          console.error(
+            `Entity not found: ${this.entityType} with id ${entityId}`
+          );
+          console.log(
+            "Available entities:",
+            this.getEntities().map((e) => ({ id: e.id, name: e.name }))
+          );
+          window.app.showError(`${this.getEntityDisplayName()} non trovato`);
+          return;
+        }
+
         this.viewDetail(entityId);
       });
     });
   }
-
   /**
    * Open add form
    */
@@ -286,14 +321,17 @@ export default class BaseManager {
    * Event handlers - can be overridden by subclasses
    */
   onEntityCreated(entity) {
+    console.log(`Entity created: ${this.entityType}`, entity);
     this.render();
   }
 
   onEntityUpdated(entity) {
+    console.log(`Entity updated: ${this.entityType}`, entity);
     this.render();
   }
 
   onEntityDeleted(data) {
+    console.log(`Entity deleted: ${this.entityType}`, data);
     if (this.currentEntity && this.currentEntity.id === data.id) {
       this.currentEntity = null;
     }

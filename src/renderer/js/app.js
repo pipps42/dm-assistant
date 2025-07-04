@@ -217,6 +217,15 @@ class DMAssistantApp {
         this.toggleSidebar();
       }
     });
+
+    // Setup modal event listeners
+    EventBus.on("modal:input", (config) => {
+      return this.showModalInput(config);
+    });
+
+    EventBus.on("modal:confirm", (config) => {
+      return this.showModalConfirm(config);
+    });
   }
 
   toggleSidebar() {
@@ -390,6 +399,42 @@ class DMAssistantApp {
       this.confirmModalResolver = null;
     }
     this.closeModal();
+  }
+
+  // Modal input method for EventBus
+  showModalInput(config) {
+    return new Promise((resolve) => {
+      const modalConfig = {
+        type: "input",
+        title: config.title || "Input",
+        message: config.message || "",
+        label: config.label || config.title,
+        placeholder: config.placeholder || "",
+        defaultValue: config.defaultValue || "",
+        inputType: config.inputType || "textarea",
+        resolver: resolve,
+        ...config,
+      };
+
+      modalManager.open(modalConfig);
+    });
+  }
+
+  // Modal confirm method for EventBus
+  showModalConfirm(config) {
+    return new Promise((resolve) => {
+      const modalConfig = {
+        type: "confirm",
+        title: config.title || "Conferma",
+        message: config.message || "",
+        confirmText: config.confirmText || "Conferma",
+        cancelText: config.cancelText || "Annulla",
+        resolver: resolve,
+        ...config,
+      };
+
+      modalManager.open(modalConfig);
+    });
   }
 
   // Notification system

@@ -30,7 +30,8 @@ class NPCManager extends BaseManager {
     this.eventBus.on("form:submit", (data) => {
       if (
         data.options?.entityType === "npcs" ||
-        data.form?.dataset?.entityType === "npcs"
+        data.form?.dataset?.entityType === "npcs" ||
+        data.config?.entityType === "npcs"
       ) {
         this.handleFormSubmit(data);
       }
@@ -50,6 +51,7 @@ class NPCManager extends BaseManager {
       }
     });
   }
+
   /**
    * Render NPC card using template
    */

@@ -73,35 +73,16 @@ class ModalManager {
   open(config) {
     if (!this.isInitialized) this.init();
 
-    const modalConfig = {
-      title: "Modal",
-      content: "",
-      type: "default", // default, form, detail, confirm, input
-      entityType: null,
-      entity: null,
-      mode: null, // create, edit
-      closable: true,
-      size: "medium", // small, medium, large, fullscreen
-      ...config,
-    };
-
-    this.modalStack.push(modalConfig);
-    this.renderModal(modalConfig);
-    this.showModal();
-  }
-
-  /**
-   * Open modal with content
-   */
-  open(config) {
     const {
-      type = "info",
+      type = "default",
       entityType,
       mode = "create",
       entity = null,
-      title = "",
+      title = "Modal",
       content = "",
       size = "medium",
+      closable = true,
+      ...rest
     } = config;
 
     let modalContent = content;
@@ -115,7 +96,7 @@ class ModalManager {
         try {
           if (type === "form") {
             modalContent = manager.templates.generateForm(entity, mode);
-            if (!modalTitle) {
+            if (!modalTitle || modalTitle === "Modal") {
               modalTitle =
                 mode === "edit"
                   ? `Modifica ${manager.getEntityDisplayName()}`
@@ -123,9 +104,13 @@ class ModalManager {
             }
           } else if (type === "detail") {
             modalContent = manager.templates.generateDetail(entity);
-            if (!modalTitle) {
+            if (!modalTitle || modalTitle === "Modal") {
               modalTitle = entity?.name || manager.getEntityDisplayName();
             }
+          } else if (type === "confirm") {
+            modalContent = this.generateConfirmContent(config);
+          } else if (type === "input") {
+            modalContent = this.generateInputContent(config);
           }
         } catch (error) {
           console.error(
@@ -153,26 +138,40 @@ class ModalManager {
       }
     }
 
-    // Set content and show modal
-    this.titleElement.textContent = modalTitle;
-    this.bodyElement.innerHTML = modalContent;
-
-    this.modalElement.style.display = "block";
-    document.body.style.overflow = "hidden";
-
-    // Apply size class
-    this.modalElement.className = `modal-${size}`;
-
-    // Emit rendered event for component setup
-    EventBus.emit("modal:rendered", {
+    const modalConfig = {
       type,
       entityType,
       mode,
       entity,
       title: modalTitle,
       content: modalContent,
-      ...config,
-    });
+      size,
+      closable,
+      ...rest,
+    };
+
+    this.modalStack.push(modalConfig);
+
+    // Use correct property names from init()
+    this.modalTitle.textContent = modalTitle;
+    this.modalBody.innerHTML = modalContent;
+
+    // Apply size class
+    this.modal.className = `modal modal-${size}`;
+
+    this.showModal();
+
+    // Emit rendered event for component setup
+    this.eventBus.emit("modal:rendered", modalConfig);
+
+    // Setup handlers based on modal type
+    if (type === "detail") {
+      this.setupDetailHandlers(modalConfig);
+    } else if (type === "form") {
+      this.setupFormHandlers(modalConfig);
+    } else if (type === "confirm" || type === "input") {
+      this.setupPromiseHandlers(modalConfig);
+    }
   }
 
   /**
@@ -186,7 +185,28 @@ class ModalManager {
     if (this.modalStack.length > 0) {
       // Show previous modal in stack
       const previousModal = this.modalStack[this.modalStack.length - 1];
-      this.renderModal(previousModal);
+
+      // Re-render the previous modal
+      this.modalTitle.textContent = previousModal.title;
+      this.modalBody.innerHTML = previousModal.content;
+
+      // Apply size class
+      this.modal.className = `modal modal-${previousModal.size}`;
+
+      // Setup handlers for the previous modal
+      if (previousModal.type === "detail") {
+        this.setupDetailHandlers(previousModal);
+      } else if (previousModal.type === "form") {
+        this.setupFormHandlers(previousModal);
+      } else if (
+        previousModal.type === "confirm" ||
+        previousModal.type === "input"
+      ) {
+        this.setupPromiseHandlers(previousModal);
+      }
+
+      // Emit rendered event
+      this.eventBus.emit("modal:rendered", previousModal);
     } else {
       // Close modal completely
       this.hideModal();
@@ -233,163 +253,6 @@ class ModalManager {
       };
 
       this.open(inputConfig);
-    });
-  }
-
-  /**
-   * Render modal content based on configuration
-   */
-  renderModal(config) {
-    this.modalTitle.textContent = config.title;
-
-    // Apply size class
-    this.modal.className = `modal modal-${config.size}`;
-
-    // Render content based on type
-    switch (config.type) {
-      case "form":
-        this.modalBody.innerHTML = this.generateFormContent(config);
-        this.setupFormHandlers(config);
-        break;
-      case "detail":
-        this.modalBody.innerHTML = this.generateDetailContent(config);
-        this.setupDetailHandlers(config);
-        break;
-      case "confirm":
-      case "input":
-        this.modalBody.innerHTML = config.content;
-        this.setupPromiseHandlers(config);
-        break;
-      default:
-        this.modalBody.innerHTML = config.content;
-    }
-
-    // Emit event for custom handlers
-    this.eventBus.emit("modal:rendered", config);
-  }
-
-  /**
-   * Generate form content
-   */
-  generateFormContent(config) {
-    const { entityType, mode, entity } = config;
-
-    // Import appropriate template
-    const templateModule = this.getTemplateModule(entityType);
-    if (templateModule && templateModule.generateForm) {
-      return templateModule.generateForm(entity, mode);
-    }
-
-    return "<p>Form template not found</p>";
-  }
-
-  /**
-   * Generate detail content
-   */
-  generateDetailContent(config) {
-    const { entityType, entity } = config;
-
-    // Import appropriate template
-    const templateModule = this.getTemplateModule(entityType);
-    if (templateModule && templateModule.generateDetail) {
-      return templateModule.generateDetail(entity);
-    }
-
-    return "<p>Detail template not found</p>";
-  }
-
-  /**
-   * Generate confirm content
-   */
-  generateConfirmContent(config) {
-    return `
-            <p style="margin-bottom: 20px; line-height: 1.5;">${
-              config.message
-            }</p>
-            <div class="flex gap-1" style="justify-content: flex-end;">
-                <button type="button" class="btn btn-secondary" data-modal-action="cancel">
-                    ${config.cancelText || "Annulla"}
-                </button>
-                <button type="button" class="btn btn-danger" data-modal-action="confirm">
-                    ${config.confirmText || "Conferma"}
-                </button>
-            </div>
-        `;
-  }
-
-  /**
-   * Generate input content
-   */
-  generateInputContent(config) {
-    const inputType = config.inputType || "textarea";
-    let inputHtml = "";
-
-    if (inputType === "textarea") {
-      inputHtml = `
-                <textarea class="form-textarea" id="modal-input" 
-                         placeholder="${config.placeholder || ""}" 
-                         style="min-height: 80px;">${
-                           config.defaultValue || ""
-                         }</textarea>
-            `;
-    } else {
-      inputHtml = `
-                <input type="${inputType}" class="form-input" id="modal-input" 
-                       placeholder="${config.placeholder || ""}" 
-                       value="${config.defaultValue || ""}">
-            `;
-    }
-
-    return `
-            <div class="form-group">
-                <label class="form-label">${
-                  config.label || config.title
-                }</label>
-                ${inputHtml}
-            </div>
-            <div class="flex gap-1 mt-2" style="justify-content: flex-end;">
-                <button type="button" class="btn btn-secondary" data-modal-action="cancel">Annulla</button>
-                <button type="button" class="btn btn-primary" data-modal-action="confirm">Conferma</button>
-            </div>
-        `;
-  }
-
-  /**
-   * Setup form handlers
-   */
-  setupFormHandlers(config) {
-    const form = this.modalBody.querySelector("form");
-    if (!form) return;
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      this.eventBus.emit("form:submit", {
-        form,
-        config,
-        modalManager: this,
-      });
-    });
-  }
-
-  /**
-   * Setup detail handlers
-   */
-  setupDetailHandlers(config) {
-    // Event delegation for buttons in detail view
-    this.modalBody.addEventListener("click", (e) => {
-      const button = e.target.closest("button[data-action]");
-      if (!button) return;
-
-      const action = button.dataset.action;
-      const entityId = config.entity?.id;
-
-      this.eventBus.emit("detail:action", {
-        action,
-        entityId,
-        entityType: config.entityType,
-        config,
-      });
     });
   }
 
@@ -485,6 +348,174 @@ class ModalManager {
     if (this.previouslyFocused) {
       this.previouslyFocused.focus();
       this.previouslyFocused = null;
+    }
+  }
+
+  /**
+   * Generate confirm content
+   */
+  generateConfirmContent(config) {
+    return `
+    <p style="margin-bottom: 20px; line-height: 1.5;">${config.message}</p>
+    <div class="flex gap-1" style="justify-content: flex-end;">
+      <button type="button" class="btn btn-secondary" data-modal-action="cancel">
+        ${config.cancelText || "Annulla"}
+      </button>
+      <button type="button" class="btn btn-danger" data-modal-action="confirm">
+        ${config.confirmText || "Conferma"}
+      </button>
+    </div>
+  `;
+  }
+
+  /**
+   * Generate input content
+   */
+  generateInputContent(config) {
+    const inputType = config.inputType || "textarea";
+    let inputHtml = "";
+
+    if (inputType === "textarea") {
+      inputHtml = `
+      <textarea class="form-textarea" id="modal-input" 
+               placeholder="${config.placeholder || ""}" 
+               style="min-height: 80px;">${config.defaultValue || ""}</textarea>
+    `;
+    } else {
+      inputHtml = `
+      <input type="${inputType}" class="form-input" id="modal-input" 
+             placeholder="${config.placeholder || ""}" 
+             value="${config.defaultValue || ""}">
+    `;
+    }
+
+    return `
+    <div class="form-group">
+      <label class="form-label">${config.label || config.title}</label>
+      ${inputHtml}
+    </div>
+    <div class="flex gap-1 mt-2" style="justify-content: flex-end;">
+      <button type="button" class="btn btn-secondary" data-modal-action="cancel">Annulla</button>
+      <button type="button" class="btn btn-primary" data-modal-action="confirm">Conferma</button>
+    </div>
+  `;
+  }
+
+  /**
+   * Setup form handlers
+   */
+  setupFormHandlers(config) {
+    const form = this.modalBody.querySelector("form");
+    if (!form) return;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Extract form data
+      const formData = new FormData(form);
+      const data = {};
+
+      for (const [key, value] of formData.entries()) {
+        // Handle checkboxes and multiple values
+        if (data[key]) {
+          if (Array.isArray(data[key])) {
+            data[key].push(value);
+          } else {
+            data[key] = [data[key], value];
+          }
+        } else {
+          data[key] = value;
+        }
+      }
+
+      // Process special fields
+      Object.keys(data).forEach((key) => {
+        const input = form.querySelector(`[name="${key}"]`);
+        if (input) {
+          if (input.type === "number") {
+            data[key] = data[key] ? Number(data[key]) : null;
+          } else if (input.type === "checkbox") {
+            data[key] = input.checked;
+          }
+        }
+      });
+
+      this.eventBus.emit("form:submit", {
+        formData: data,
+        form,
+        options: config,
+        config,
+        modalManager: this,
+      });
+    });
+  }
+
+  /**
+   * Setup detail handlers
+   */
+  setupDetailHandlers(config) {
+    // Event delegation for buttons in detail view
+    this.modalBody.addEventListener("click", (e) => {
+      const button = e.target.closest("button[data-action]");
+      if (!button) return;
+
+      const action = button.dataset.action;
+      const entityId = config.entity?.id;
+
+      // Get additional data attributes
+      const additionalData = {};
+      for (const attr of button.attributes) {
+        if (attr.name.startsWith("data-") && attr.name !== "data-action") {
+          const key = attr.name
+            .replace("data-", "")
+            .replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+          additionalData[key] = attr.value;
+        }
+      }
+
+      this.eventBus.emit("detail:action", {
+        action,
+        entityId,
+        entityType: config.entityType,
+        config,
+        ...additionalData,
+      });
+    });
+  }
+
+  /**
+   * Setup promise-based modal handlers
+   */
+  setupPromiseHandlers(config) {
+    this.modalBody.addEventListener("click", (e) => {
+      const button = e.target.closest("button[data-modal-action]");
+      if (!button) return;
+
+      const action = button.dataset.modalAction;
+      let result = null;
+
+      if (action === "confirm") {
+        if (config.type === "input") {
+          const input = this.modalBody.querySelector("#modal-input");
+          result = input ? input.value : null;
+        } else {
+          result = true;
+        }
+      }
+
+      if (config.resolver) {
+        config.resolver(result);
+      }
+
+      this.close();
+    });
+
+    // Auto-focus input in input modals
+    if (config.type === "input") {
+      setTimeout(() => {
+        const input = this.modalBody.querySelector("#modal-input");
+        if (input) input.focus();
+      }, 100);
     }
   }
 

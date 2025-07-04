@@ -71,6 +71,36 @@ class EnvironmentManager extends BaseManager {
   }
 
   /**
+   * Setup environment-specific event listeners
+   */
+  setupEnvironmentSpecificEvents() {
+    // Listen for form events
+    this.eventBus.on("form:submit", (data) => {
+      if (
+        data.options?.entityType === "environments" ||
+        data.form?.dataset?.entityType === "environments" ||
+        data.config?.entityType === "environments"
+      ) {
+        this.handleFormSubmit(data);
+      }
+    });
+
+    // Listen for detail view actions
+    this.eventBus.on("detail:action", (data) => {
+      if (data.entityType === "environments") {
+        this.handleDetailAction(data);
+      }
+    });
+
+    // Listen for modal events to setup components
+    this.eventBus.on("modal:rendered", (config) => {
+      if (config.entityType === "environments") {
+        this.setupModalComponents(config);
+      }
+    });
+  }
+
+  /**
    * Render environment card using template
    */
   renderCard(environment) {

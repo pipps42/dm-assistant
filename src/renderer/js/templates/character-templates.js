@@ -327,6 +327,8 @@ export function generateDetail(character) {
  * Generate character card template
  */
 export function generateCard(character) {
+  console.log("Generating card for character:", character.id, character.name);
+
   const hasImage =
     character.avatar && character.avatar.startsWith("data:image");
   let avatarDisplay;

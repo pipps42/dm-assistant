@@ -28,7 +28,11 @@ class CharacterManager extends BaseManager {
   setupCharacterSpecificEvents() {
     // Listen for form events
     this.eventBus.on("form:submit", (data) => {
-      if (data.options.entityType === "characters") {
+      if (
+        data.options?.entityType === "characters" ||
+        data.form?.dataset?.entityType === "characters" ||
+        data.config?.entityType === "characters"
+      ) {
         this.handleFormSubmit(data);
       }
     });
@@ -60,11 +64,21 @@ class CharacterManager extends BaseManager {
    */
   async handleFormSubmit(data) {
     try {
+      console.log("Handling character form submit", data);
+
       const { formData, form, options } = data;
+
+      if (!formData) {
+        throw new Error("Form data is missing");
+      }
 
       // Get image data from image upload component
       if (this.imageUpload) {
+        console.log("Getting avatar from image upload");
         formData.avatar = this.imageUpload.getValue();
+      } else {
+        console.log("No image upload component, using default avatar");
+        formData.avatar = formData.avatar || "🧙";
       }
 
       // Process form data
@@ -77,8 +91,12 @@ class CharacterManager extends BaseManager {
         await this.createEntity(formData);
       }
 
-      // Close modal
+      // Close modal and clear current entity
+      this.currentEntity = null;
       this.eventBus.emit("modal:close");
+
+      // Prevent any further processing
+      return;
     } catch (error) {
       console.error("Error handling character form:", error);
       throw error;
@@ -123,8 +141,12 @@ class CharacterManager extends BaseManager {
    * Setup form-specific components
    */
   setupFormComponents(config) {
+    console.log("Setting up form components for character", config);
+
     // Initialize image upload component
     const uploadContainer = document.getElementById("character-avatar-upload");
+    console.log("Upload container found:", !!uploadContainer);
+
     if (uploadContainer) {
       this.imageUpload = new ImageUpload(uploadContainer, {
         type: "avatar",
@@ -132,15 +154,20 @@ class CharacterManager extends BaseManager {
         defaultEmoji: "🧙",
         name: "avatar",
       });
+      console.log("Image upload initialized:", !!this.imageUpload);
 
       // Set existing value if editing
       if (config.mode === "edit" && config.entity?.avatar) {
         this.imageUpload.setValue(config.entity.avatar);
       }
+    } else {
+      console.warn("character-avatar-upload container not found");
     }
 
     // Initialize form handler
     const form = document.getElementById("character-form");
+    console.log("Form found:", !!form);
+
     if (form) {
       this.formHandler = new FormHandler(form, {
         entityType: "characters",

@@ -78,6 +78,7 @@ class EventBus {
    * Emit an event
    * @param {string} eventName - Nome dell'evento
    * @param {any} data - Dati da passare ai listener
+   * @returns {Promise|any} - Promise se ci sono listener async, altrimenti void
    */
   emit(eventName, data = null) {
     if (this.debug) {
@@ -88,15 +89,21 @@ class EventBus {
       if (this.debug) {
         console.log(`EventBus: No listeners for "${eventName}"`);
       }
-      return;
+      return null;
     }
 
     const listeners = this.events.get(eventName).slice(); // Copy array
     const toRemove = [];
+    const results = [];
 
     for (const listener of listeners) {
       try {
-        listener.callback(data, eventName);
+        const result = listener.callback(data, eventName);
+
+        // Se il listener ritorna una Promise, la gestiamo
+        if (result && typeof result.then === "function") {
+          results.push(result);
+        }
 
         if (listener.once) {
           toRemove.push(listener.id);
@@ -108,6 +115,13 @@ class EventBus {
 
     // Remove one-time listeners
     toRemove.forEach((id) => this.off(eventName, id));
+
+    // Se ci sono Promise, ritorna la prima (per eventi come modal:input)
+    if (results.length > 0) {
+      return results[0];
+    }
+
+    return null;
   }
 
   /**

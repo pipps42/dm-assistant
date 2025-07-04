@@ -115,7 +115,7 @@ class DataStore {
 
     const items = this.get(collection);
     const item = Array.isArray(items)
-      ? items.find((item) => item.id == id)
+      ? items.find((item) => String(item.id) === String(id)) // Convert both to string for comparison
       : null;
 
     if (item) {
