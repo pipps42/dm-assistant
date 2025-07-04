@@ -1,253 +1,132 @@
-// src/renderer/js/components/character-manager.js
+/**
+ * Character Manager - Versione semplice che estende BaseManager
+ * Gestisce solo le specificità dei personaggi
+ */
 import BaseManager from "../core/base-manager.js";
-import EventBus from "../core/event-bus.js";
 import * as CharacterTemplates from "../templates/character-templates.js";
 import ImageUpload from "../ui/image-upload.js";
-import FormHandler from "../ui/form-handler.js";
 import modalManager from "../ui/modal-manager.js";
 
 class CharacterManager extends BaseManager {
   constructor() {
-    super("characters", {
-      hasImages: true,
-      hasInteractions: true,
-      defaultAvatar: "🧙",
-    });
-
-    this.templates = CharacterTemplates;
-    this.imageUpload = null; //ImageUpload.getInstance();
-    this.formHandler = null;
-    this.eventBus = EventBus;
-
-    this.setupCharacterSpecificEvents();
-  }
-
-  renderCard(entity) {
-    // Usa il template già presente
-    return this.templates.generateCard(entity);
+    super("characters", CharacterTemplates);
+    this.imageUpload = null;
   }
 
   /**
-   * Setup character-specific event listeners
+   * Process form data specifico per i personaggi
    */
-  setupCharacterSpecificEvents() {
-    // Listen for form events
-    this.eventBus.on("form:submit", (data) => {
-      if (
-        data.options?.entityType === "characters" ||
-        data.form?.dataset?.entityType === "characters" ||
-        data.config?.entityType === "characters"
-      ) {
-        this.handleFormSubmit(data);
-      }
-    });
+  processFormData(data) {
+    // Convert strings to numbers
+    data.level = parseInt(data.level) || 1;
+    data.hitPoints = data.hitPoints ? parseInt(data.hitPoints) : null;
 
-    // Listen for detail view actions
-    this.eventBus.on("detail:action", (data) => {
-      if (data.entityType === "characters") {
-        this.handleDetailAction(data);
-      }
+    // Get avatar from image upload
+    if (this.imageUpload) {
+      data.avatar = this.imageUpload.getValue();
+    }
+
+    // Trim strings
+    ["name", "playerName", "background"].forEach((field) => {
+      if (data[field]) data[field] = data[field].trim();
     });
   }
 
   /**
-   * Handle form submission
+   * Setup componenti specifici del form personaggi
    */
-  async handleFormSubmit(data) {
-    try {
-      const { formData, form, options, config } = data;
+  setupFormComponents(entity, mode) {
+    // Setup image upload
+    const uploadContainer = document.getElementById("character-avatar-upload");
+    if (uploadContainer) {
+      this.imageUpload = new ImageUpload(uploadContainer, {
+        type: "avatar",
+        allowEmoji: true,
+        defaultEmoji: "🧙",
+        name: "avatar",
+      });
 
-      if (!formData) {
-        throw new Error("Form data is missing");
+      if (entity?.avatar) {
+        this.imageUpload.setValue(entity.avatar);
       }
-
-      // Get image data from image upload component
-      if (this.imageUpload) {
-        formData.avatar = this.imageUpload.getValue();
-      } else {
-        formData.avatar = formData.avatar || "🧙";
-      }
-
-      // Process form data
-      this.processCharacterData(formData);
-
-      // Create or update character
-      if ((options?.mode || config?.mode) === "edit" && this.currentEntity) {
-        await this.updateEntity(this.currentEntity.id, formData);
-      } else {
-        await this.createEntity(formData);
-      }
-
-      // Close modal and clear current entity
-      this.currentEntity = null;
-      modalManager.close();
-    } catch (error) {
-      console.error("Error handling character form:", error);
-      window.app.showError(`Errore nel salvataggio: ${error.message}`);
     }
   }
 
-  handleDetailAction(data) {
-    const { action, entityId } = data;
+  /**
+   * Gestisce azioni specifiche del detail personaggi
+   */
+  async handleDetailAction(action, entity, button) {
     switch (action) {
       case "add-adventure":
-        this.addAdventure(entityId);
+        await this.addAdventure(entity);
         break;
-      case "edit":
-        this.editEntity(entityId);
+
+      case "remove-adventure":
+        const adventureId = button.dataset.adventureId;
+        await this.removeAdventure(entity, adventureId);
         break;
-      case "delete":
-        this.deleteEntity(entityId);
-        break;
-      case "close":
-        modalManager.close();
-        break;
-      // aggiungi altri casi se servono
-      default:
-        console.warn("Azione non gestita:", action, data);
     }
   }
 
   /**
-   * Process character-specific data
+   * Aggiungi impresa al personaggio
    */
-  processCharacterData(data) {
-    // Ensure level is a number
-    if (data.level) {
-      data.level = parseInt(data.level);
-    }
+  async addAdventure(character) {
+    const adventure = await modalManager.input({
+      title: "Aggiungi Impresa",
+      label: "Descrivi l'impresa:",
+      placeholder: "Es. Ha sconfitto il drago rosso...",
+    });
 
-    // Ensure hitPoints is a number or null
-    if (data.hitPoints) {
-      data.hitPoints = parseInt(data.hitPoints);
+    if (!adventure?.trim()) return;
+
+    if (!character.adventures) character.adventures = [];
+
+    character.adventures.push({
+      id: Date.now(),
+      description: adventure.trim(),
+      date: new Date().toISOString(),
+    });
+
+    await this.update(character.id, character);
+
+    // Riapri il detail aggiornato
+    setTimeout(() => this.openDetail(character.id), 100);
+  }
+
+  /**
+   * Rimuovi impresa dal personaggio
+   */
+  async removeAdventure(character, adventureId) {
+    if (!character.adventures) return;
+
+    // Handle both ID and index for legacy data
+    const id = parseInt(adventureId);
+    if (!isNaN(id) && id < character.adventures.length) {
+      character.adventures.splice(id, 1);
     } else {
-      data.hitPoints = null;
+      character.adventures = character.adventures.filter(
+        (adv) => adv.id != adventureId
+      );
     }
 
-    // Trim text fields
-    ["name", "playerName", "background"].forEach((field) => {
-      if (data[field]) {
-        data[field] = data[field].trim();
-      }
-    });
+    await this.update(character.id, character);
 
-    return data;
+    // Riapri il detail aggiornato
+    setTimeout(() => this.openDetail(character.id), 100);
   }
 
   /**
-   * Add adventure to character
+   * Cleanup quando necessario
    */
-  async addAdventure(characterId) {
-    try {
-      const adventure = await modalManager.showInput({
-        title: "Aggiungi Impresa",
-        label: "Descrivi l'impresa o momento significativo:",
-        placeholder: "Es. Ha sconfitto il drago rosso Smaug...",
-        inputType: "textarea",
-      });
-
-      if (!adventure || !adventure.trim()) return;
-
-      const character = this.getEntity(characterId);
-      if (!character) return;
-
-      // Ensure adventures array exists
-      if (!character.adventures) {
-        character.adventures = [];
-      }
-
-      // Add new adventure
-      character.adventures.push({
-        id: Date.now(),
-        description: adventure.trim(),
-        date: new Date().toISOString(),
-      });
-
-      await this.updateEntity(characterId, character);
-      await this.viewDetail(characterId); // Refresh detail view
-
-      window.app.showNotification("Impresa aggiunta!", "success");
-    } catch (error) {
-      console.error("Error adding adventure:", error);
-      window.app.showError("Errore durante l'aggiunta dell'impresa");
-    }
-  }
-
-  /**
-   * Remove adventure from character
-   */
-  async removeAdventure(characterId, adventureId) {
-    try {
-      const character = this.getEntity(characterId);
-      if (!character || !character.adventures) return;
-
-      // Convert adventureId to number if it's an index
-      const numAdventureId = parseInt(adventureId);
-
-      if (
-        !isNaN(numAdventureId) &&
-        numAdventureId < character.adventures.length
-      ) {
-        // Remove by index for legacy data
-        character.adventures.splice(numAdventureId, 1);
-      } else {
-        // Remove by ID
-        character.adventures = character.adventures.filter(
-          (adv) => adv.id != adventureId
-        );
-      }
-
-      await this.updateEntity(characterId, character);
-      await this.viewDetail(characterId); // Refresh detail view
-
-      window.app.showNotification("Impresa rimossa", "success");
-    } catch (error) {
-      console.error("Error removing adventure:", error);
-      window.app.showError("Errore durante la rimozione dell'impresa");
-    }
-  }
-
-  /**
-   * Override edit to use character template
-   */
-  async editEntity(id) {
-    const character = this.getEntity(id);
-    if (!character) {
-      window.app.showError("Personaggio non trovato");
-      return;
-    }
-
-    this.currentEntity = character;
-    modalManager.close(); // Chiudi eventuale modale aperta
-
-    await modalManager.showForm({
-      entityType: "characters",
-      mode: "edit",
-      entity: character,
-      title: "Modifica Personaggio",
-      content: this.templates.generateForm(character, "edit"),
-      size: "large",
-    });
-  }
-
-  /**
-   * Destroy handler - cleanup
-   */
-  destroy() {
+  cleanup() {
     if (this.imageUpload) {
       this.imageUpload.destroy();
       this.imageUpload = null;
     }
-
-    if (this.formHandler) {
-      this.formHandler.destroy();
-      this.formHandler = null;
-    }
-
-    super.destroy();
   }
 }
 
-// Create and export singleton instance
+// Singleton
 const characterManager = new CharacterManager();
 export default characterManager;

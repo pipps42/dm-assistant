@@ -1,231 +1,27 @@
 /**
- * Environment Manager - Refactored version following BaseManager pattern
+ * Environment Manager - Versione semplice che estende BaseManager
+ * Gestisce solo le specificità delle ambientazioni
  */
 import BaseManager from "../core/base-manager.js";
-import dataStore from "../data/data-store.js";
-import environmentTemplates from "../templates/environment-templates.js";
+import * as EnvironmentTemplates from "../templates/environment-templates.js";
 import ImageUpload from "../ui/image-upload.js";
-import FormHandler from "../ui/form-handler.js";
+import modalManager from "../ui/modal-manager.js";
 
 class EnvironmentManager extends BaseManager {
   constructor() {
-    super({
-      entityType: "environments",
-      dataStore: dataStore,
-      templates: environmentTemplates,
-      config: {
-        title: "Gestione Ambientazioni",
-        emptyMessage: "Nessuna ambientazione creata",
-        emptySubMessage:
-          "Crea la prima ambientazione per organizzare le tue mappe e NPC",
-        defaultAvatar: "🏰",
-        hasInteractions: false,
-        allowImageUpload: true,
-      },
-    });
-
-    // Environment-specific data
-    this.environmentTypes = [
-      "Città",
-      "Villaggio",
-      "Dungeon",
-      "Foresta",
-      "Montagna",
-      "Deserto",
-      "Palude",
-      "Costa",
-      "Isola",
-      "Pianura",
-      "Caverna",
-      "Fortezza",
-      "Tempio",
-      "Rovine",
-      "Torre",
-      "Castello",
-      "Taverna",
-      "Mercato",
-      "Porto",
-      "Miniera",
-    ];
-
-    this.climates = [
-      "Temperato",
-      "Tropicale",
-      "Desertico",
-      "Artico",
-      "Montano",
-      "Umido",
-      "Secco",
-      "Ventoso",
-      "Nebbioso",
-      "Magico",
-      "Corrotto",
-      "Maledetto",
-      "Benedetto",
-      "Neutrale",
-    ];
-
-    // Component references
+    super("environments", EnvironmentTemplates);
     this.imageUpload = null;
-    this.formHandler = null;
   }
 
   /**
-   * Setup environment-specific event listeners
+   * Process form data specifico per le ambientazioni
    */
-  setupEnvironmentSpecificEvents() {
-    // Listen for form events
-    this.eventBus.on("form:submit", (data) => {
-      if (
-        data.options?.entityType === "environments" ||
-        data.form?.dataset?.entityType === "environments" ||
-        data.config?.entityType === "environments"
-      ) {
-        this.handleFormSubmit(data);
-      }
-    });
-
-    // Listen for detail view actions
-    this.eventBus.on("detail:action", (data) => {
-      if (data.entityType === "environments") {
-        this.handleDetailAction(data);
-      }
-    });
-
-    // Listen for modal events to setup components
-    this.eventBus.on("modal:rendered", (config) => {
-      if (config.entityType === "environments") {
-        this.setupModalComponents(config);
-      }
-    });
-  }
-
-  /**
-   * Render environment card using template
-   */
-  renderCard(environment) {
-    return this.templates.generateCard(environment);
-  }
-
-  /**
-   * Handle form submission
-   */
-  async handleFormSubmit(data) {
-    try {
-      const { formData, form, options } = data;
-
-      // Get image data from image upload component
-      if (this.imageUpload) {
-        formData.image = this.imageUpload.getValue();
-      }
-
-      // Process form data
-      this.processEnvironmentData(formData);
-
-      // Create or update environment
-      if (options.mode === "edit" && this.currentEntity) {
-        await this.updateEntity(this.currentEntity.id, formData);
-      } else {
-        await this.createEntity(formData);
-      }
-
-      // Close modal
-      this.eventBus.emit("modal:close");
-    } catch (error) {
-      console.error("Error handling environment form:", error);
-      throw error;
-    }
-  }
-
-  /**
-   * Handle detail view actions
-   */
-  async handleDetailAction(data) {
-    const { action, entityId } = data;
-
-    switch (action) {
-      case "edit":
-        await this.editEntity(entityId);
-        break;
-      case "delete":
-        await this.deleteEntity(entityId);
-        break;
-      case "view-npc":
-        // Delegate to NPC manager
-        const npcManager = window.app.managers.npcs;
-        if (npcManager) {
-          await npcManager.viewDetail(data.npcId);
-        }
-        break;
-      case "add-npc":
-        // Delegate to NPC manager
-        const npcMgr = window.app.managers.npcs;
-        if (npcMgr && npcMgr.openAddFormWithEnvironment) {
-          npcMgr.openAddFormWithEnvironment(data.environmentId);
-        }
-        break;
-      case "add-map":
-        await this.addMap(entityId);
-        break;
-      case "remove-map":
-        await this.removeMap(entityId, data.mapId);
-        break;
-      case "close":
-        this.eventBus.emit("modal:close");
-        break;
-    }
-  }
-
-  /**
-   * Setup modal components after rendering
-   */
-  setupModalComponents(config) {
-    if (config.type === "form") {
-      this.setupFormComponents(config);
-    }
-  }
-
-  /**
-   * Setup form-specific components
-   */
-  setupFormComponents(config) {
-    // Initialize image upload component
-    const uploadContainer = document.getElementById("environment-image-upload");
-    if (uploadContainer) {
-      this.imageUpload = new ImageUpload(uploadContainer, {
-        type: "environment",
-        allowEmoji: true,
-        defaultEmoji: "🏰",
-        name: "image",
-      });
-
-      // Set existing value if editing
-      if (config.mode === "edit" && config.entity?.image) {
-        this.imageUpload.setValue(config.entity.image);
-      }
+  processFormData(data) {
+    // Get image from image upload
+    if (this.imageUpload) {
+      data.image = this.imageUpload.getValue();
     }
 
-    // Initialize form handler
-    const form = document.getElementById("environment-form");
-    if (form) {
-      this.formHandler = new FormHandler(form, {
-        entityType: "environments",
-        mode: config.mode,
-        validateOnSubmit: true,
-        showValidationMessages: true,
-      });
-
-      // Populate form if editing
-      if (config.mode === "edit" && config.entity) {
-        this.formHandler.populate(config.entity);
-      }
-    }
-  }
-
-  /**
-   * Process environment-specific data
-   */
-  processEnvironmentData(data) {
     // Parse dangers (comma-separated)
     if (data.dangers && typeof data.dangers === "string") {
       data.dangers = data.dangers
@@ -242,168 +38,146 @@ class EnvironmentManager extends BaseManager {
         .filter((r) => r);
     }
 
-    // Ensure maps array exists
-    if (!data.maps) {
-      data.maps = [];
-    }
-
-    // Add timestamps
-    if (!data.createdAt) {
-      data.createdAt = new Date().toISOString();
-    }
-    data.updatedAt = new Date().toISOString();
-
-    return data;
-  }
-
-  /**
-   * Override viewDetail to use Environment template
-   */
-  async viewDetail(id) {
-    const environment = this.getEntity(id);
-    if (!environment) {
-      window.app.showError("Ambientazione non trovata");
-      return;
-    }
-
-    this.currentEntity = environment;
-
-    this.eventBus.emit("modal:open", {
-      type: "detail",
-      entityType: "environments",
-      entity: environment,
-      title: environment.name,
-      content: this.templates.generateDetail(environment),
-      size: "large",
-    });
-  }
-
-  /**
-   * Override edit to use Environment template
-   */
-  editEntity(id) {
-    const environment = this.getEntity(id);
-    if (!environment) return;
-
-    this.eventBus.emit("modal:close"); // Close current modal
-
-    setTimeout(() => {
-      this.eventBus.emit("modal:open", {
-        type: "form",
-        entityType: "environments",
-        mode: "edit",
-        entity: environment,
-        title: "Modifica Ambientazione",
-        content: this.templates.generateForm(environment, "edit"),
-        size: "large",
-      });
-    }, 200);
-  }
-
-  /**
-   * Override openAddForm to use Environment template
-   */
-  openAddForm() {
-    this.eventBus.emit("modal:open", {
-      type: "form",
-      entityType: "environments",
-      mode: "create",
-      title: "Aggiungi Ambientazione",
-      content: this.templates.generateForm(),
-      size: "large",
-    });
-  }
-
-  /**
-   * Add map to environment
-   */
-  async addMap(environmentId) {
-    try {
-      const mapName = await this.eventBus.emit("modal:input", {
-        title: "Aggiungi Mappa",
-        label: "Nome della mappa:",
-        placeholder: "Es. Primo piano, Cantina, Esterno...",
-      });
-
-      if (!mapName || !mapName.trim()) return;
-
-      const mapDescription = await this.eventBus.emit("modal:input", {
-        title: "Descrizione Mappa",
-        label: "Descrizione (opzionale):",
-        placeholder: "Descrivi la mappa...",
-        inputType: "textarea",
-      });
-
-      const environment = this.getEntity(environmentId);
-      if (!environment) return;
-
-      // Add map to environment
-      const newMap = {
-        id: this.generateId(),
-        name: mapName.trim(),
-        description: mapDescription?.trim() || "",
-        file: null, // Future: file upload
-        gridSize: 30,
-        dimensions: { width: 20, height: 20 },
-        createdAt: new Date().toISOString(),
-      };
-
-      if (!environment.maps) environment.maps = [];
-      environment.maps.push(newMap);
-
-      await this.updateEntity(environmentId, environment);
-      await this.viewDetail(environmentId); // Refresh detail view
-
-      window.app.showNotification("Mappa aggiunta!", "success");
-    } catch (error) {
-      console.error("Error adding map:", error);
-      window.app.showError("Errore durante l'aggiunta della mappa");
-    }
-  }
-
-  /**
-   * Remove map from environment
-   */
-  async removeMap(environmentId, mapId) {
-    try {
-      const environment = this.getEntity(environmentId);
-      if (!environment) return;
-
-      const confirmed = await window.app.showConfirmModal(
-        "Rimuovi Mappa",
-        "Sei sicuro di voler rimuovere questa mappa?"
-      );
-
-      if (!confirmed) return;
-
-      // Remove map
-      if (environment.maps) {
-        environment.maps = environment.maps.filter((map) => map.id !== mapId);
+    // Trim text fields
+    ["name", "description", "conditions", "currency", "lodgingCost"].forEach(
+      (field) => {
+        if (data[field]) data[field] = data[field].trim();
       }
+    );
 
-      await this.updateEntity(environmentId, environment);
-      await this.viewDetail(environmentId); // Refresh detail view
+    // Ensure maps array exists
+    if (!data.maps) data.maps = [];
+  }
 
-      window.app.showNotification("Mappa rimossa!", "success");
-    } catch (error) {
-      console.error("Error removing map:", error);
-      window.app.showError("Errore durante la rimozione della mappa");
+  /**
+   * Setup componenti specifici del form Environment
+   */
+  setupFormComponents(entity, mode) {
+    // Setup image upload
+    const uploadContainer = document.getElementById("environment-image-upload");
+    if (uploadContainer) {
+      this.imageUpload = new ImageUpload(uploadContainer, {
+        type: "cover",
+        allowEmoji: true,
+        defaultEmoji: "🏰",
+        name: "image",
+      });
+
+      if (entity?.image) {
+        this.imageUpload.setValue(entity.image);
+      }
     }
+  }
+
+  /**
+   * Gestisce azioni specifiche del detail Environment
+   */
+  async handleDetailAction(action, entity, button) {
+    switch (action) {
+      case "add-map":
+        await this.addMap(entity);
+        break;
+
+      case "remove-map":
+        const mapId = button.dataset.mapId;
+        await this.removeMap(entity, mapId);
+        break;
+
+      case "add-npc":
+        // Delegate to NPC manager
+        const npcManager = window.npcManager;
+        if (npcManager) {
+          modalManager.close();
+          setTimeout(() => npcManager.openFormWithEnvironment(entity.id), 100);
+        }
+        break;
+
+      case "view-npc":
+        const npcId = button.dataset.npcId;
+        const npcManager2 = window.npcManager;
+        if (npcManager2) {
+          modalManager.close();
+          setTimeout(() => npcManager2.openDetail(npcId), 100);
+        }
+        break;
+    }
+  }
+
+  /**
+   * Aggiungi mappa all'ambiente
+   */
+  async addMap(environment) {
+    const mapName = await modalManager.input({
+      title: "Aggiungi Mappa",
+      label: "Nome della mappa:",
+      placeholder: "Es. Primo piano, Cantina, Esterno...",
+      inputType: "text",
+    });
+
+    if (!mapName?.trim()) return;
+
+    const mapDescription = await modalManager.input({
+      title: "Descrizione Mappa",
+      label: "Descrizione (opzionale):",
+      placeholder: "Descrivi la mappa...",
+      inputType: "textarea",
+    });
+
+    // Add map to environment
+    const newMap = {
+      id: Date.now(),
+      name: mapName.trim(),
+      description: mapDescription?.trim() || "",
+      gridSize: 30,
+      createdAt: new Date().toISOString(),
+    };
+
+    if (!environment.maps) environment.maps = [];
+    environment.maps.push(newMap);
+
+    await this.update(environment.id, environment);
+
+    // Riapri il detail aggiornato
+    setTimeout(() => this.openDetail(environment.id), 100);
+    this.showSuccess("Mappa aggiunta!");
+  }
+
+  /**
+   * Rimuovi mappa dall'ambiente
+   */
+  async removeMap(environment, mapId) {
+    const confirmed = await modalManager.confirm({
+      title: "Rimuovi Mappa",
+      message: "Sei sicuro di voler rimuovere questa mappa?",
+    });
+
+    if (!confirmed) return;
+
+    // Remove map
+    if (environment.maps) {
+      environment.maps = environment.maps.filter((map) => map.id != mapId);
+    }
+
+    await this.update(environment.id, environment);
+
+    // Riapri il detail aggiornato
+    setTimeout(() => this.openDetail(environment.id), 100);
+    this.showSuccess("Mappa rimossa!");
   }
 
   /**
    * Get NPCs in environment
    */
   getNPCsInEnvironment(environmentId) {
-    const npcs = this.dataStore.get("npcs");
-    return npcs.filter((npc) => npc.environmentId == environmentId);
+    const npcManager = window.npcManager;
+    return npcManager ? npcManager.getNPCsByEnvironment(environmentId) : [];
   }
 
   /**
    * Get environments for selection
    */
   getEnvironmentsForSelection() {
-    return this.getEntities().map((env) => ({
+    return this.getAll().map((env) => ({
       id: env.id,
       name: env.name,
       type: env.type,
@@ -412,56 +186,32 @@ class EnvironmentManager extends BaseManager {
   }
 
   /**
-   * Generate environment list for selection
+   * Generate selection options HTML
    */
   generateSelectionList() {
-    const environments = this.getEntities();
-    return environments
-      .map((env) => this.templates.generateSelectionOption(env))
+    return this.getAll()
+      .map(
+        (env) =>
+          this.templates.generateSelectionOption?.(env) ||
+          `
+        <option value="${env.id}">${env.name}</option>
+      `
+      )
       .join("");
   }
 
   /**
-   * Get environment statistics
+   * Override renderCard to use environment template
    */
-  getEnvironmentStats() {
-    const environments = this.getEntities();
-    const stats = this.getStats();
-
-    // Additional environment-specific stats
-    const typeCounts = {};
-    const climateCounts = {};
-
-    environments.forEach((env) => {
-      // Count by type
-      typeCounts[env.type] = (typeCounts[env.type] || 0) + 1;
-
-      // Count by climate
-      if (env.climate) {
-        climateCounts[env.climate] = (climateCounts[env.climate] || 0) + 1;
-      }
-    });
-
-    return {
-      ...stats,
-      typeCounts,
-      climateCounts,
-      totalMaps: environments.reduce(
-        (sum, env) => sum + (env.maps ? env.maps.length : 0),
-        0
-      ),
-      totalNPCs: environments.reduce(
-        (sum, env) => sum + this.getNPCsInEnvironment(env.id).length,
-        0
-      ),
-    };
+  renderCard(environment) {
+    return this.templates.generateCard(environment);
   }
 
   /**
-   * Export environment data
+   * Export environments data
    */
   exportEnvironments() {
-    const environments = this.getEntities();
+    const environments = this.getAll();
     const exportData = {
       environments,
       exportDate: new Date().toISOString(),
@@ -481,38 +231,75 @@ class EnvironmentManager extends BaseManager {
     a.click();
 
     URL.revokeObjectURL(url);
+    this.showSuccess("Ambientazioni esportate!");
   }
 
   /**
-   * Generate unique ID for maps
+   * Get environment statistics
    */
-  generateId() {
-    return Date.now() + Math.random().toString(36).substr(2, 9);
+  getEnvironmentStats() {
+    const environments = this.getAll();
+
+    const stats = {
+      total: environments.length,
+      byType: {},
+      byClimate: {},
+      totalMaps: 0,
+      totalNPCs: 0,
+    };
+
+    environments.forEach((env) => {
+      // Count by type
+      if (env.type) {
+        stats.byType[env.type] = (stats.byType[env.type] || 0) + 1;
+      }
+
+      // Count by climate
+      if (env.climate) {
+        stats.byClimate[env.climate] = (stats.byClimate[env.climate] || 0) + 1;
+      }
+
+      // Count maps
+      stats.totalMaps += env.maps ? env.maps.length : 0;
+
+      // Count NPCs
+      stats.totalNPCs += this.getNPCsInEnvironment(env.id).length;
+    });
+
+    return stats;
   }
 
   /**
-   * Cleanup when component is destroyed
+   * Search environments by name or type
    */
-  destroy() {
+  searchEnvironments(query) {
+    const searchTerm = query.toLowerCase();
+    return this.getAll().filter(
+      (env) =>
+        env.name.toLowerCase().includes(searchTerm) ||
+        (env.type && env.type.toLowerCase().includes(searchTerm)) ||
+        (env.description && env.description.toLowerCase().includes(searchTerm))
+    );
+  }
+
+  /**
+   * Get environments by type
+   */
+  getEnvironmentsByType(type) {
+    return this.getAll().filter((env) => env.type === type);
+  }
+
+  /**
+   * Cleanup quando necessario
+   */
+  cleanup() {
     if (this.imageUpload) {
       this.imageUpload.destroy();
       this.imageUpload = null;
     }
-
-    if (this.formHandler) {
-      this.formHandler.destroy();
-      this.formHandler = null;
-    }
-
-    // Remove event listeners
-    this.eventBus.off("form:submit");
-    this.eventBus.off("detail:action");
-    this.eventBus.off("modal:rendered");
-
-    super.destroy();
   }
 }
 
-// Create and export singleton instance
+// Singleton
 const environmentManager = new EnvironmentManager();
 export default environmentManager;

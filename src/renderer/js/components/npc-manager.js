@@ -1,136 +1,46 @@
 /**
- * NPC Manager - Gestione NPC con architettura refactorizzata
+ * NPC Manager - Versione semplice che estende BaseManager
+ * Gestisce solo le specificità degli NPC
  */
 import BaseManager from "../core/base-manager.js";
-import EventBus from "../core/event-bus.js";
 import * as NPCTemplates from "../templates/npc-templates.js";
 import ImageUpload from "../ui/image-upload.js";
-import FormHandler from "../ui/form-handler.js";
+import modalManager from "../ui/modal-manager.js";
 
 class NPCManager extends BaseManager {
   constructor() {
-    super("npcs", {
-      hasImages: true,
-      hasInteractions: true,
-      defaultAvatar: "🧙",
-    });
-
-    this.templates = NPCTemplates;
+    super("npcs", NPCTemplates);
     this.imageUpload = null;
-    this.formHandler = null;
-
-    this.setupNPCSpecificEvents();
   }
 
   /**
-   * Setup NPC-specific event listeners
+   * Process form data specifico per gli NPC
    */
-  setupNPCSpecificEvents() {
-    // Listen for form events
-    this.eventBus.on("form:submit", (data) => {
-      if (
-        data.options?.entityType === "npcs" ||
-        data.form?.dataset?.entityType === "npcs" ||
-        data.config?.entityType === "npcs"
-      ) {
-        this.handleFormSubmit(data);
-      }
+  processFormData(data) {
+    // Convert environmentId to number or null
+    data.environmentId = data.environmentId
+      ? parseInt(data.environmentId)
+      : null;
+
+    // Get avatar from image upload
+    if (this.imageUpload) {
+      data.avatar = this.imageUpload.getValue();
+    }
+
+    // Trim text fields
+    ["name", "description", "motivations", "secrets"].forEach((field) => {
+      if (data[field]) data[field] = data[field].trim();
     });
 
-    // Listen for detail view actions
-    this.eventBus.on("detail:action", (data) => {
-      if (data.entityType === "npcs") {
-        this.handleDetailAction(data);
-      }
-    });
-
-    // Listen for modal events to setup components
-    this.eventBus.on("modal:rendered", (config) => {
-      if (config.entityType === "npcs") {
-        this.setupModalComponents(config);
-      }
-    });
+    // Ensure interactions array exists
+    if (!data.interactions) data.interactions = [];
   }
 
   /**
-   * Render NPC card using template
+   * Setup componenti specifici del form NPC
    */
-  renderCard(npc) {
-    return this.templates.generateCard(npc);
-  }
-
-  /**
-   * Handle form submission
-   */
-  async handleFormSubmit(data) {
-    try {
-      const { formData, form, options } = data;
-
-      // Get image data from image upload component
-      if (this.imageUpload) {
-        formData.avatar = this.imageUpload.getValue();
-      }
-
-      // Process form data
-      this.processNPCData(formData);
-
-      // Create or update NPC
-      if (options.mode === "edit" && this.currentEntity) {
-        await this.updateEntity(this.currentEntity.id, formData);
-      } else {
-        await this.createEntity(formData);
-      }
-
-      // Close modal
-      this.eventBus.emit("modal:close");
-    } catch (error) {
-      console.error("Error handling NPC form:", error);
-      throw error;
-    }
-  }
-
-  /**
-   * Handle detail view actions
-   */
-  async handleDetailAction(data) {
-    const { action, entityId } = data;
-
-    switch (action) {
-      case "edit":
-        await this.editEntity(entityId);
-        break;
-      case "delete":
-        await this.deleteEntity(entityId);
-        break;
-      case "add-interaction":
-        await this.addInteraction(entityId);
-        break;
-      case "remove-interaction":
-        await this.removeInteraction(entityId, data.interactionId);
-        break;
-      case "view-npc":
-        await this.viewDetail(data.npcId);
-        break;
-      case "close":
-        this.eventBus.emit("modal:close");
-        break;
-    }
-  }
-
-  /**
-   * Setup modal components after rendering
-   */
-  setupModalComponents(config) {
-    if (config.type === "form") {
-      this.setupFormComponents(config);
-    }
-  }
-
-  /**
-   * Setup form-specific components
-   */
-  setupFormComponents(config) {
-    // Initialize image upload component
+  setupFormComponents(entity, mode) {
+    // Setup image upload
     const uploadContainer = document.getElementById("npc-avatar-upload");
     if (uploadContainer) {
       this.imageUpload = new ImageUpload(uploadContainer, {
@@ -140,159 +50,101 @@ class NPCManager extends BaseManager {
         name: "avatar",
       });
 
-      // Set existing value if editing
-      if (config.mode === "edit" && config.entity?.avatar) {
-        this.imageUpload.setValue(config.entity.avatar);
-      }
-    }
-
-    // Initialize form handler
-    const form = document.getElementById("npc-form");
-    if (form) {
-      this.formHandler = new FormHandler(form, {
-        entityType: "npcs",
-        mode: config.mode,
-        validateOnSubmit: true,
-        showValidationMessages: true,
-      });
-
-      // Populate form if editing
-      if (config.mode === "edit" && config.entity) {
-        this.formHandler.populate(config.entity);
+      if (entity?.avatar) {
+        this.imageUpload.setValue(entity.avatar);
       }
     }
   }
 
   /**
-   * Process NPC-specific data
+   * Gestisce azioni specifiche del detail NPC
    */
-  processNPCData(data) {
-    // Parse dangers and resources
-    if (data.motivations) {
-      data.motivations = data.motivations.trim();
-    }
+  async handleDetailAction(action, entity, button) {
+    switch (action) {
+      case "add-interaction":
+        await this.addInteraction(entity);
+        break;
 
-    if (data.secrets) {
-      data.secrets = data.secrets.trim();
-    }
+      case "remove-interaction":
+        const interactionId = button.dataset.interactionId;
+        await this.removeInteraction(entity, interactionId);
+        break;
 
-    // Ensure environmentId is number or null
-    if (data.environmentId) {
-      data.environmentId = parseInt(data.environmentId);
+      case "view-npc":
+        const npcId = button.dataset.npcId;
+        await this.openDetail(npcId);
+        break;
+    }
+  }
+
+  /**
+   * Aggiungi interazione all'NPC
+   */
+  async addInteraction(npc) {
+    const interaction = await modalManager.input({
+      title: "Aggiungi Interazione",
+      label: "Descrivi l'interazione con i giocatori:",
+      placeholder: "Es. Ha fornito informazioni sulla taverna locale...",
+    });
+
+    if (!interaction?.trim()) return;
+
+    if (!npc.interactions) npc.interactions = [];
+
+    npc.interactions.push({
+      id: Date.now(),
+      description: interaction.trim(),
+      date: new Date().toISOString(),
+    });
+
+    await this.update(npc.id, npc);
+
+    // Riapri il detail aggiornato
+    setTimeout(() => this.openDetail(npc.id), 100);
+  }
+
+  /**
+   * Rimuovi interazione dall'NPC
+   */
+  async removeInteraction(npc, interactionId) {
+    if (!npc.interactions) return;
+
+    // Handle both ID and index for legacy data
+    const id = parseInt(interactionId);
+    if (!isNaN(id) && id < npc.interactions.length) {
+      npc.interactions.splice(id, 1);
     } else {
-      data.environmentId = null;
+      npc.interactions = npc.interactions.filter(
+        (int) => int.id != interactionId
+      );
     }
 
-    // Add timestamps
-    if (!data.createdAt) {
-      data.createdAt = new Date().toISOString();
-    }
-    data.updatedAt = new Date().toISOString();
+    await this.update(npc.id, npc);
 
-    return data;
+    // Riapri il detail aggiornato
+    setTimeout(() => this.openDetail(npc.id), 100);
   }
 
   /**
-   * Add interaction to NPC
+   * Apri form con ambiente preselezionato
    */
-  async addInteraction(npcId) {
-    try {
-      const interaction = await this.eventBus.emit("modal:input", {
-        title: "Aggiungi Interazione",
-        label: "Descrivi l'interazione con i giocatori:",
-        placeholder: "Es. Ha fornito informazioni sulla taverna locale...",
-        inputType: "textarea",
-      });
-
-      if (!interaction || !interaction.trim()) return;
-
-      await this.addInteraction(npcId, interaction.trim());
-    } catch (error) {
-      console.error("Error adding interaction:", error);
-      window.app.showError("Errore durante l'aggiunta dell'interazione");
-    }
+  openFormWithEnvironment(environmentId) {
+    const entity = { environmentId: parseInt(environmentId) };
+    this.openForm(entity);
   }
 
   /**
-   * Override viewDetail to use NPC template
+   * Get NPCs by environment
    */
-  async viewDetail(id) {
-    const npc = this.getEntity(id);
-    if (!npc) {
-      window.app.showError("NPC non trovato");
-      return;
-    }
-
-    this.currentEntity = npc;
-
-    this.eventBus.emit("modal:open", {
-      type: "detail",
-      entityType: "npcs",
-      entity: npc,
-      title: npc.name,
-      content: this.templates.generateDetail(npc),
-      size: "large",
-    });
-  }
-
-  /**
-   * Override edit to use NPC template
-   */
-  editEntity(id) {
-    const npc = this.getEntity(id);
-    if (!npc) return;
-
-    this.eventBus.emit("modal:close"); // Close current modal
-
-    setTimeout(() => {
-      this.eventBus.emit("modal:open", {
-        type: "form",
-        entityType: "npcs",
-        mode: "edit",
-        entity: npc,
-        title: "Modifica NPC",
-        content: this.templates.generateForm(npc, "edit"),
-        size: "large",
-      });
-    }, 200);
-  }
-
-  /**
-   * Override openAddForm to use NPC template
-   */
-  openAddForm() {
-    this.eventBus.emit("modal:open", {
-      type: "form",
-      entityType: "npcs",
-      mode: "create",
-      title: "Aggiungi NPC",
-      content: this.templates.generateForm(),
-      size: "large",
-    });
-  }
-
-  /**
-   * Open add form with pre-selected environment
-   */
-  openAddFormWithEnvironment(environmentId) {
-    const npc = { environmentId };
-
-    this.eventBus.emit("modal:open", {
-      type: "form",
-      entityType: "npcs",
-      mode: "create",
-      entity: npc,
-      title: "Aggiungi NPC",
-      content: this.templates.generateForm(npc),
-      size: "large",
-    });
+  getNPCsByEnvironment(environmentId) {
+    return this.getAll().filter((npc) => npc.environmentId == environmentId);
   }
 
   /**
    * Get NPCs for encounter selection
    */
   getNPCsForEncounter() {
-    return this.getEntities().map((npc) => ({
+    return this.getAll().map((npc) => ({
       id: npc.id,
       name: npc.name,
       type: "npc",
@@ -300,74 +152,23 @@ class NPCManager extends BaseManager {
       attitude: npc.attitude,
       race: npc.race,
       profession: npc.profession,
-      alignment: npc.alignment,
     }));
   }
 
   /**
-   * Get NPCs by environment
-   */
-  getNPCsByEnvironment(environmentId) {
-    return this.getEntities().filter(
-      (npc) => npc.environmentId == environmentId
-    );
-  }
-
-  /**
-   * Generate NPC list for selection
+   * Generate selection options HTML
    */
   generateSelectionList() {
-    const npcs = this.getEntities();
-    return npcs
+    return this.getAll()
       .map((npc) => this.templates.generateSelectionOption(npc))
       .join("");
   }
 
   /**
-   * Get NPC statistics
-   */
-  getNPCStats() {
-    const npcs = this.getEntities();
-    const stats = this.getStats();
-
-    // Additional NPC-specific stats
-    const attitudeCounts = {};
-    const raceCounts = {};
-    const environmentCounts = {};
-
-    npcs.forEach((npc) => {
-      // Count by attitude
-      attitudeCounts[npc.attitude] = (attitudeCounts[npc.attitude] || 0) + 1;
-
-      // Count by race
-      if (npc.race) {
-        raceCounts[npc.race] = (raceCounts[npc.race] || 0) + 1;
-      }
-
-      // Count by environment
-      if (npc.environmentId) {
-        environmentCounts[npc.environmentId] =
-          (environmentCounts[npc.environmentId] || 0) + 1;
-      }
-    });
-
-    return {
-      ...stats,
-      attitudeCounts,
-      raceCounts,
-      environmentCounts,
-      totalInteractions: npcs.reduce(
-        (sum, npc) => sum + (npc.interactions ? npc.interactions.length : 0),
-        0
-      ),
-    };
-  }
-
-  /**
-   * Export NPC data
+   * Export NPCs data
    */
   exportNPCs() {
-    const npcs = this.getEntities();
+    const npcs = this.getAll();
     const exportData = {
       npcs,
       exportDate: new Date().toISOString(),
@@ -385,52 +186,57 @@ class NPCManager extends BaseManager {
     a.click();
 
     URL.revokeObjectURL(url);
+    this.showSuccess("NPCs esportati!");
   }
 
   /**
-   * View NPC detail (legacy compatibility)
+   * Get NPC statistics
    */
-  async viewNPCDetail(id) {
-    return this.viewDetail(id);
+  getNPCStats() {
+    const npcs = this.getAll();
+
+    const stats = {
+      total: npcs.length,
+      byAttitude: {},
+      byRace: {},
+      byEnvironment: {},
+      totalInteractions: 0,
+    };
+
+    npcs.forEach((npc) => {
+      // Count by attitude
+      stats.byAttitude[npc.attitude] =
+        (stats.byAttitude[npc.attitude] || 0) + 1;
+
+      // Count by race
+      if (npc.race) {
+        stats.byRace[npc.race] = (stats.byRace[npc.race] || 0) + 1;
+      }
+
+      // Count by environment
+      if (npc.environmentId) {
+        stats.byEnvironment[npc.environmentId] =
+          (stats.byEnvironment[npc.environmentId] || 0) + 1;
+      }
+
+      // Count interactions
+      stats.totalInteractions += npc.interactions ? npc.interactions.length : 0;
+    });
+
+    return stats;
   }
 
   /**
-   * Edit NPC (legacy compatibility)
+   * Cleanup quando necessario
    */
-  editNPC(id) {
-    return this.editEntity(id);
-  }
-
-  /**
-   * Delete NPC (legacy compatibility)
-   */
-  async deleteNPC(id) {
-    return this.deleteEntity(id);
-  }
-
-  /**
-   * Cleanup when component is destroyed
-   */
-  destroy() {
+  cleanup() {
     if (this.imageUpload) {
       this.imageUpload.destroy();
       this.imageUpload = null;
     }
-
-    if (this.formHandler) {
-      this.formHandler.destroy();
-      this.formHandler = null;
-    }
-
-    // Remove event listeners
-    this.eventBus.off("form:submit");
-    this.eventBus.off("detail:action");
-    this.eventBus.off("modal:rendered");
-
-    super.destroy();
   }
 }
 
-// Create and export singleton instance
+// Singleton
 const npcManager = new NPCManager();
 export default npcManager;
