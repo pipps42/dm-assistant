@@ -10,6 +10,52 @@ export default class BaseManager {
     this.entityType = entityType;
     this.templates = templates;
     this.dataStore = dataStore;
+
+    // UN SOLO LISTENER GLOBALE
+    if (!window.globalDetailListener) {
+      this.setupGlobalDetailListener();
+      window.globalDetailListener = true;
+    }
+  }
+
+  setupGlobalDetailListener() {
+    document.addEventListener("click", async (e) => {
+      if (!e.target.closest("#modal")) return;
+
+      const button = e.target.closest("button[data-action]");
+      if (!button) return;
+
+      const action = button.dataset.action;
+      const entityId = button.dataset.id;
+      const entityType = button.dataset.entityType || this.entityType;
+
+      // Trova il manager corretto
+      const managerName = entityType.slice(0, -1) + "Manager";
+      const manager = window[managerName];
+
+      if (!manager) return;
+
+      switch (action) {
+        case "edit":
+          const entity = manager.getById(entityId);
+          manager.openForm(entity);
+          break;
+        case "delete":
+          await manager.delete(entityId);
+          break;
+        case "close":
+          modalManager.close();
+          break;
+        default:
+          if (manager.handleDetailAction) {
+            manager.handleDetailAction(
+              action,
+              manager.getById(entityId),
+              button
+            );
+          }
+      }
+    });
   }
 
   // ========== DATA OPERATIONS ==========
@@ -118,11 +164,11 @@ export default class BaseManager {
     const entity = this.getById(id);
     if (!entity) return;
 
-    const title = entity.name;
-    const content = this.templates.generateDetail(entity);
-
-    modalManager.open({ title, content, size: "large" });
-    this.setupDetailHandlers(entity);
+    modalManager.open({
+      title: entity.name,
+      content: this.templates.generateDetail(entity),
+      size: "large",
+    });
   }
 
   // ========== EVENT HANDLERS ==========
@@ -139,7 +185,6 @@ export default class BaseManager {
       const formData = new FormData(form);
       const data = Object.fromEntries(formData.entries());
 
-      // Process data if needed
       if (this.processFormData) {
         this.processFormData(data);
       }
@@ -150,46 +195,23 @@ export default class BaseManager {
         } else {
           await this.create(data);
         }
-        modalManager.close();
+        modalManager.close(); // Chiudi solo questa modale
       } catch (error) {
         this.showError(error.message);
       }
     });
 
-    // Setup any additional form components
+    // Handle cancel button
+    const cancelBtn = form.querySelector('button[data-action="cancel"]');
+    if (cancelBtn) {
+      cancelBtn.addEventListener("click", () => {
+        modalManager.close(); // Torna alla modale precedente
+      });
+    }
+
     if (this.setupFormComponents) {
       this.setupFormComponents(entity, mode);
     }
-  }
-
-  setupDetailHandlers(entity) {
-    modalManager.modalBody.addEventListener("click", async (e) => {
-      const button = e.target.closest("button[data-action]");
-      if (!button) return;
-
-      const action = button.dataset.action;
-
-      switch (action) {
-        case "edit":
-          modalManager.close();
-          setTimeout(() => this.openForm(entity), 100);
-          break;
-
-        case "delete":
-          await this.delete(entity.id);
-          break;
-
-        case "close":
-          modalManager.close();
-          break;
-
-        default:
-          // Let subclasses handle custom actions
-          if (this.handleDetailAction) {
-            this.handleDetailAction(action, entity, button);
-          }
-      }
-    });
   }
 
   // ========== UTILITIES ==========

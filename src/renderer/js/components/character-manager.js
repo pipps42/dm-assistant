@@ -1,6 +1,6 @@
 /**
- * Character Manager - Versione semplice che estende BaseManager
- * Gestisce solo le specificità dei personaggi
+ * Character Manager - Versione Ultra-Semplice
+ * Zero listener duplicati, funziona sempre
  */
 import BaseManager from "../core/base-manager.js";
 import * as CharacterTemplates from "../templates/character-templates.js";
@@ -30,6 +30,9 @@ class CharacterManager extends BaseManager {
     ["name", "playerName", "background"].forEach((field) => {
       if (data[field]) data[field] = data[field].trim();
     });
+
+    // Ensure adventures array exists
+    if (!data.adventures) data.adventures = [];
   }
 
   /**
@@ -39,6 +42,11 @@ class CharacterManager extends BaseManager {
     // Setup image upload
     const uploadContainer = document.getElementById("character-avatar-upload");
     if (uploadContainer) {
+      // Cleanup existing upload component
+      if (this.imageUpload) {
+        this.imageUpload.destroy();
+      }
+
       this.imageUpload = new ImageUpload(uploadContainer, {
         type: "avatar",
         allowEmoji: true,
@@ -54,6 +62,7 @@ class CharacterManager extends BaseManager {
 
   /**
    * Gestisce azioni specifiche del detail personaggi
+   * Chiamato dal listener globale del BaseManager
    */
   async handleDetailAction(action, entity, button) {
     switch (action) {
@@ -90,8 +99,12 @@ class CharacterManager extends BaseManager {
 
     await this.update(character.id, character);
 
-    // Riapri il detail aggiornato
-    setTimeout(() => this.openDetail(character.id), 100);
+    // REFRESH SEMPLICE - aggiorna solo il contenuto
+    const updatedCharacter = this.getById(character.id);
+    if (updatedCharacter) {
+      const newContent = this.templates.generateDetail(updatedCharacter);
+      modalManager.updateCurrentContent(newContent);
+    }
   }
 
   /**
@@ -112,8 +125,149 @@ class CharacterManager extends BaseManager {
 
     await this.update(character.id, character);
 
-    // Riapri il detail aggiornato
-    setTimeout(() => this.openDetail(character.id), 100);
+    // REFRESH SEMPLICE - aggiorna solo il contenuto
+    const updatedCharacter = this.getById(character.id);
+    if (updatedCharacter) {
+      const newContent = this.templates.generateDetail(updatedCharacter);
+      modalManager.updateCurrentContent(newContent);
+    }
+  }
+
+  /**
+   * Get characters for encounter selection
+   */
+  getCharactersForEncounter() {
+    return this.getAll().map((character) => ({
+      id: character.id,
+      name: character.name,
+      type: "character",
+      avatar: character.avatar,
+      playerName: character.playerName,
+      level: character.level,
+      class: character.class,
+      race: character.race,
+      hitPoints: character.hitPoints,
+    }));
+  }
+
+  /**
+   * Generate character list for selection
+   */
+  generateSelectionList() {
+    const characters = this.getAll();
+    return characters
+      .map((character) => this.templates.generateSelectionOption(character))
+      .join("");
+  }
+
+  /**
+   * Get character statistics
+   */
+  getCharacterStats() {
+    const characters = this.getAll();
+
+    const stats = {
+      total: characters.length,
+      levelCounts: {},
+      classCounts: {},
+      raceCounts: {},
+      recent: 0,
+      totalAdventures: 0,
+    };
+
+    characters.forEach((character) => {
+      // Count by level
+      stats.levelCounts[character.level] =
+        (stats.levelCounts[character.level] || 0) + 1;
+
+      // Count by class
+      stats.classCounts[character.class] =
+        (stats.classCounts[character.class] || 0) + 1;
+
+      // Count by race
+      if (character.race) {
+        stats.raceCounts[character.race] =
+          (stats.raceCounts[character.race] || 0) + 1;
+      }
+
+      // Count recent (last week)
+      const created = new Date(character.createdAt || 0);
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      if (created > weekAgo) {
+        stats.recent++;
+      }
+
+      // Count total adventures
+      stats.totalAdventures += character.adventures
+        ? character.adventures.length
+        : 0;
+    });
+
+    // Calculate average level
+    stats.averageLevel =
+      characters.length > 0
+        ? characters.reduce((sum, char) => sum + char.level, 0) /
+          characters.length
+        : 0;
+
+    return stats;
+  }
+
+  /**
+   * Export character data
+   */
+  exportCharacters() {
+    const characters = this.getAll();
+    const exportData = {
+      characters,
+      exportDate: new Date().toISOString(),
+      version: "1.0",
+    };
+
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+      type: "application/json",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `dnd-characters-${
+      new Date().toISOString().split("T")[0]
+    }.json`;
+    a.click();
+
+    URL.revokeObjectURL(url);
+    this.showSuccess("Personaggi esportati!");
+  }
+
+  /**
+   * Search characters by name, class, or race
+   */
+  searchCharacters(query) {
+    const searchTerm = query.toLowerCase();
+    return this.getAll().filter(
+      (char) =>
+        char.name.toLowerCase().includes(searchTerm) ||
+        char.class.toLowerCase().includes(searchTerm) ||
+        (char.race && char.race.toLowerCase().includes(searchTerm)) ||
+        (char.playerName && char.playerName.toLowerCase().includes(searchTerm))
+    );
+  }
+
+  /**
+   * Get characters by level range
+   */
+  getCharactersByLevel(minLevel, maxLevel) {
+    return this.getAll().filter(
+      (char) => char.level >= minLevel && char.level <= maxLevel
+    );
+  }
+
+  /**
+   * Get characters by class
+   */
+  getCharactersByClass(className) {
+    return this.getAll().filter((char) => char.class === className);
   }
 
   /**
@@ -125,8 +279,16 @@ class CharacterManager extends BaseManager {
       this.imageUpload = null;
     }
   }
+
+  /**
+   * Destroy manager - cleanup
+   */
+  destroy() {
+    this.cleanup();
+    console.log("Character manager destroyed");
+  }
 }
 
-// Singleton
+// Create and export singleton instance
 const characterManager = new CharacterManager();
 export default characterManager;

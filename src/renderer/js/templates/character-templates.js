@@ -182,13 +182,33 @@ export function generateForm(character = null, mode = "create") {
     `;
 }
 
-/**
- * Generate character detail view template
- */
 export function generateDetail(character) {
   const adventures = character.adventures || [];
+  const hasImage =
+    character.avatar && character.avatar.startsWith("data:image");
+
+  let avatarDisplay;
+  if (hasImage) {
+    avatarDisplay = `<img src="${character.avatar}" alt="${character.name}" class="detail-avatar">`;
+  } else {
+    avatarDisplay = `<div class="detail-avatar-emoji">${
+      character.avatar || "🧙"
+    }</div>`;
+  }
 
   return `
+        <div class="detail-header">
+            <div class="detail-avatar-container">${avatarDisplay}</div>
+            <div class="detail-header-info">
+                <h2 class="detail-title">${character.name}</h2>
+                <p class="detail-subtitle">${character.class} ${
+    character.race
+  } (Livello ${character.level})</p>
+                <small class="detail-meta">Giocatore: ${
+                  character.playerName
+                }</small>
+            </div>
+        </div>
         <div class="detail-section">
             <h3 class="detail-section-title">Informazioni Base</h3>
             <div class="detail-grid">
@@ -243,10 +263,11 @@ export function generateDetail(character) {
                 <h3 class="detail-section-title">Imprese e Scelte (${
                   adventures.length
                 })</h3>
-                <button class="btn btn-secondary btn-sm" data-action="add-adventure" data-id="${
-                  character.id
-                }">
-                    + Aggiungi Impresa
+                <button class="btn btn-secondary btn-sm" 
+                        data-action="add-adventure" 
+                        data-id="${character.id}"
+                        data-entity-type="characters">
+                  + Aggiungi Impresa
                 </button>
             </div>
             

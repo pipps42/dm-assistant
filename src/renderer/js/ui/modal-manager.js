@@ -1,12 +1,11 @@
 /**
- * Modal Manager - Versione semplice e funzionale
- * Una modale alla volta, gestione diretta, niente stack complessi
+ * Modal Manager - Versione Ultra-Semplice con Stack Funzionante
  */
 class ModalManager {
   constructor() {
-    this.currentModal = null;
+    this.modalStack = [];
     this.isOpen = false;
-    this.resolver = null;
+    this.resolvers = new Map();
   }
 
   init() {
@@ -15,38 +14,55 @@ class ModalManager {
     this.modalBody = document.getElementById("modal-body");
     this.closeButton = document.getElementById("modal-close");
 
-    // Setup event listeners
     this.closeButton.addEventListener("click", () => this.close());
-
     this.modal.addEventListener("click", (e) => {
       if (e.target === this.modal) this.close();
     });
-
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && this.isOpen) this.close();
     });
   }
 
-  /**
-   * Apri modale con contenuto
-   */
   open({ title, content, size = "medium" }) {
-    // Chiudi eventuali modali esistenti
-    this.close();
-
-    this.modalTitle.textContent = title;
-    this.modalBody.innerHTML = content;
-    this.modal.className = `modal modal-${size}`;
-
-    this.show();
-    this.currentModal = { title, content, size };
-
-    return this;
+    const modalConfig = { title, content, size, id: this.generateId() };
+    this.modalStack.push(modalConfig);
+    this.render();
+    return modalConfig.id;
   }
 
-  /**
-   * Mostra modale di conferma
-   */
+  render() {
+    if (this.modalStack.length === 0) {
+      this.hide();
+      return;
+    }
+
+    const current = this.modalStack[this.modalStack.length - 1];
+    this.modalTitle.textContent = current.title;
+    this.modalBody.innerHTML = current.content;
+    this.modal.className = `modal modal-${current.size}`;
+    this.show();
+  }
+
+  close() {
+    if (this.modalStack.length === 0) return;
+
+    const closed = this.modalStack.pop();
+    const resolver = this.resolvers.get(closed.id);
+    if (resolver) {
+      resolver(null);
+      this.resolvers.delete(closed.id);
+    }
+
+    this.render();
+  }
+
+  closeAll() {
+    this.resolvers.forEach((r) => r(null));
+    this.resolvers.clear();
+    this.modalStack = [];
+    this.hide();
+  }
+
   confirm({
     title,
     message,
@@ -54,32 +70,20 @@ class ModalManager {
     cancelText = "Annulla",
   }) {
     const content = `
-      <p style="margin-bottom: 20px;">${message}</p>
+      <p>${message}</p>
       <div class="flex gap-1" style="justify-content: flex-end;">
-        <button type="button" class="btn btn-secondary" data-action="cancel">${cancelText}</button>
-        <button type="button" class="btn btn-danger" data-action="confirm">${confirmText}</button>
-      </div>
-    `;
+        <button type="button" class="btn btn-secondary" onclick="modalManager.close()">${cancelText}</button>
+        <button type="button" class="btn btn-danger" onclick="modalManager.resolveConfirm(true)">${confirmText}</button>
+      </div>`;
 
-    this.open({ title, content, size: "small" });
-
-    return new Promise((resolve) => {
-      this.resolver = resolve;
-      this.modalBody.addEventListener(
-        "click",
-        this.handleConfirmClick.bind(this),
-        { once: true }
-      );
-    });
+    const id = this.open({ title, content, size: "small" });
+    return new Promise((resolve) => this.resolvers.set(id, resolve));
   }
 
-  /**
-   * Mostra modale di input
-   */
   input({ title, label, placeholder = "", inputType = "textarea" }) {
     const inputHtml =
       inputType === "textarea"
-        ? `<textarea class="form-textarea" id="modal-input" placeholder="${placeholder}" style="min-height: 80px;"></textarea>`
+        ? `<textarea class="form-textarea" id="modal-input" placeholder="${placeholder}"></textarea>`
         : `<input type="${inputType}" class="form-input" id="modal-input" placeholder="${placeholder}">`;
 
     const content = `
@@ -88,81 +92,57 @@ class ModalManager {
         ${inputHtml}
       </div>
       <div class="flex gap-1 mt-2" style="justify-content: flex-end;">
-        <button type="button" class="btn btn-secondary" data-action="cancel">Annulla</button>
-        <button type="button" class="btn btn-primary" data-action="confirm">Conferma</button>
-      </div>
-    `;
+        <button type="button" class="btn btn-secondary" onclick="modalManager.close()">Annulla</button>
+        <button type="button" class="btn btn-primary" onclick="modalManager.resolveInput()">Conferma</button>
+      </div>`;
 
-    this.open({ title, content, size: "medium" });
-
-    return new Promise((resolve) => {
-      this.resolver = resolve;
-      this.modalBody.addEventListener(
-        "click",
-        this.handleInputClick.bind(this),
-        { once: true }
-      );
-      setTimeout(() => document.getElementById("modal-input")?.focus(), 100);
-    });
+    const id = this.open({ title, content, size: "medium" });
+    setTimeout(() => document.getElementById("modal-input")?.focus(), 100);
+    return new Promise((resolve) => this.resolvers.set(id, resolve));
   }
 
-  /**
-   * Handler per click nelle modali di conferma
-   */
-  handleConfirmClick(e) {
-    const action = e.target.dataset.action;
-    if (!action) return;
-
-    const result = action === "confirm";
-    this.resolver?.(result);
-    this.close();
-  }
-
-  /**
-   * Handler per click nelle modali di input
-   */
-  handleInputClick(e) {
-    const action = e.target.dataset.action;
-    if (!action) return;
-
-    let result = null;
-    if (action === "confirm") {
-      const input = document.getElementById("modal-input");
-      result = input?.value || null;
+  resolveConfirm(result) {
+    const current = this.modalStack[this.modalStack.length - 1];
+    const resolver = this.resolvers.get(current.id);
+    if (resolver) {
+      resolver(result);
+      this.resolvers.delete(current.id);
     }
-
-    this.resolver?.(result);
     this.close();
   }
 
-  /**
-   * Mostra la modale
-   */
+  resolveInput() {
+    const input = document.getElementById("modal-input");
+    const value = input ? input.value : null;
+    this.resolveConfirm(value);
+  }
+
+  // Metodo specifico per refresh content
+  updateCurrentContent(newContent) {
+    if (this.modalStack.length > 0) {
+      this.modalStack[this.modalStack.length - 1].content = newContent;
+      this.render();
+    }
+  }
+
   show() {
     this.modal.style.display = "block";
     document.body.style.overflow = "hidden";
     this.isOpen = true;
   }
 
-  /**
-   * Chiudi modale
-   */
-  close() {
-    if (!this.isOpen) return;
-
+  hide() {
     this.modal.style.display = "none";
     document.body.style.overflow = "auto";
     this.isOpen = false;
-    this.currentModal = null;
+  }
 
-    // Risolvi promise pending con null
-    if (this.resolver) {
-      this.resolver(null);
-      this.resolver = null;
-    }
+  generateId() {
+    return Date.now() + Math.random().toString(36).substr(2, 5);
   }
 }
 
-// Singleton
 const modalManager = new ModalManager();
+// Esponi globalmente per onclick inline
+window.modalManager = modalManager;
 export default modalManager;

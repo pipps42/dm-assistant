@@ -240,8 +240,33 @@ export function generateDetail(npc) {
   const interactions = npc.interactions || [];
   const environments = window.dataStore?.get("environments") || [];
   const environment = environments.find((env) => env.id == npc.environmentId);
+  const hasImage = npc.avatar && npc.avatar.startsWith("data:image");
+
+  let avatarDisplay;
+  if (hasImage) {
+    avatarDisplay = `<img src="${npc.avatar}" alt="${npc.name}" class="detail-avatar">`;
+  } else {
+    avatarDisplay = `<div class="detail-avatar-emoji">${
+      npc.avatar || "🧙"
+    }</div>`;
+  }
 
   return `
+        <div class="detail-header">
+            <div class="detail-avatar-container">${avatarDisplay}</div>
+            <div class="detail-header-info">
+                <h2 class="detail-title">${npc.name}</h2>
+                <p class="detail-subtitle">${
+                  npc.race || "Razza sconosciuta"
+                } • ${npc.attitude}</p>
+                ${
+                  npc.profession
+                    ? `<small class="detail-meta">${npc.profession}</small>`
+                    : ""
+                }
+            </div>
+        </div>
+        
         <div class="detail-section">
             <h3 class="detail-section-title">Informazioni Base</h3>
             <div class="detail-grid">

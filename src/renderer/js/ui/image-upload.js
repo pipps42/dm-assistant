@@ -58,27 +58,27 @@ class ImageUpload {
 
     this.container.className = `image-upload-container ${typeClass}`;
     this.container.innerHTML = `
-            <div class="image-upload-content">
-                <div class="image-preview-container" style="display: none;">
-                    <img class="image-preview" alt="Preview">
-                    <button type="button" class="image-remove-btn" title="Rimuovi immagine">×</button>
-                </div>
-                
-                <div class="image-placeholder">
-                    <div class="placeholder-icon">${
-                      this.options.defaultEmoji
-                    }</div>
-                    <div class="placeholder-text">
-                        <p>${this.options.placeholder}</p>
-                        <button type="button" class="btn-link image-select-btn">seleziona file</button>
-                    </div>
-                    <small class="placeholder-subtext">${
-                      this.options.subtext
-                    }</small>
-                </div>
-                
-                ${this.options.allowEmoji ? this.renderEmojiSection() : ""}
-            </div>
+          <div class="image-upload-content" style="max-width: 300px;">
+              <div class="image-preview-container" style="display: none;">
+                  <img class="image-preview" alt="Preview">
+                  <button type="button" class="image-remove-btn" title="Rimuovi immagine">x</button>
+              </div>
+              
+              <div class="image-placeholder">
+                  <div class="placeholder-icon">${
+                    this.options.defaultEmoji
+                  }</div>
+                  <div class="placeholder-text">
+                      <p>${this.options.placeholder}</p>
+                      <button type="button" class="btn-link image-select-btn">seleziona file</button>
+                  </div>
+                  <small class="placeholder-subtext">${
+                    this.options.subtext
+                  }</small>
+              </div>
+              
+              ${this.options.allowEmoji ? this.renderEmojiSection() : ""}
+          </div>
             
             <input type="file" class="image-file-input" accept="${this.options.acceptedTypes.join(
               ","
