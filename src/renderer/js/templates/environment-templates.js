@@ -475,11 +475,9 @@ export function generateDetail(environment) {
                 })</h3>
                 ${
                   linkedNPCs.length === 0
-                    ? `
-                    <button class="btn btn-primary btn-sm" data-action="add-npc" data-id="${environment.id}">
+                    ? `<button class="btn btn-primary btn-small" data-action="add-npc" data-environment-id="${environment.id}">
                         + Aggiungi NPC
-                    </button>
-                `
+                       </button>`
                     : ""
                 }
             </div>
@@ -495,56 +493,59 @@ export function generateDetail(environment) {
                 `
                     : `
                     <div class="npcs-list">
-                        ${linkedNPCs
-                          .map((npc) => {
-                            const hasImage =
-                              npc.avatar && npc.avatar.startsWith("data:image");
-                            const avatarDisplay = hasImage
-                              ? `<img src="${npc.avatar}" class="npc-avatar">`
-                              : `<div class="npc-avatar-emoji">${npc.avatar}</div>`;
+                            ${linkedNPCs
+                              .map((npc) => {
+                                const hasImage =
+                                  npc.avatar &&
+                                  npc.avatar.startsWith("data:image");
+                                const avatarDisplay = hasImage
+                                  ? `<img src="${npc.avatar}" class="npc-avatar">`
+                                  : `<div class="npc-avatar-emoji">${npc.avatar}</div>`;
 
-                            return `
-                                <div class="npc-item" data-action="view-npc" data-npc-id="${
-                                  npc.id
-                                }">
-                                    <div class="npc-avatar-container">${avatarDisplay}</div>
-                                    <div class="npc-info">
-                                        <h4 class="npc-name">${npc.name}</h4>
-                                        <p class="npc-details">
-                                            ${
-                                              npc.race ? `${npc.race} • ` : ""
-                                            }${npc.attitude || "Neutrale"}
-                                            ${
-                                              npc.profession
-                                                ? ` • ${npc.profession}`
-                                                : ""
-                                            }
-                                        </p>
-                                        ${
-                                          npc.description
-                                            ? `
-                                            <p class="npc-description">
+                                return `
+                                    <div class="npc-item" data-action="view-npc" data-npc-id="${
+                                      npc.id
+                                    }">
+                                        <div class="npc-avatar-container">${avatarDisplay}</div>
+                                        <div class="npc-info">
+                                            <h4 class="npc-name">${
+                                              npc.name
+                                            }</h4>
+                                            <p class="npc-details">
                                                 ${
-                                                  npc.description.length > 100
-                                                    ? npc.description.substring(
-                                                        0,
-                                                        100
-                                                      ) + "..."
-                                                    : npc.description
+                                                  npc.race
+                                                    ? `${npc.race} • `
+                                                    : ""
+                                                }${npc.attitude || "Neutrale"}
+                                                ${
+                                                  npc.profession
+                                                    ? ` • ${npc.profession}`
+                                                    : ""
                                                 }
                                             </p>
-                                        `
-                                            : ""
-                                        }
+                                            ${
+                                              npc.description
+                                                ? `<p class="npc-description">
+                                                  ${
+                                                    npc.description.length > 100
+                                                      ? npc.description.substring(
+                                                          0,
+                                                          100
+                                                        ) + "..."
+                                                      : npc.description
+                                                  }
+                                                </p>`
+                                                : ""
+                                            }
+                                        </div>
+                                        <div class="npc-actions">
+                                            <span class="view-arrow">→</span>
+                                        </div>
                                     </div>
-                                    <div class="npc-actions">
-                                        <span class="view-arrow">→</span>
-                                    </div>
-                                </div>
-                            `;
-                          })
-                          .join("")}
-                    </div>
+                                `;
+                              })
+                              .join("")}
+                      </div>
                 `
                 }
             </div>

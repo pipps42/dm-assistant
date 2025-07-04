@@ -272,64 +272,18 @@ class DMAssistantApp {
       if (manager && manager.render) {
         await manager.render();
       } else {
-        // Fallback for sections not yet migrated
-        switch (sectionId) {
-          case "environments":
-            await this.renderEnvironments();
-            break;
-          case "npcs":
-            await this.renderNPCs();
-            break;
-          case "bestiary":
-            await this.renderBestiary();
-            break;
-          case "encounters":
-            await this.renderEncounters();
-            break;
-          default:
-            contentBody.innerHTML =
-              '<div class="empty-state"><h3>Sezione in sviluppo</h3></div>';
-        }
+        // Default fallback for unimplemented sections
+        contentBody.innerHTML = `
+          <div class="empty-state">
+            <h3>Sezione "${sectionId}"</h3>
+            <p>Funzionalità non ancora implementata</p>
+          </div>
+        `;
       }
     } catch (error) {
       console.error(`Error rendering section ${sectionId}:`, error);
       this.showError(`Errore nel caricamento della sezione: ${error.message}`);
     }
-  }
-
-  // Temporary placeholder rendering methods - will be moved to separate modules
-  async renderBestiary() {
-    const contentBody = document.getElementById("content-body");
-    contentBody.innerHTML = `
-            <div class="empty-state">
-                <h3>Modulo Bestiario</h3>
-                <p>Modulo in fase di migrazione...</p>
-                <p style="margin-top: 10px; color: var(--text-secondary); font-size: 0.9em;">
-                    Dati disponibili: ${dataStore.get("monsters").length} mostri
-                </p>
-                <button class="btn btn-secondary mt-2" onclick="app.testDataStore('monsters')">
-                    Test DataStore Mostri
-                </button>
-            </div>
-        `;
-  }
-
-  async renderEncounters() {
-    const contentBody = document.getElementById("content-body");
-    contentBody.innerHTML = `
-            <div class="empty-state">
-                <h3>Modulo Incontri</h3>
-                <p>Modulo in fase di migrazione...</p>
-                <p style="margin-top: 10px; color: var(--text-secondary); font-size: 0.9em;">
-                    Dati disponibili: ${
-                      dataStore.get("encounters").length
-                    } incontri
-                </p>
-                <button class="btn btn-secondary mt-2" onclick="app.testDataStore('encounters')">
-                    Test DataStore Incontri
-                </button>
-            </div>
-        `;
   }
 
   handleAddButton() {

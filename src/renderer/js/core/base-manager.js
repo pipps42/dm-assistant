@@ -6,13 +6,26 @@ import EventBus from "./event-bus.js";
 import dataStore from "../data/data-store.js";
 
 export default class BaseManager {
-  constructor(entityType, config = {}) {
-    this.entityType = entityType;
+  constructor(options = {}) {
+    // Handle both old and new constructor patterns
+    if (typeof options === "string") {
+      // Old pattern: BaseManager(entityType, config)
+      this.entityType = options;
+      this.config = arguments[1] || {};
+    } else {
+      // New pattern: BaseManager({entityType, config, ...})
+      this.entityType = options.entityType;
+      this.config = options.config || {};
+      this.templates = options.templates;
+      this.dataStore = options.dataStore;
+    }
+
+    // Default config
     this.config = {
       hasImages: false,
       hasInteractions: false,
       defaultAvatar: "🧙",
-      ...config,
+      ...this.config,
     };
 
     this.currentEntity = null;
@@ -179,6 +192,8 @@ export default class BaseManager {
       type: "form",
       entityType: this.entityType,
       mode: "create",
+      title: `Aggiungi ${this.getEntityDisplayName()}`,
+      size: "large",
     });
   }
 
@@ -198,6 +213,8 @@ export default class BaseManager {
       type: "detail",
       entityType: this.entityType,
       entity: entity,
+      title: entity.name || this.getEntityDisplayName(),
+      size: "large",
     });
   }
 
@@ -294,7 +311,7 @@ export default class BaseManager {
       monsters: "Mostro",
       encounters: "Incontro",
     };
-    return names[this.entityType] || this.entityType;
+    return names[this.entityType] || "elemento";
   }
 
   getManagerName() {

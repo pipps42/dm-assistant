@@ -91,6 +91,91 @@ class ModalManager {
   }
 
   /**
+   * Open modal with content
+   */
+  open(config) {
+    const {
+      type = "info",
+      entityType,
+      mode = "create",
+      entity = null,
+      title = "",
+      content = "",
+      size = "medium",
+    } = config;
+
+    let modalContent = content;
+    let modalTitle = title;
+
+    // Generate content if not provided
+    if (!modalContent && entityType) {
+      const manager = window.app?.managers?.[entityType];
+
+      if (manager?.templates) {
+        try {
+          if (type === "form") {
+            modalContent = manager.templates.generateForm(entity, mode);
+            if (!modalTitle) {
+              modalTitle =
+                mode === "edit"
+                  ? `Modifica ${manager.getEntityDisplayName()}`
+                  : `Aggiungi ${manager.getEntityDisplayName()}`;
+            }
+          } else if (type === "detail") {
+            modalContent = manager.templates.generateDetail(entity);
+            if (!modalTitle) {
+              modalTitle = entity?.name || manager.getEntityDisplayName();
+            }
+          }
+        } catch (error) {
+          console.error(
+            `Error generating ${type} template for ${entityType}:`,
+            error
+          );
+          modalContent = `<div class="error-state">
+          <h3>Errore Template</h3>
+          <p>Impossibile generare il template ${type} per ${entityType}</p>
+          <pre>${error.message}</pre>
+        </div>`;
+        }
+      } else {
+        console.warn(`Manager or templates not found for ${entityType}`, {
+          manager: !!manager,
+          templates: !!manager?.templates,
+          availableManagers: window.app
+            ? Object.keys(window.app.managers)
+            : "app not ready",
+        });
+        modalContent = `<div class="error-state">
+        <h3>${type === "form" ? "Form" : "Detail"} template not found</h3>
+        <p>Manager per "${entityType}" non trovato o non inizializzato</p>
+      </div>`;
+      }
+    }
+
+    // Set content and show modal
+    this.titleElement.textContent = modalTitle;
+    this.bodyElement.innerHTML = modalContent;
+
+    this.modalElement.style.display = "block";
+    document.body.style.overflow = "hidden";
+
+    // Apply size class
+    this.modalElement.className = `modal-${size}`;
+
+    // Emit rendered event for component setup
+    EventBus.emit("modal:rendered", {
+      type,
+      entityType,
+      mode,
+      entity,
+      title: modalTitle,
+      content: modalContent,
+      ...config,
+    });
+  }
+
+  /**
    * Close current modal
    */
   close() {

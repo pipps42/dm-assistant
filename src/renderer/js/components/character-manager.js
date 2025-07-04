@@ -11,7 +11,7 @@ class CharacterManager extends BaseManager {
   constructor() {
     super("characters", {
       hasImages: true,
-      hasInteractions: true, // Per le avventure
+      hasInteractions: true,
       defaultAvatar: "🧙",
     });
 
