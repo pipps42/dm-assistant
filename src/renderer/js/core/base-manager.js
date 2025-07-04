@@ -172,7 +172,6 @@ export default class BaseManager {
   }
 
   // ========== EVENT HANDLERS ==========
-
   setupFormHandlers(entity, mode) {
     const form = document.querySelector(
       "#" + this.entityType.slice(0, -1) + "-form"
@@ -192,10 +191,23 @@ export default class BaseManager {
       try {
         if (mode === "edit") {
           await this.update(entity.id, data);
+
+          // NUOVO: Aggiorna il dettaglio sottostante prima di chiudere
+          if (modalManager.modalStack.length >= 2) {
+            const updatedEntity = this.getById(entity.id);
+            if (updatedEntity) {
+              const newDetailContent =
+                this.templates.generateDetail(updatedEntity);
+              const detailModal =
+                modalManager.modalStack[modalManager.modalStack.length - 2]; // Modale sottostante
+              detailModal.content = newDetailContent;
+              detailModal.title = updatedEntity.name; // Aggiorna anche il titolo se cambiato
+            }
+          }
         } else {
           await this.create(data);
         }
-        modalManager.close(); // Chiudi solo questa modale
+        modalManager.close();
       } catch (error) {
         this.showError(error.message);
       }
