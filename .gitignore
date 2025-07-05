@@ -10,7 +10,7 @@ build/
 out/
 
 # Runtime data
-data/
+/data/
 *.log
 
 # OS generated files

@@ -1,0 +1,161 @@
+/**
+ * CSS Variables - Definizioni globali per il tema
+ */
+
+:root {
+  /* === COLORS === */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #404040;
+  --bg-quaternary: #505050;
+
+  --text-primary: #e0e0e0;
+  --text-secondary: #b0b0b0;
+  --text-tertiary: #808080;
+
+  --accent: #ff6b6b;
+  --accent-hover: #ff5252;
+  --accent-light: rgba(255, 107, 107, 0.2);
+
+  --success: #4caf50;
+  --success-light: rgba(76, 175, 80, 0.2);
+
+  --warning: #ffaa44;
+  --warning-light: rgba(255, 170, 68, 0.2);
+
+  --danger: #ff4444;
+  --danger-light: rgba(255, 68, 68, 0.2);
+
+  --info: #2196f3;
+  --info-light: rgba(33, 150, 243, 0.2);
+
+  --border: #404040;
+  --border-light: #606060;
+  --border-focus: var(--accent);
+
+  /* === SPACING === */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+
+  /* === TYPOGRAPHY === */
+  --font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 2rem; /* 32px */
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 600;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* === SHADOWS === */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.4);
+
+  /* === BORDER RADIUS === */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 50%;
+
+  /* === TRANSITIONS === */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s ease;
+  --transition-slow: 0.3s ease;
+
+  /* === Z-INDEX === */
+  --z-dropdown: 100;
+  --z-tooltip: 200;
+  --z-modal: 1000;
+  --z-notification: 1100;
+  --z-overlay: 2000;
+
+  /* === LAYOUT === */
+  --sidebar-width: 250px;
+  --sidebar-width-collapsed: 70px;
+  --header-height: 80px;
+  --content-max-width: 1200px;
+
+  /* === COMPONENT SIZES === */
+  --input-height: 44px;
+  --button-height: 40px;
+  --button-height-sm: 32px;
+  --button-height-lg: 48px;
+
+  --card-padding: 20px;
+  --modal-padding: 20px;
+
+  /* === GRID === */
+  --grid-gap: 20px;
+  --grid-gap-sm: 16px;
+  --grid-gap-lg: 24px;
+
+  /* === BREAKPOINTS (for reference) === */
+  /* sm: 640px */
+  /* md: 768px */
+  /* lg: 1024px */
+  /* xl: 1280px */
+  /* 2xl: 1536px */
+}
+
+/* === DARK THEME ADJUSTMENTS === */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Enhance contrast in dark mode */
+    --text-primary: #f0f0f0;
+    --border: #484848;
+  }
+}
+
+/* === LIGHT THEME (for future implementation) === */
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --bg-quaternary: #dee2e6;
+
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --text-tertiary: #adb5bd;
+
+  --border: #dee2e6;
+  --border-light: #e9ecef;
+
+  /* Adjust shadows for light theme */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* === HIGH CONTRAST MODE === */
+@media (prefers-contrast: high) {
+  :root {
+    --border: #ffffff;
+    --text-secondary: #ffffff;
+    --accent: #ff8a8a;
+  }
+}
+
+/* === REDUCED MOTION === */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0s;
+    --transition-normal: 0s;
+    --transition-slow: 0s;
+  }
+}
