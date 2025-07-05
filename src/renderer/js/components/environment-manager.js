@@ -1,6 +1,6 @@
 /**
- * Environment Manager - Versione semplice che estende BaseManager
- * Gestisce solo le specificità delle ambientazioni
+ * Environment Manager - Versione Ultra-Semplice
+ * Zero listener duplicati, funziona sempre
  */
 import BaseManager from "../core/base-manager.js";
 import * as EnvironmentTemplates from "../templates/environment-templates.js";
@@ -56,6 +56,11 @@ class EnvironmentManager extends BaseManager {
     // Setup image upload
     const uploadContainer = document.getElementById("environment-image-upload");
     if (uploadContainer) {
+      // Cleanup existing upload component
+      if (this.imageUpload) {
+        this.imageUpload.destroy();
+      }
+
       this.imageUpload = new ImageUpload(uploadContainer, {
         type: "cover",
         allowEmoji: true,
@@ -70,7 +75,63 @@ class EnvironmentManager extends BaseManager {
   }
 
   /**
+   * Override setupFormHandlers per gestire il refresh della vista ambiente
+   */
+  setupFormHandlers(entity, mode) {
+    // Chiama il metodo parent per setup base
+    super.setupFormHandlers(entity, mode);
+
+    // Override solo per edit quando siamo in vista ambiente
+    if (mode === "edit" && document.querySelector(".environment-detail-view")) {
+      const form = document.querySelector("#environment-form");
+      if (form) {
+        // Rimuovi il listener esistente e aggiungi il nostro
+        const newForm = form.cloneNode(true);
+        form.parentNode.replaceChild(newForm, form);
+
+        newForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData(newForm);
+          const data = Object.fromEntries(formData.entries());
+
+          this.processFormData(data);
+          await this.update(entity.id, data);
+
+          modalManager.close();
+          setTimeout(() => this.viewDetail(entity.id), 100);
+        });
+      }
+    }
+  }
+
+  /**
+   * Override completo per non usare modale
+   */
+  openDetail(id) {
+    console.log("🏰 Opening environment detail view for:", id);
+    this.viewDetail(id);
+  }
+
+  /**
+   * Override di attachEvents per usare viewDetail
+   */
+  attachEvents() {
+    const selector = `[data-environment-id]`;
+
+    document.querySelectorAll(selector).forEach((card) => {
+      card.addEventListener("click", (e) => {
+        if (e.target.closest("button")) return;
+
+        const id = card.getAttribute("data-environment-id");
+        console.log("🏰 Card clicked, opening detail for:", id);
+        this.viewDetail(id);
+      });
+    });
+  }
+
+  /**
    * Gestisce azioni specifiche del detail Environment
+   * Chiamato dal listener globale del BaseManager
    */
   async handleDetailAction(action, entity, button) {
     switch (action) {
@@ -137,8 +198,13 @@ class EnvironmentManager extends BaseManager {
 
     await this.update(environment.id, environment);
 
-    // Riapri il detail aggiornato
-    setTimeout(() => this.openDetail(environment.id), 100);
+    // REFRESH SEMPLICE - aggiorna solo il contenuto
+    const updatedEnvironment = this.getById(environment.id);
+    if (updatedEnvironment) {
+      const newContent = this.templates.generateDetail(updatedEnvironment);
+      modalManager.updateCurrentContent(newContent);
+    }
+
     this.showSuccess("Mappa aggiunta!");
   }
 
@@ -160,8 +226,13 @@ class EnvironmentManager extends BaseManager {
 
     await this.update(environment.id, environment);
 
-    // Riapri il detail aggiornato
-    setTimeout(() => this.openDetail(environment.id), 100);
+    // REFRESH SEMPLICE - aggiorna solo il contenuto
+    const updatedEnvironment = this.getById(environment.id);
+    if (updatedEnvironment) {
+      const newContent = this.templates.generateDetail(updatedEnvironment);
+      modalManager.updateCurrentContent(newContent);
+    }
+
     this.showSuccess("Mappa rimossa!");
   }
 
@@ -208,6 +279,62 @@ class EnvironmentManager extends BaseManager {
   }
 
   /**
+   * Get environment statistics
+   */
+  getEnvironmentStats() {
+    const environments = this.getAll();
+
+    const stats = {
+      total: environments.length,
+      byType: {},
+      byClimate: {},
+      bySize: {},
+      byChallengeLevel: {},
+      recent: 0,
+      totalMaps: 0,
+      totalNPCs: 0,
+    };
+
+    environments.forEach((env) => {
+      // Count by type
+      if (env.type) {
+        stats.byType[env.type] = (stats.byType[env.type] || 0) + 1;
+      }
+
+      // Count by climate
+      if (env.climate) {
+        stats.byClimate[env.climate] = (stats.byClimate[env.climate] || 0) + 1;
+      }
+
+      // Count by size
+      if (env.size) {
+        stats.bySize[env.size] = (stats.bySize[env.size] || 0) + 1;
+      }
+
+      // Count by challenge level
+      if (env.challengeLevel) {
+        stats.byChallengeLevel[env.challengeLevel] =
+          (stats.byChallengeLevel[env.challengeLevel] || 0) + 1;
+      }
+
+      // Count recent (last week)
+      const created = new Date(env.createdAt || 0);
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      if (created > weekAgo) {
+        stats.recent++;
+      }
+
+      // Count maps
+      stats.totalMaps += env.maps ? env.maps.length : 0;
+
+      // Count NPCs
+      stats.totalNPCs += this.getNPCsInEnvironment(env.id).length;
+    });
+
+    return stats;
+  }
+
+  /**
    * Export environments data
    */
   exportEnvironments() {
@@ -235,42 +362,7 @@ class EnvironmentManager extends BaseManager {
   }
 
   /**
-   * Get environment statistics
-   */
-  getEnvironmentStats() {
-    const environments = this.getAll();
-
-    const stats = {
-      total: environments.length,
-      byType: {},
-      byClimate: {},
-      totalMaps: 0,
-      totalNPCs: 0,
-    };
-
-    environments.forEach((env) => {
-      // Count by type
-      if (env.type) {
-        stats.byType[env.type] = (stats.byType[env.type] || 0) + 1;
-      }
-
-      // Count by climate
-      if (env.climate) {
-        stats.byClimate[env.climate] = (stats.byClimate[env.climate] || 0) + 1;
-      }
-
-      // Count maps
-      stats.totalMaps += env.maps ? env.maps.length : 0;
-
-      // Count NPCs
-      stats.totalNPCs += this.getNPCsInEnvironment(env.id).length;
-    });
-
-    return stats;
-  }
-
-  /**
-   * Search environments by name or type
+   * Search environments by name, type, or description
    */
   searchEnvironments(query) {
     const searchTerm = query.toLowerCase();
@@ -278,7 +370,9 @@ class EnvironmentManager extends BaseManager {
       (env) =>
         env.name.toLowerCase().includes(searchTerm) ||
         (env.type && env.type.toLowerCase().includes(searchTerm)) ||
-        (env.description && env.description.toLowerCase().includes(searchTerm))
+        (env.description &&
+          env.description.toLowerCase().includes(searchTerm)) ||
+        (env.climate && env.climate.toLowerCase().includes(searchTerm))
     );
   }
 
@@ -290,6 +384,94 @@ class EnvironmentManager extends BaseManager {
   }
 
   /**
+   * Get environments by climate
+   */
+  getEnvironmentsByClimate(climate) {
+    return this.getAll().filter((env) => env.climate === climate);
+  }
+
+  /**
+   * Get environments by challenge level
+   */
+  getEnvironmentsByChallengeLevel(challengeLevel) {
+    return this.getAll().filter((env) => env.challengeLevel === challengeLevel);
+  }
+
+  /**
+   * Get environments with maps (useful for encounters)
+   */
+  getEnvironmentsWithMaps() {
+    return this.getAll().filter((env) => env.maps && env.maps.length > 0);
+  }
+
+  /**
+   * Get environments with NPCs (populated areas)
+   */
+  getPopulatedEnvironments() {
+    return this.getAll().filter(
+      (env) => this.getNPCsInEnvironment(env.id).length > 0
+    );
+  }
+
+  /**
+   * Get dangerous environments (for encounters)
+   */
+  getDangerousEnvironments() {
+    return this.getAll().filter(
+      (env) =>
+        env.dangers &&
+        env.dangers.length > 0 &&
+        (env.challengeLevel === "Difficile" ||
+          env.challengeLevel === "Molto Difficile")
+    );
+  }
+
+  /**
+   * Get safe environments (for rest/recovery)
+   */
+  getSafeEnvironments() {
+    return this.getAll().filter(
+      (env) =>
+        (!env.dangers || env.dangers.length === 0) &&
+        (env.challengeLevel === "Molto Facile" ||
+          env.challengeLevel === "Facile")
+    );
+  }
+
+  /**
+   * Get environments suitable for trading/commerce
+   */
+  getTradingEnvironments() {
+    return this.getAll().filter(
+      (env) =>
+        env.type &&
+        ["Città", "Villaggio", "Mercato", "Porto"].includes(env.type)
+    );
+  }
+
+  /**
+   * Get most mapped environments (top environments by map count)
+   */
+  getMostMappedEnvironments(limit = 10) {
+    return this.getAll()
+      .sort((a, b) => (b.maps?.length || 0) - (a.maps?.length || 0))
+      .slice(0, limit);
+  }
+
+  /**
+   * Get environments with most NPCs (top populated areas)
+   */
+  getMostPopulatedEnvironments(limit = 10) {
+    return this.getAll()
+      .map((env) => ({
+        ...env,
+        npcCount: this.getNPCsInEnvironment(env.id).length,
+      }))
+      .sort((a, b) => b.npcCount - a.npcCount)
+      .slice(0, limit);
+  }
+
+  /**
    * Cleanup quando necessario
    */
   cleanup() {
@@ -298,8 +480,16 @@ class EnvironmentManager extends BaseManager {
       this.imageUpload = null;
     }
   }
+
+  /**
+   * Destroy manager - cleanup
+   */
+  destroy() {
+    this.cleanup();
+    console.log("Environment manager destroyed");
+  }
 }
 
-// Singleton
+// Create and export singleton instance
 const environmentManager = new EnvironmentManager();
 export default environmentManager;

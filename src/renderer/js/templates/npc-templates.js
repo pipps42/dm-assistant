@@ -348,9 +348,10 @@ export function generateDetail(npc) {
                 <h3 class="detail-section-title">Interazioni con i Giocatori (${
                   interactions.length
                 })</h3>
-                <button class="btn btn-secondary btn-sm" data-action="add-interaction" data-id="${
-                  npc.id
-                }">
+                <button class="btn btn-secondary btn-sm" 
+                        data-action="add-interaction" 
+                        data-id="${npc.id}"
+                        data-entity-type="npcs">
                     + Aggiungi Interazione
                 </button>
             </div>
@@ -384,15 +385,16 @@ export function generateDetail(npc) {
                                     }
                                 </div>
                                 <button class="btn btn-danger btn-sm" 
-                                        data-action="remove-interaction" 
-                                        data-id="${npc.id}" 
-                                        data-interaction-id="${
-                                          typeof interaction === "object"
-                                            ? interaction.id
-                                            : index
-                                        }">
-                                    ×
-                                </button>
+                                      data-action="remove-interaction" 
+                                      data-id="${npc.id}"
+                                      data-entity-type="npcs"
+                                      data-interaction-id="${
+                                        typeof interaction === "object"
+                                          ? interaction.id
+                                          : index
+                                      }">
+                                  ×
+                              </button>
                             </div>
                         `
                           )
@@ -410,17 +412,21 @@ export function generateDetail(npc) {
         </div>
         
         <div class="modal-footer">
-            <button class="btn btn-danger" data-action="delete" data-id="${
-              npc.id
-            }">
+            <button class="btn btn-danger" 
+                    data-action="delete" 
+                    data-id="${npc.id}"
+                    data-entity-type="npcs">
                 Elimina NPC
             </button>
             <div class="flex gap-1">
-                <button class="btn btn-secondary" data-action="edit" data-id="${
-                  npc.id
-                }">
+                <button class="btn btn-secondary" 
+                        data-action="edit" 
+                        data-id="${npc.id}"
+                        data-entity-type="npcs">
                     Modifica
                 </button>
+            </div>
+            <div class="flex gap-1">
                 <button class="btn btn-primary" data-action="close">
                     Chiudi
                 </button>

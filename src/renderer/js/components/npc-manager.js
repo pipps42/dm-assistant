@@ -1,6 +1,6 @@
 /**
- * NPC Manager - Versione semplice che estende BaseManager
- * Gestisce solo le specificità degli NPC
+ * NPC Manager - Versione Ultra-Semplice
+ * Zero listener duplicati, funziona sempre
  */
 import BaseManager from "../core/base-manager.js";
 import * as NPCTemplates from "../templates/npc-templates.js";
@@ -18,9 +18,9 @@ class NPCManager extends BaseManager {
    */
   processFormData(data) {
     // Convert environmentId to number or null
-    data.environmentId = data.environmentId
-      ? parseInt(data.environmentId)
-      : null;
+    if (data.environmentId == "") {
+      data.environmentId = null;
+    }
 
     // Get avatar from image upload
     if (this.imageUpload) {
@@ -43,6 +43,11 @@ class NPCManager extends BaseManager {
     // Setup image upload
     const uploadContainer = document.getElementById("npc-avatar-upload");
     if (uploadContainer) {
+      // Cleanup existing upload component
+      if (this.imageUpload) {
+        this.imageUpload.destroy();
+      }
+
       this.imageUpload = new ImageUpload(uploadContainer, {
         type: "avatar",
         allowEmoji: true,
@@ -58,6 +63,7 @@ class NPCManager extends BaseManager {
 
   /**
    * Gestisce azioni specifiche del detail NPC
+   * Chiamato dal listener globale del BaseManager
    */
   async handleDetailAction(action, entity, button) {
     switch (action) {
@@ -99,8 +105,12 @@ class NPCManager extends BaseManager {
 
     await this.update(npc.id, npc);
 
-    // Riapri il detail aggiornato
-    setTimeout(() => this.openDetail(npc.id), 100);
+    // REFRESH SEMPLICE - aggiorna solo il contenuto
+    const updatedNPC = this.getById(npc.id);
+    if (updatedNPC) {
+      const newContent = this.templates.generateDetail(updatedNPC);
+      modalManager.updateCurrentContent(newContent);
+    }
   }
 
   /**
@@ -121,8 +131,12 @@ class NPCManager extends BaseManager {
 
     await this.update(npc.id, npc);
 
-    // Riapri il detail aggiornato
-    setTimeout(() => this.openDetail(npc.id), 100);
+    // REFRESH SEMPLICE - aggiorna solo il contenuto
+    const updatedNPC = this.getById(npc.id);
+    if (updatedNPC) {
+      const newContent = this.templates.generateDetail(updatedNPC);
+      modalManager.updateCurrentContent(newContent);
+    }
   }
 
   /**
@@ -165,6 +179,58 @@ class NPCManager extends BaseManager {
   }
 
   /**
+   * Get NPC statistics
+   */
+  getNPCStats() {
+    const npcs = this.getAll();
+
+    const stats = {
+      total: npcs.length,
+      byAttitude: {},
+      byRace: {},
+      byProfession: {},
+      byEnvironment: {},
+      recent: 0,
+      totalInteractions: 0,
+    };
+
+    npcs.forEach((npc) => {
+      // Count by attitude
+      stats.byAttitude[npc.attitude] =
+        (stats.byAttitude[npc.attitude] || 0) + 1;
+
+      // Count by race
+      if (npc.race) {
+        stats.byRace[npc.race] = (stats.byRace[npc.race] || 0) + 1;
+      }
+
+      // Count by profession
+      if (npc.profession) {
+        stats.byProfession[npc.profession] =
+          (stats.byProfession[npc.profession] || 0) + 1;
+      }
+
+      // Count by environment
+      if (npc.environmentId) {
+        stats.byEnvironment[npc.environmentId] =
+          (stats.byEnvironment[npc.environmentId] || 0) + 1;
+      }
+
+      // Count recent (last week)
+      const created = new Date(npc.createdAt || 0);
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      if (created > weekAgo) {
+        stats.recent++;
+      }
+
+      // Count total interactions
+      stats.totalInteractions += npc.interactions ? npc.interactions.length : 0;
+    });
+
+    return stats;
+  }
+
+  /**
    * Export NPCs data
    */
   exportNPCs() {
@@ -190,40 +256,79 @@ class NPCManager extends BaseManager {
   }
 
   /**
-   * Get NPC statistics
+   * Search NPCs by name, race, profession, or attitude
    */
-  getNPCStats() {
-    const npcs = this.getAll();
+  searchNPCs(query) {
+    const searchTerm = query.toLowerCase();
+    return this.getAll().filter(
+      (npc) =>
+        npc.name.toLowerCase().includes(searchTerm) ||
+        (npc.race && npc.race.toLowerCase().includes(searchTerm)) ||
+        (npc.profession && npc.profession.toLowerCase().includes(searchTerm)) ||
+        npc.attitude.toLowerCase().includes(searchTerm) ||
+        (npc.description && npc.description.toLowerCase().includes(searchTerm))
+    );
+  }
 
-    const stats = {
-      total: npcs.length,
-      byAttitude: {},
-      byRace: {},
-      byEnvironment: {},
-      totalInteractions: 0,
-    };
+  /**
+   * Get NPCs by attitude
+   */
+  getNPCsByAttitude(attitude) {
+    return this.getAll().filter((npc) => npc.attitude === attitude);
+  }
 
-    npcs.forEach((npc) => {
-      // Count by attitude
-      stats.byAttitude[npc.attitude] =
-        (stats.byAttitude[npc.attitude] || 0) + 1;
+  /**
+   * Get NPCs by race
+   */
+  getNPCsByRace(race) {
+    return this.getAll().filter((npc) => npc.race === race);
+  }
 
-      // Count by race
-      if (npc.race) {
-        stats.byRace[npc.race] = (stats.byRace[npc.race] || 0) + 1;
-      }
+  /**
+   * Get NPCs by profession
+   */
+  getNPCsByProfession(profession) {
+    return this.getAll().filter((npc) => npc.profession === profession);
+  }
 
-      // Count by environment
-      if (npc.environmentId) {
-        stats.byEnvironment[npc.environmentId] =
-          (stats.byEnvironment[npc.environmentId] || 0) + 1;
-      }
+  /**
+   * Get friendly NPCs (useful for encounters)
+   */
+  getFriendlyNPCs() {
+    return this.getAll().filter((npc) =>
+      ["Amichevole", "Neutrale", "Protettivo", "Entusiasta"].includes(
+        npc.attitude
+      )
+    );
+  }
 
-      // Count interactions
-      stats.totalInteractions += npc.interactions ? npc.interactions.length : 0;
-    });
+  /**
+   * Get hostile NPCs (useful for encounters)
+   */
+  getHostileNPCs() {
+    return this.getAll().filter((npc) =>
+      ["Ostile", "Diffidente", "Sospettoso", "Arrogante"].includes(npc.attitude)
+    );
+  }
 
-    return stats;
+  /**
+   * Get NPCs with secrets (useful for plot hooks)
+   */
+  getNPCsWithSecrets() {
+    return this.getAll().filter(
+      (npc) => npc.secrets && npc.secrets.trim().length > 0
+    );
+  }
+
+  /**
+   * Get most interacted NPCs (top 10)
+   */
+  getMostInteractedNPCs(limit = 10) {
+    return this.getAll()
+      .sort(
+        (a, b) => (b.interactions?.length || 0) - (a.interactions?.length || 0)
+      )
+      .slice(0, limit);
   }
 
   /**
@@ -235,8 +340,16 @@ class NPCManager extends BaseManager {
       this.imageUpload = null;
     }
   }
+
+  /**
+   * Destroy manager - cleanup
+   */
+  destroy() {
+    this.cleanup();
+    console.log("NPC manager destroyed");
+  }
 }
 
-// Singleton
+// Create and export singleton instance
 const npcManager = new NPCManager();
 export default npcManager;

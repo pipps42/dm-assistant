@@ -415,9 +415,10 @@ export function generateDetail(environment) {
         <div class="detail-section">
             <div class="detail-section-header">
                 <h3 class="detail-section-title">Mappe (${maps.length})</h3>
-                <button class="btn btn-secondary btn-sm" data-action="add-map" data-id="${
-                  environment.id
-                }">
+                <button class="btn btn-secondary btn-sm" 
+                        data-action="add-map" 
+                        data-id="${environment.id}"
+                        data-entity-type="environments">
                     + Aggiungi Mappa
                 </button>
             </div>
@@ -446,9 +447,12 @@ export function generateDetail(environment) {
                                     }
                                 </div>
                                 <div class="map-card-actions">
-                                    <button class="btn btn-danger btn-small" data-action="remove-map" data-id="${
-                                      environment.id
-                                    }" data-map-id="${map.id}">
+                                    <button class="btn btn-danger btn-small"
+                                            data-action="remove-map"
+                                            data-entity-type="environments"
+                                            data-id="${
+                                              environment.id
+                                            }" data-map-id="${map.id}">
                                         Rimuovi
                                     </button>
                                 </div>
@@ -475,7 +479,10 @@ export function generateDetail(environment) {
                 })</h3>
                 ${
                   linkedNPCs.length === 0
-                    ? `<button class="btn btn-primary btn-small" data-action="add-npc" data-environment-id="${environment.id}">
+                    ? `<button class="btn btn-primary btn-small"
+                              data-action="add-npc"
+                              data-entity-type="environments"
+                              data-environment-id="${environment.id}">
                         + Aggiungi NPC
                        </button>`
                     : ""
@@ -503,9 +510,10 @@ export function generateDetail(environment) {
                                   : `<div class="npc-avatar-emoji">${npc.avatar}</div>`;
 
                                 return `
-                                    <div class="npc-item" data-action="view-npc" data-npc-id="${
-                                      npc.id
-                                    }">
+                                    <div class="npc-item"
+                                      data-action="view-npc"
+                                      data-entity-type="environments"
+                                      data-npc-id="${npc.id}">
                                         <div class="npc-avatar-container">${avatarDisplay}</div>
                                         <div class="npc-info">
                                             <h4 class="npc-name">${
@@ -552,15 +560,17 @@ export function generateDetail(environment) {
         </div>
         
         <div class="modal-footer">
-            <button class="btn btn-danger" data-action="delete" data-id="${
-              environment.id
-            }">
+            <button class="btn btn-danger" 
+                    data-action="delete" 
+                    data-id="${environment.id}"
+                    data-entity-type="environments">
                 Elimina Ambientazione
             </button>
             <div class="flex gap-1">
-                <button class="btn btn-secondary" data-action="edit" data-id="${
-                  environment.id
-                }">
+                <button class="btn btn-secondary" 
+                        data-action="edit" 
+                        data-id="${environment.id}"
+                        data-entity-type="environments">
                     Modifica
                 </button>
                 <button class="btn btn-primary" data-action="close">
