@@ -2,6 +2,7 @@
  * Manager Factory - Pattern per creare manager uniformemente
  * Centralizza la creazione e configurazione dei manager
  */
+import modalManager from "../ui/modal-manager.js";
 
 // Base interfaces for standardization
 export class IDetailHandler {
@@ -14,7 +15,11 @@ export class IDetailHandler {
   }
 
   refreshDetail(entityId) {
-    throw new Error("refreshDetail must be implemented");
+    const entity = this.manager.getById(entityId);
+    if (!entity) return;
+
+    const newContent = this.manager.templates.generateDetail(entity);
+    modalManager.updateCurrentContent(newContent);
   }
 
   destroy() {
@@ -95,11 +100,6 @@ export class ManagerFactory {
     }
 
     const manager = new config.ManagerClass();
-    /*       entityType,
-      config.templates,
-      config.options
-    );
- */
 
     // Initialize modular components
     this.initializeComponents(manager, config.components);

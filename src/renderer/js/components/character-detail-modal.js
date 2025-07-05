@@ -24,7 +24,7 @@ export default class CharacterDetailModal extends IDetailHandler {
         break;
 
       case "remove-adventure":
-        const adventureId = button.dataset.adventureId;
+        const adventureId = button.dataset.itemId;
         await this.removeAdventure(entity, adventureId);
         break;
 
@@ -41,8 +41,12 @@ export default class CharacterDetailModal extends IDetailHandler {
         break;
 
       case "remove-note":
-        const noteId = button.dataset.noteId;
+        const noteId = button.dataset.itemId;
         await this.removeNote(entity, noteId);
+        break;
+
+      case "export-sheet":
+        await this.exportCharacterSheet(entity);
         break;
 
       default:
@@ -64,22 +68,26 @@ export default class CharacterDetailModal extends IDetailHandler {
 
     if (!character.adventures) character.adventures = [];
 
-    character.adventures.push({
+    const newAdventure = {
       id: Date.now(),
       description: adventure.trim(),
       date: new Date().toISOString(),
       session: this.getCurrentSessionNumber(),
-    });
+      type: "adventure",
+    };
+
+    character.adventures.push(newAdventure);
 
     await this.manager.update(character.id, character);
     this.refreshDetail(character.id);
+    this.manager.showSuccess("Impresa aggiunta!");
   }
 
   /**
    * Rimuovi impresa dal personaggio
    */
   async removeAdventure(character, adventureId) {
-    if (!character.adventures) return;
+    if (!character.adventures || !adventureId) return;
 
     const confirmed = await modalManager.confirm({
       title: "Rimuovi Impresa",
@@ -88,66 +96,66 @@ export default class CharacterDetailModal extends IDetailHandler {
 
     if (!confirmed) return;
 
-    // Handle both ID and index for legacy data
+    // Convert to number for index-based removal
     const id = parseInt(adventureId);
-    if (!isNaN(id) && id < character.adventures.length) {
+
+    // First try ID-based removal (for object adventures)
+    const initialLength = character.adventures.length;
+    character.adventures = character.adventures.filter((adv) => {
+      // Handle object adventures with ID
+      if (typeof adv === "object" && adv.id) {
+        return adv.id != adventureId;
+      }
+      return true;
+    });
+
+    // If no removal happened and we have a valid index, try index-based removal
+    if (
+      character.adventures.length === initialLength &&
+      !isNaN(id) &&
+      id >= 0 &&
+      id < character.adventures.length
+    ) {
       character.adventures.splice(id, 1);
-    } else {
-      character.adventures = character.adventures.filter(
-        (adv) => adv.id != adventureId
-      );
     }
 
     await this.manager.update(character.id, character);
     this.refreshDetail(character.id);
+    this.manager.showSuccess("Impresa rimossa!");
   }
 
   /**
-   * Level up del personaggio
+   * Avanza di livello
    */
   async levelUp(character) {
     if (character.level >= 20) {
       this.manager.showError(
-        "Il personaggio ha già raggiunto il livello massimo (20)"
+        "Il personaggio ha già raggiunto il livello massimo!"
       );
       return;
     }
 
     const confirmed = await modalManager.confirm({
-      title: "Avanzamento di Livello",
-      message: `Fare avanzare ${character.name} dal livello ${
+      title: "Avanza Livello",
+      message: `Aumentare il livello di ${character.name} da ${
         character.level
-      } al livello ${character.level + 1}?`,
+      } a ${character.level + 1}?`,
       confirmText: "Avanza",
     });
 
     if (!confirmed) return;
 
-    // Calculate HP increase (could be random or average)
-    const hpIncrease = await modalManager.input({
-      title: "Aumento Punti Ferita",
-      label: `HP guadagnati al livello ${character.level + 1}:`,
-      placeholder: "Inserisci i punti ferita guadagnati",
-      inputType: "number",
-    });
+    const oldLevel = character.level;
+    character.level++;
 
-    const hpGain = parseInt(hpIncrease) || 0;
-
-    character.level += 1;
-    if (character.hitPoints && hpGain > 0) {
-      character.hitPoints += hpGain;
-    }
-
-    // Add level up adventure
+    // Add level-up adventure entry
     if (!character.adventures) character.adventures = [];
     character.adventures.push({
       id: Date.now(),
-      description: `Avanzamento al livello ${character.level}${
-        hpGain > 0 ? ` (+${hpGain} HP)` : ""
-      }`,
+      description: `Avanzato al livello ${character.level}`,
       date: new Date().toISOString(),
-      type: "level-up",
       session: this.getCurrentSessionNumber(),
+      type: "level-up",
     });
 
     await this.manager.update(character.id, character);
@@ -158,62 +166,62 @@ export default class CharacterDetailModal extends IDetailHandler {
   }
 
   /**
-   * Aggiorna HP del personaggio
+   * Aggiorna HP massimi
    */
   async updateHP(character) {
-    const currentHP = character.hitPoints || 0;
-
     const newHP = await modalManager.input({
-      title: "Aggiorna Punti Ferita",
-      label: `HP attuali: ${currentHP}. Nuovi HP massimi:`,
-      placeholder: currentHP.toString(),
+      title: "Aggiorna HP",
+      label: "Nuovi HP massimi:",
       inputType: "number",
+      placeholder: character.hitPoints?.toString() || "",
     });
 
-    if (!newHP || isNaN(parseInt(newHP))) return;
+    if (!newHP || isNaN(newHP) || newHP <= 0) return;
 
-    const hp = parseInt(newHP);
-    if (hp < 1 || hp > 999) {
-      this.manager.showError("I punti ferita devono essere tra 1 e 999");
-      return;
-    }
+    const oldHP = character.hitPoints;
+    character.hitPoints = parseInt(newHP);
 
-    character.hitPoints = hp;
     await this.manager.update(character.id, character);
     this.refreshDetail(character.id);
-    this.manager.showSuccess("Punti ferita aggiornati!");
+    this.manager.showSuccess(
+      `HP aggiornati da ${oldHP || "N/A"} a ${character.hitPoints}`
+    );
   }
 
   /**
    * Aggiungi nota al personaggio
    */
   async addNote(character) {
-    const note = await modalManager.input({
+    const noteText = await modalManager.input({
       title: "Aggiungi Nota",
-      label: "Nota sul personaggio:",
-      placeholder: "Es. Ha paura dei ragni, preferisce le armi a distanza...",
+      label: "Testo della nota:",
+      placeholder:
+        "Es. Ha un particolare legame con il PNG Marco, teme i ragni...",
     });
 
-    if (!note?.trim()) return;
+    if (!noteText?.trim()) return;
 
     if (!character.notes) character.notes = [];
 
-    character.notes.push({
+    const newNote = {
       id: Date.now(),
-      text: note.trim(),
+      text: noteText.trim(),
       date: new Date().toISOString(),
       session: this.getCurrentSessionNumber(),
-    });
+    };
+
+    character.notes.push(newNote);
 
     await this.manager.update(character.id, character);
     this.refreshDetail(character.id);
+    this.manager.showSuccess("Nota aggiunta!");
   }
 
   /**
    * Rimuovi nota dal personaggio
    */
   async removeNote(character, noteId) {
-    if (!character.notes) return;
+    if (!character.notes || !noteId) return;
 
     const confirmed = await modalManager.confirm({
       title: "Rimuovi Nota",
@@ -222,98 +230,76 @@ export default class CharacterDetailModal extends IDetailHandler {
 
     if (!confirmed) return;
 
-    character.notes = character.notes.filter((note) => note.id != noteId);
+    // Convert to number for index-based removal
+    const id = parseInt(noteId);
+
+    // First try ID-based removal (for object notes)
+    const initialLength = character.notes.length;
+    character.notes = character.notes.filter((note) => {
+      // Handle object notes with ID
+      if (typeof note === "object" && note.id) {
+        return note.id != noteId;
+      }
+      return true;
+    });
+
+    // If no removal happened and we have a valid index, try index-based removal
+    if (
+      character.notes.length === initialLength &&
+      !isNaN(id) &&
+      id >= 0 &&
+      id < character.notes.length
+    ) {
+      character.notes.splice(id, 1);
+    }
 
     await this.manager.update(character.id, character);
     this.refreshDetail(character.id);
+    this.manager.showSuccess("Nota rimossa!");
   }
 
   /**
-   * Refresh del contenuto della modale
-   */
-  refreshDetail(characterId) {
-    const character = this.manager.getById(characterId);
-    if (!character) return;
-
-    const newContent = this.manager.templates.generateDetail(character);
-    modalManager.updateCurrentContent(newContent);
-  }
-
-  /**
-   * Get current session number (could be enhanced with session tracking)
-   */
-  getCurrentSessionNumber() {
-    // This could be enhanced to track actual session numbers
-    const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
-      2,
-      "0"
-    )}-${String(now.getDate()).padStart(2, "0")}`;
-  }
-
-  /**
-   * Generate character sheet export
+   * Esporta scheda personaggio
    */
   async exportCharacterSheet(character) {
-    const adventures = character.adventures || [];
-    const notes = character.notes || [];
+    try {
+      const sheetData = {
+        name: character.name,
+        playerName: character.playerName,
+        race: character.race,
+        class: character.class,
+        level: character.level,
+        alignment: character.alignment,
+        hitPoints: character.hitPoints,
+        background: character.background,
+        adventures: character.adventures || [],
+        notes: character.notes || [],
+        exportDate: new Date().toISOString(),
+        exportedBy: "D&D Assistant",
+      };
 
-    const sheetData = {
-      name: character.name,
-      playerName: character.playerName,
-      race: character.race,
-      class: character.class,
-      level: character.level,
-      alignment: character.alignment,
-      hitPoints: character.hitPoints,
-      background: character.background,
-      adventures: adventures.map((adv) => ({
-        description: typeof adv === "string" ? adv : adv.description,
-        date: typeof adv === "object" ? adv.date : null,
-        session: typeof adv === "object" ? adv.session : null,
-      })),
-      notes: notes.map((note) => ({
-        text: note.text,
-        date: note.date,
-        session: note.session,
-      })),
-      exportDate: new Date().toISOString(),
-    };
+      const dataStr = JSON.stringify(sheetData, null, 2);
+      const dataBlob = new Blob([dataStr], { type: "application/json" });
 
-    const blob = new Blob([JSON.stringify(sheetData, null, 2)], {
-      type: "application/json",
-    });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${character.name.replace(/\s+/g, "_")}_scheda.json`;
+      link.click();
 
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${character.name.replace(/[^a-zA-Z0-9]/g, "_")}_sheet.json`;
-    a.click();
-
-    URL.revokeObjectURL(url);
-    this.manager.showSuccess("Scheda personaggio esportata!");
+      URL.revokeObjectURL(url);
+      this.manager.showSuccess("Scheda esportata!");
+    } catch (error) {
+      console.error("Export error:", error);
+      this.manager.showError("Errore durante l'esportazione");
+    }
   }
 
   /**
-   * Create character backup
+   * Ottieni numero sessione corrente (placeholder)
    */
-  async createCharacterBackup(character) {
-    const backup = {
-      ...character,
-      backupDate: new Date().toISOString(),
-      backupReason: "Manual backup",
-    };
-
-    // Store in a hypothetical backup system
-    // For now, just export as file
-    this.exportCharacterSheet(backup);
-  }
-
-  /**
-   * Cleanup
-   */
-  destroy() {
-    // Cleanup any character-specific resources
-    console.log("Character detail modal handler destroyed");
+  getCurrentSessionNumber() {
+    // TODO: Implementare sistema di tracking sessioni
+    return new Date().toLocaleDateString("it-IT");
   }
 }

@@ -83,7 +83,7 @@ class DMAssistantApp {
   }
 
   /**
-   * 🆕 Setup system commands for advanced functionality
+   * Setup system commands for advanced functionality
    */
   setupSystemCommands() {
     // Global keyboard shortcuts for system functions
@@ -118,7 +118,7 @@ class DMAssistantApp {
   }
 
   /**
-   * 🆕 Add system menu to header
+   * Add system menu to header
    */
   addSystemMenu() {
     const header = document.querySelector(".app-header");
@@ -196,7 +196,7 @@ class DMAssistantApp {
   }
 
   /**
-   * 🆕 Open global search modal
+   * Open global search modal
    */
   async openGlobalSearch() {
     const query = await modalManager.input({
@@ -217,7 +217,7 @@ class DMAssistantApp {
   }
 
   /**
-   * 🆕 Show search results in modal
+   * Show search results in modal
    */
   showSearchResults(results, query) {
     const totalResults = Object.values(results).reduce(
@@ -289,7 +289,7 @@ class DMAssistantApp {
   }
 
   /**
-   * 🆕 Show system statistics
+   * Show system statistics
    */
   showSystemStats() {
     const stats = ManagerRegistry.getSystemStats();
@@ -343,7 +343,7 @@ class DMAssistantApp {
   }
 
   /**
-   * 🆕 Perform and show health check
+   * Perform and show health check
    */
   performHealthCheck() {
     const health = SystemUtilities.performHealthCheck();
@@ -410,7 +410,7 @@ class DMAssistantApp {
   }
 
   /**
-   * 🆕 Generate test data
+   * Generate test data
    */
   async generateTestData() {
     const confirmed = await modalManager.confirm({
@@ -513,7 +513,7 @@ class DMAssistantApp {
     }
   }
 
-  // 🆕 NUOVI METODI DI UTILITÀ
+  // ========== UTILITIES ==========
 
   getEntityDisplayName(entityType) {
     const names = {
@@ -556,7 +556,7 @@ class DMAssistantApp {
     }
   }
 
-  // METODI ESISTENTI CONSERVATI
+  // ========== CONTEXT MENU ==========
 
   setupContextMenu() {
     document.addEventListener("contextmenu", (e) => {
@@ -729,7 +729,7 @@ class DMAssistantApp {
     this.showNotification(message, "error", 6000);
   }
 
-  // 🆕 METODI MIGLIORATI
+  // ========== DATA ==========
 
   async exportAllData() {
     return await SystemUtilities.exportAllData();

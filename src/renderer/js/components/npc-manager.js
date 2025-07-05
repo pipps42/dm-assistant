@@ -35,12 +35,6 @@ class NPCFormHandler extends IFormHandler {
       if (data[field]) data[field] = data[field].trim();
     });
 
-    // Ensure arrays exist
-    if (!data.interactions) data.interactions = [];
-    if (!data.relationships) data.relationships = [];
-    if (!data.quests) data.quests = [];
-    if (!data.dialogues) data.dialogues = [];
-
     // Process dialogue field if present
     if (data.dialogue && typeof data.dialogue === "string") {
       const dialogues = data.dialogue

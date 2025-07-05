@@ -1,5 +1,6 @@
 /**
  * NPC Detail Modal Handler - Gestione modale dettaglio NPC
+ * FIXED: Data attributes per compatibilità con shared-templates
  */
 import { IDetailHandler } from "./manager-factory.js";
 import modalManager from "../ui/modal-manager.js";
@@ -24,7 +25,7 @@ export default class NPCDetailModal extends IDetailHandler {
         break;
 
       case "remove-interaction":
-        const interactionId = button.dataset.interactionId;
+        const interactionId = button.dataset.itemId;
         await this.removeInteraction(entity, interactionId);
         break;
 
@@ -37,7 +38,7 @@ export default class NPCDetailModal extends IDetailHandler {
         break;
 
       case "remove-relationship":
-        const relationshipId = button.dataset.relationshipId;
+        const relationshipId = button.dataset.itemId;
         await this.removeRelationship(entity, relationshipId);
         break;
 
@@ -46,7 +47,7 @@ export default class NPCDetailModal extends IDetailHandler {
         break;
 
       case "remove-quest":
-        const questId = button.dataset.questId;
+        const questId = button.dataset.itemId;
         await this.removeQuest(entity, questId);
         break;
 
@@ -59,7 +60,7 @@ export default class NPCDetailModal extends IDetailHandler {
         break;
 
       case "remove-dialogue":
-        const dialogueId = button.dataset.dialogueId;
+        const dialogueId = button.dataset.itemId;
         await this.removeDialogue(entity, dialogueId);
         break;
 
@@ -87,13 +88,15 @@ export default class NPCDetailModal extends IDetailHandler {
 
     if (!npc.interactions) npc.interactions = [];
 
-    npc.interactions.push({
+    const newInteraction = {
       id: Date.now(),
       description: interaction.trim(),
       date: new Date().toISOString(),
       session: this.getCurrentSessionNumber(),
       type: "interaction",
-    });
+    };
+
+    npc.interactions.push(newInteraction);
 
     await this.manager.update(npc.id, npc);
     this.refreshDetail(npc.id);
@@ -104,7 +107,7 @@ export default class NPCDetailModal extends IDetailHandler {
    * Rimuovi interazione dall'NPC
    */
   async removeInteraction(npc, interactionId) {
-    if (!npc.interactions) return;
+    if (!npc.interactions || !interactionId) return;
 
     const confirmed = await modalManager.confirm({
       title: "Rimuovi Interazione",
@@ -113,18 +116,32 @@ export default class NPCDetailModal extends IDetailHandler {
 
     if (!confirmed) return;
 
-    // Handle both ID and index for legacy data
+    // Convert to number for index-based removal
     const id = parseInt(interactionId);
-    if (!isNaN(id) && id < npc.interactions.length) {
+
+    // First try ID-based removal (for object interactions)
+    const initialLength = npc.interactions.length;
+    npc.interactions = npc.interactions.filter((interaction) => {
+      // Handle object interactions with ID
+      if (typeof interaction === "object" && interaction.id) {
+        return interaction.id != interactionId;
+      }
+      return true;
+    });
+
+    // If no removal happened and we have a valid index, try index-based removal
+    if (
+      npc.interactions.length === initialLength &&
+      !isNaN(id) &&
+      id >= 0 &&
+      id < npc.interactions.length
+    ) {
       npc.interactions.splice(id, 1);
-    } else {
-      npc.interactions = npc.interactions.filter(
-        (int) => int.id != interactionId
-      );
     }
 
     await this.manager.update(npc.id, npc);
     this.refreshDetail(npc.id);
+    this.manager.showSuccess("Interazione rimossa!");
   }
 
   /**
@@ -220,7 +237,7 @@ export default class NPCDetailModal extends IDetailHandler {
    * Rimuovi relazione
    */
   async removeRelationship(npc, relationshipId) {
-    if (!npc.relationships) return;
+    if (!npc.relationships || !relationshipId) return;
 
     const confirmed = await modalManager.confirm({
       title: "Rimuovi Relazione",
@@ -229,23 +246,42 @@ export default class NPCDetailModal extends IDetailHandler {
 
     if (!confirmed) return;
 
-    npc.relationships = npc.relationships.filter(
-      (rel) => rel.id != relationshipId
-    );
+    // Convert to number for index-based removal
+    const id = parseInt(relationshipId);
+
+    // First try ID-based removal
+    const initialLength = npc.relationships.length;
+    npc.relationships = npc.relationships.filter((rel) => {
+      if (typeof rel === "object" && rel.id) {
+        return rel.id != relationshipId;
+      }
+      return true;
+    });
+
+    // If no removal happened and we have a valid index, try index-based removal
+    if (
+      npc.relationships.length === initialLength &&
+      !isNaN(id) &&
+      id >= 0 &&
+      id < npc.relationships.length
+    ) {
+      npc.relationships.splice(id, 1);
+    }
 
     await this.manager.update(npc.id, npc);
     this.refreshDetail(npc.id);
+    this.manager.showSuccess("Relazione rimossa!");
   }
 
   /**
-   * Aggiungi quest/missione
+   * Aggiungi quest collegata all'NPC
    */
   async addQuest(npc) {
     const questDesc = await modalManager.input({
       title: "Aggiungi Quest",
-      label: "Descrivi la quest che può offrire:",
+      label: "Descrivi la quest:",
       placeholder:
-        "Es. Recuperare l'anello perduto della nonna, scortare un carico verso la città...",
+        "Es. Cerca la spada perduta, elimina i banditi sulla strada per il villaggio...",
     });
 
     if (!questDesc?.trim()) return;
@@ -255,10 +291,9 @@ export default class NPCDetailModal extends IDetailHandler {
     npc.quests.push({
       id: Date.now(),
       description: questDesc.trim(),
-      status: "available", // available, active, completed
+      status: "available", // available, in-progress, completed, failed
       date: new Date().toISOString(),
-      reward: "",
-      difficulty: "medium",
+      session: this.getCurrentSessionNumber(),
     });
 
     await this.manager.update(npc.id, npc);
@@ -270,7 +305,7 @@ export default class NPCDetailModal extends IDetailHandler {
    * Rimuovi quest
    */
   async removeQuest(npc, questId) {
-    if (!npc.quests) return;
+    if (!npc.quests || !questId) return;
 
     const confirmed = await modalManager.confirm({
       title: "Rimuovi Quest",
@@ -279,10 +314,31 @@ export default class NPCDetailModal extends IDetailHandler {
 
     if (!confirmed) return;
 
-    npc.quests = npc.quests.filter((quest) => quest.id != questId);
+    // Convert to number for index-based removal
+    const id = parseInt(questId);
+
+    // First try ID-based removal
+    const initialLength = npc.quests.length;
+    npc.quests = npc.quests.filter((quest) => {
+      if (typeof quest === "object" && quest.id) {
+        return quest.id != questId;
+      }
+      return true;
+    });
+
+    // If no removal happened and we have a valid index, try index-based removal
+    if (
+      npc.quests.length === initialLength &&
+      !isNaN(id) &&
+      id >= 0 &&
+      id < npc.quests.length
+    ) {
+      npc.quests.splice(id, 1);
+    }
 
     await this.manager.update(npc.id, npc);
     this.refreshDetail(npc.id);
+    this.manager.showSuccess("Quest rimossa!");
   }
 
   /**
@@ -352,7 +408,7 @@ export default class NPCDetailModal extends IDetailHandler {
    * Rimuovi dialogo
    */
   async removeDialogue(npc, dialogueId) {
-    if (!npc.dialogues) return;
+    if (!npc.dialogues || !dialogueId) return;
 
     const confirmed = await modalManager.confirm({
       title: "Rimuovi Dialogo",
@@ -361,12 +417,31 @@ export default class NPCDetailModal extends IDetailHandler {
 
     if (!confirmed) return;
 
-    npc.dialogues = npc.dialogues.filter(
-      (dialogue) => dialogue.id != dialogueId
-    );
+    // Convert to number for index-based removal
+    const id = parseInt(dialogueId);
+
+    // First try ID-based removal
+    const initialLength = npc.dialogues.length;
+    npc.dialogues = npc.dialogues.filter((dialogue) => {
+      if (typeof dialogue === "object" && dialogue.id) {
+        return dialogue.id != dialogueId;
+      }
+      return true;
+    });
+
+    // If no removal happened and we have a valid index, try index-based removal
+    if (
+      npc.dialogues.length === initialLength &&
+      !isNaN(id) &&
+      id >= 0 &&
+      id < npc.dialogues.length
+    ) {
+      npc.dialogues.splice(id, 1);
+    }
 
     await this.manager.update(npc.id, npc);
     this.refreshDetail(npc.id);
+    this.manager.showSuccess("Dialogo rimosso!");
   }
 
   /**
@@ -374,6 +449,11 @@ export default class NPCDetailModal extends IDetailHandler {
    */
   async changeEnvironment(npc) {
     const environments = window.dataStore?.get("environments") || [];
+
+    if (environments.length === 0) {
+      this.manager.showError("Nessuna ambientazione disponibile");
+      return;
+    }
 
     const environmentOptions = [
       '<option value="">Nessuna ambientazione specifica</option>',
@@ -385,108 +465,49 @@ export default class NPCDetailModal extends IDetailHandler {
       ),
     ].join("");
 
-    // This would need a custom modal for select - simplified for now
-    const environmentName = await modalManager.input({
+    const newEnvironmentId = await modalManager.input({
       title: "Cambia Ambientazione",
-      label: "Seleziona nuova ambientazione:",
-      placeholder: "Nome dell'ambientazione (o vuoto per rimuovere)",
+      label: "Nuova ambientazione:",
+      inputType: "select",
+      placeholder: `
+        <select class="form-select" id="modal-input">
+          ${environmentOptions}
+        </select>
+      `,
     });
 
-    if (environmentName === null) return; // User cancelled
+    if (newEnvironmentId === null) return; // User cancelled
 
-    let newEnvironmentId = null;
-    if (environmentName?.trim()) {
-      const foundEnv = environments.find((env) =>
-        env.name.toLowerCase().includes(environmentName.toLowerCase())
-      );
-      if (foundEnv) {
-        newEnvironmentId = foundEnv.id;
-      } else {
-        this.manager.showError("Ambientazione non trovata");
-        return;
-      }
-    }
+    const oldEnvironmentId = npc.environmentId;
+    npc.environmentId = newEnvironmentId || null;
 
-    const oldEnvironment = environments.find(
-      (env) => env.id == npc.environmentId
-    );
-    const newEnvironment = environments.find(
-      (env) => env.id == newEnvironmentId
-    );
+    const oldEnv = environments.find((env) => env.id == oldEnvironmentId);
+    const newEnv = environments.find((env) => env.id == newEnvironmentId);
 
-    npc.environmentId = newEnvironmentId;
+    const changeDesc = `Spostato da "${oldEnv?.name || "Libera"}" a "${
+      newEnv?.name || "Libera"
+    }"`;
 
     // Add interaction for environment change
     if (!npc.interactions) npc.interactions = [];
     npc.interactions.push({
       id: Date.now(),
-      description: `Spostato da "${
-        oldEnvironment?.name || "nessuna ambientazione"
-      }" a "${newEnvironment?.name || "nessuna ambientazione"}"`,
+      description: changeDesc,
       date: new Date().toISOString(),
       session: this.getCurrentSessionNumber(),
-      type: "location-change",
+      type: "environment-change",
     });
 
     await this.manager.update(npc.id, npc);
     this.refreshDetail(npc.id);
-    this.manager.showSuccess("Ambientazione cambiata!");
+    this.manager.showSuccess(`Ambientazione cambiata: ${changeDesc}`);
   }
 
   /**
-   * Refresh del contenuto della modale
-   */
-  refreshDetail(npcId) {
-    const npc = this.manager.getById(npcId);
-    if (!npc) return;
-
-    const newContent = this.manager.templates.generateDetail(npc);
-    modalManager.updateCurrentContent(newContent);
-  }
-
-  /**
-   * Get current session number
+   * Ottieni numero sessione corrente (placeholder)
    */
   getCurrentSessionNumber() {
-    const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
-      2,
-      "0"
-    )}-${String(now.getDate()).padStart(2, "0")}`;
-  }
-
-  /**
-   * Generate NPC session report
-   */
-  generateNPCReport(npc) {
-    const interactions = npc.interactions || [];
-    const recentInteractions = interactions.filter((int) => {
-      const intDate = new Date(int.date);
-      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-      return intDate > weekAgo;
-    });
-
-    return {
-      name: npc.name,
-      attitude: npc.attitude,
-      profession: npc.profession,
-      environment: npc.environmentId,
-      totalInteractions: interactions.length,
-      recentInteractions: recentInteractions.length,
-      hasSecrets: !!npc.secrets && !npc.secretRevealed,
-      lastInteraction:
-        interactions.length > 0
-          ? interactions[interactions.length - 1].date
-          : null,
-      quests: npc.quests || [],
-      relationships: npc.relationships || [],
-    };
-  }
-
-  /**
-   * Cleanup
-   */
-  destroy() {
-    console.log("NPC detail modal handler destroyed");
+    // TODO: Implementare sistema di tracking sessioni
+    return new Date().toLocaleDateString("it-IT");
   }
 }

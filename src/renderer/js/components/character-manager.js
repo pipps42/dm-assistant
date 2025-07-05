@@ -32,10 +32,6 @@ class CharacterFormHandler extends IFormHandler {
       if (data[field]) data[field] = data[field].trim();
     });
 
-    // Ensure arrays exist
-    if (!data.adventures) data.adventures = [];
-    if (!data.notes) data.notes = [];
-
     // Convert equipment if present
     if (data.equipment && typeof data.equipment === "string") {
       data.equipment = data.equipment
