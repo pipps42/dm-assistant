@@ -1,21 +1,22 @@
 /**
- * Character Manager - Versione Ultra-Semplice
- * Zero listener duplicati, funziona sempre
+ * Modular Character Manager - Versione completamente modulare
  */
 import BaseManager from "../core/base-manager.js";
 import * as CharacterTemplates from "../templates/character-templates.js";
 import ImageUpload from "../ui/image-upload.js";
-import modalManager from "../ui/modal-manager.js";
+import CharacterDetailModal from "./character-detail-modal.js";
+import CharacterUtils from "./character-utils.js";
+import { IFormHandler } from "./manager-factory.js";
 
-class CharacterManager extends BaseManager {
-  constructor() {
-    super("characters", CharacterTemplates);
+/**
+ * Character Form Handler - Gestione specifica dei form personaggi
+ */
+class CharacterFormHandler extends IFormHandler {
+  constructor(manager) {
+    super(manager);
     this.imageUpload = null;
   }
 
-  /**
-   * Process form data specifico per i personaggi
-   */
   processFormData(data) {
     // Convert strings to numbers
     data.level = parseInt(data.level) || 1;
@@ -31,13 +32,19 @@ class CharacterManager extends BaseManager {
       if (data[field]) data[field] = data[field].trim();
     });
 
-    // Ensure adventures array exists
+    // Ensure arrays exist
     if (!data.adventures) data.adventures = [];
+    if (!data.notes) data.notes = [];
+
+    // Convert equipment if present
+    if (data.equipment && typeof data.equipment === "string") {
+      data.equipment = data.equipment
+        .split("\n")
+        .map((item) => item.trim())
+        .filter((item) => item);
+    }
   }
 
-  /**
-   * Setup componenti specifici del form personaggi
-   */
   setupFormComponents(entity, mode) {
     // Setup image upload
     const uploadContainer = document.getElementById("character-avatar-upload");
@@ -58,100 +65,166 @@ class CharacterManager extends BaseManager {
         this.imageUpload.setValue(entity.avatar);
       }
     }
+
+    // Setup level-based HP suggestion
+    this.setupHPSuggestion(entity);
+
+    // Setup background templates
+    this.setupBackgroundTemplates();
   }
 
-  /**
-   * Gestisce azioni specifiche del detail personaggi
-   * Chiamato dal listener globale del BaseManager
-   */
-  async handleDetailAction(action, entity, button) {
-    switch (action) {
-      case "add-adventure":
-        await this.addAdventure(entity);
-        break;
+  setupHPSuggestion(entity) {
+    const levelInput = document.querySelector('input[name="level"]');
+    const hpInput = document.querySelector('input[name="hitPoints"]');
+    const classSelect = document.querySelector('select[name="class"]');
 
-      case "remove-adventure":
-        const adventureId = button.dataset.adventureId;
-        await this.removeAdventure(entity, adventureId);
-        break;
+    if (!levelInput || !hpInput || !classSelect) return;
+
+    const updateHPSuggestion = () => {
+      const level = parseInt(levelInput.value) || 1;
+      const characterClass = classSelect.value;
+
+      if (characterClass && !hpInput.value) {
+        const suggestedHP = this.calculateSuggestedHP(characterClass, level);
+        hpInput.placeholder = `Suggerito: ${suggestedHP}`;
+      }
+    };
+
+    levelInput.addEventListener("change", updateHPSuggestion);
+    classSelect.addEventListener("change", updateHPSuggestion);
+
+    // Initial calculation
+    updateHPSuggestion();
+  }
+
+  calculateSuggestedHP(characterClass, level) {
+    const hitDice = {
+      Barbaro: 12,
+      Guerriero: 10,
+      Paladino: 10,
+      Ranger: 10,
+      Bardo: 8,
+      Chierico: 8,
+      Druido: 8,
+      Monaco: 8,
+      Ladro: 8,
+      Warlock: 8,
+      Stregone: 6,
+      Mago: 6,
+    };
+
+    const hitDie = hitDice[characterClass] || 8;
+    const averageRoll = hitDie / 2 + 1;
+
+    // First level gets max hit die + subsequent levels get average
+    return hitDie + Math.floor(averageRoll * (level - 1));
+  }
+
+  setupBackgroundTemplates() {
+    const backgroundTextarea = document.querySelector(
+      'textarea[name="background"]'
+    );
+    if (!backgroundTextarea) return;
+
+    // Add background template suggestions
+    const templatesContainer = document.createElement("div");
+    templatesContainer.className = "background-templates";
+    templatesContainer.innerHTML = `
+      <small class="form-help">
+        <strong>Template suggeriti:</strong>
+        <button type="button" class="btn-link template-btn" data-template="hero">Eroe Classico</button>
+        <button type="button" class="btn-link template-btn" data-template="mysterious">Passato Misterioso</button>
+        <button type="button" class="btn-link template-btn" data-template="noble">Nobile Decaduto</button>
+        <button type="button" class="btn-link template-btn" data-template="scholar">Studioso</button>
+      </small>
+    `;
+
+    backgroundTextarea.parentNode.appendChild(templatesContainer);
+
+    // Handle template clicks
+    templatesContainer.addEventListener("click", (e) => {
+      const templateBtn = e.target.closest(".template-btn");
+      if (!templateBtn) return;
+
+      const template = this.getBackgroundTemplate(templateBtn.dataset.template);
+      if (template && !backgroundTextarea.value.trim()) {
+        backgroundTextarea.value = template;
+      }
+    });
+  }
+
+  getBackgroundTemplate(type) {
+    const templates = {
+      hero: "Nato in un piccolo villaggio, ha sempre sentito il richiamo dell'avventura. Un evento tragico lo ha spinto a intraprendere il cammino dell'eroe per proteggere gli innocenti e fare giustizia.",
+      mysterious:
+        "Il suo passato è avvolto nel mistero. Pochi ricordi frammentari e cicatrici raccontano di una vita precedente che preferisce tenere nascosta. Solo il tempo rivelerà la verità.",
+      noble:
+        "Un tempo membro di una famiglia nobile, ha perso tutto a causa di intrighi politici. Ora cerca di ricostruire il proprio onore e di vendicare i torti subiti.",
+      scholar:
+        "Dedicato allo studio delle arti arcane e dei misteri del mondo, ha lasciato la sua torre d'avorio per mettere alla prova le sue conoscenze nel mondo reale.",
+    };
+
+    return templates[type] || "";
+  }
+
+  destroy() {
+    if (this.imageUpload) {
+      this.imageUpload.destroy();
+      this.imageUpload = null;
     }
   }
+}
 
-  /**
-   * Aggiungi impresa al personaggio
-   */
-  async addAdventure(character) {
-    const adventure = await modalManager.input({
-      title: "Aggiungi Impresa",
-      label: "Descrivi l'impresa:",
-      placeholder: "Es. Ha sconfitto il drago rosso...",
+/**
+ * Main Character Manager Class
+ */
+class CharacterManager extends BaseManager {
+  constructor() {
+    super("characters", CharacterTemplates, {
+      hasDetailView: false, // Uses modal
+      hasUtils: true,
+      hasFormComponents: true,
     });
 
-    if (!adventure?.trim()) return;
+    this.initializeComponents();
+  }
 
-    if (!character.adventures) character.adventures = [];
+  initializeComponents() {
+    // Initialize modular components
+    this.detailHandler = new CharacterDetailModal(this);
+    this.utils = new CharacterUtils(this);
+    this.formHandler = new CharacterFormHandler(this);
+  }
 
-    character.adventures.push({
-      id: Date.now(),
-      description: adventure.trim(),
-      date: new Date().toISOString(),
-    });
-
-    await this.update(character.id, character);
-
-    // REFRESH SEMPLICE - aggiorna solo il contenuto
-    const updatedCharacter = this.getById(character.id);
-    if (updatedCharacter) {
-      const newContent = this.templates.generateDetail(updatedCharacter);
-      modalManager.updateCurrentContent(newContent);
+  /**
+   * Process form data - delegate to form handler
+   */
+  processFormData(data) {
+    if (this.formHandler) {
+      this.formHandler.processFormData(data);
     }
   }
 
   /**
-   * Rimuovi impresa dal personaggio
+   * Setup form components - delegate to form handler
    */
-  async removeAdventure(character, adventureId) {
-    if (!character.adventures) return;
-
-    // Handle both ID and index for legacy data
-    const id = parseInt(adventureId);
-    if (!isNaN(id) && id < character.adventures.length) {
-      character.adventures.splice(id, 1);
-    } else {
-      character.adventures = character.adventures.filter(
-        (adv) => adv.id != adventureId
-      );
-    }
-
-    await this.update(character.id, character);
-
-    // REFRESH SEMPLICE - aggiorna solo il contenuto
-    const updatedCharacter = this.getById(character.id);
-    if (updatedCharacter) {
-      const newContent = this.templates.generateDetail(updatedCharacter);
-      modalManager.updateCurrentContent(newContent);
+  setupFormComponents(entity, mode) {
+    if (this.formHandler) {
+      this.formHandler.setupFormComponents(entity, mode);
     }
   }
+
+  // ========== DELEGATE METHODS TO UTILS ==========
 
   /**
    * Get characters for encounter selection
    */
   getCharactersForEncounter() {
-    return this.getAll().map((character) => ({
-      id: character.id,
-      name: character.name,
-      type: "character",
-      avatar: character.avatar,
-      playerName: character.playerName,
-      level: character.level,
-      class: character.class,
-      race: character.race,
-      hitPoints: character.hitPoints,
-    }));
+    return this.utils.getCharactersForEncounter();
   }
 
   /**
-   * Generate character list for selection
+   * Generate character selection list
    */
   generateSelectionList() {
     const characters = this.getAll();
@@ -164,119 +237,173 @@ class CharacterManager extends BaseManager {
    * Get character statistics
    */
   getCharacterStats() {
-    const characters = this.getAll();
-
-    const stats = {
-      total: characters.length,
-      levelCounts: {},
-      classCounts: {},
-      raceCounts: {},
-      recent: 0,
-      totalAdventures: 0,
-    };
-
-    characters.forEach((character) => {
-      // Count by level
-      stats.levelCounts[character.level] =
-        (stats.levelCounts[character.level] || 0) + 1;
-
-      // Count by class
-      stats.classCounts[character.class] =
-        (stats.classCounts[character.class] || 0) + 1;
-
-      // Count by race
-      if (character.race) {
-        stats.raceCounts[character.race] =
-          (stats.raceCounts[character.race] || 0) + 1;
-      }
-
-      // Count recent (last week)
-      const created = new Date(character.createdAt || 0);
-      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-      if (created > weekAgo) {
-        stats.recent++;
-      }
-
-      // Count total adventures
-      stats.totalAdventures += character.adventures
-        ? character.adventures.length
-        : 0;
-    });
-
-    // Calculate average level
-    stats.averageLevel =
-      characters.length > 0
-        ? characters.reduce((sum, char) => sum + char.level, 0) /
-          characters.length
-        : 0;
-
-    return stats;
+    return this.utils.getEntityStats();
   }
 
   /**
-   * Export character data
+   * Export characters with options
    */
-  exportCharacters() {
-    const characters = this.getAll();
-    const exportData = {
-      characters,
-      exportDate: new Date().toISOString(),
-      version: "1.0",
-    };
-
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: "application/json",
-    });
-
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `dnd-characters-${
-      new Date().toISOString().split("T")[0]
-    }.json`;
-    a.click();
-
-    URL.revokeObjectURL(url);
-    this.showSuccess("Personaggi esportati!");
+  exportCharacters(options = {}) {
+    return this.utils.exportEntities(options);
   }
 
   /**
-   * Search characters by name, class, or race
+   * Search characters
    */
   searchCharacters(query) {
-    const searchTerm = query.toLowerCase();
-    return this.getAll().filter(
-      (char) =>
-        char.name.toLowerCase().includes(searchTerm) ||
-        char.class.toLowerCase().includes(searchTerm) ||
-        (char.race && char.race.toLowerCase().includes(searchTerm)) ||
-        (char.playerName && char.playerName.toLowerCase().includes(searchTerm))
-    );
+    return this.utils.searchEntities(query);
   }
 
   /**
-   * Get characters by level range
+   * Get characters by various criteria
    */
   getCharactersByLevel(minLevel, maxLevel) {
-    return this.getAll().filter(
-      (char) => char.level >= minLevel && char.level <= maxLevel
+    return this.utils.getCharactersByLevel(minLevel, maxLevel);
+  }
+
+  getCharactersByClass(className) {
+    return this.utils.getCharactersByClass(className);
+  }
+
+  getCharactersByRace(race) {
+    return this.utils.getCharactersByRace(race);
+  }
+
+  getCharactersByPlayer(playerName) {
+    return this.utils.getCharactersByPlayer(playerName);
+  }
+
+  getMostActiveCharacters(limit = 10) {
+    return this.utils.getMostActiveCharacters(limit);
+  }
+
+  getCharactersNeedingAttention() {
+    return this.utils.getCharactersNeedingAttention();
+  }
+
+  /**
+   * Party analysis
+   */
+  analyzePartyComposition(characterIds) {
+    return this.utils.analyzePartyComposition(characterIds);
+  }
+
+  getRandomCharacter(criteria = {}) {
+    return this.utils.getRandomCharacter(criteria);
+  }
+
+  // ========== QUICK ACTIONS ==========
+
+  /**
+   * Quick level up for multiple characters
+   */
+  async bulkLevelUp(characterIds, levels = 1) {
+    const characters = characterIds
+      .map((id) => this.getById(id))
+      .filter(Boolean);
+
+    if (characters.length === 0) {
+      this.showError("Nessun personaggio selezionato");
+      return;
+    }
+
+    const confirmed = await modalManager.confirm({
+      title: "Avanzamento di Livello Multiplo",
+      message: `Fare avanzare ${characters.length} personaggi di ${levels} livello/i?`,
+      confirmText: "Avanza Tutti",
+    });
+
+    if (!confirmed) return;
+
+    let updated = 0;
+    for (const character of characters) {
+      if (character.level + levels <= 20) {
+        character.level += levels;
+
+        // Add adventure entry
+        if (!character.adventures) character.adventures = [];
+        character.adventures.push({
+          id: Date.now() + Math.random(),
+          description: `Avanzamento di ${levels} livello/i (bulk operation)`,
+          date: new Date().toISOString(),
+          type: "level-up",
+          session: new Date().toISOString().split("T")[0],
+        });
+
+        await this.update(character.id, character);
+        updated++;
+      }
+    }
+
+    this.showSuccess(
+      `${updated} personaggi hanno guadagnato ${levels} livello/i!`
     );
   }
 
   /**
-   * Get characters by class
+   * Quick note addition to multiple characters
    */
-  getCharactersByClass(className) {
-    return this.getAll().filter((char) => char.class === className);
+  async addNoteToMultiple(characterIds, note) {
+    const characters = characterIds
+      .map((id) => this.getById(id))
+      .filter(Boolean);
+
+    if (characters.length === 0 || !note?.trim()) return;
+
+    for (const character of characters) {
+      if (!character.notes) character.notes = [];
+
+      character.notes.push({
+        id: Date.now() + Math.random(),
+        text: note.trim(),
+        date: new Date().toISOString(),
+        session: new Date().toISOString().split("T")[0],
+      });
+
+      await this.update(character.id, character);
+    }
+
+    this.showSuccess(`Nota aggiunta a ${characters.length} personaggi!`);
+  }
+
+  // ========== CAMPAIGN INTEGRATION ==========
+
+  /**
+   * Create session report for characters
+   */
+  generateSessionReport(characterIds, sessionNotes = "") {
+    const characters = characterIds
+      .map((id) => this.getById(id))
+      .filter(Boolean);
+    const sessionDate = new Date().toISOString().split("T")[0];
+
+    const report = {
+      date: sessionDate,
+      characters: characters.map((char) => ({
+        name: char.name,
+        player: char.playerName,
+        level: char.level,
+        class: char.class,
+        race: char.race,
+        recentAdventures: (char.adventures || [])
+          .filter(
+            (adv) => typeof adv === "object" && adv.session === sessionDate
+          )
+          .map((adv) => adv.description),
+      })),
+      notes: sessionNotes,
+      partyAnalysis: this.analyzePartyComposition(characterIds),
+    };
+
+    return report;
   }
 
   /**
    * Cleanup quando necessario
    */
   cleanup() {
-    if (this.imageUpload) {
-      this.imageUpload.destroy();
-      this.imageUpload = null;
+    if (this.formHandler) {
+      this.formHandler.destroy();
     }
   }
 
@@ -285,10 +412,10 @@ class CharacterManager extends BaseManager {
    */
   destroy() {
     this.cleanup();
-    console.log("Character manager destroyed");
+    super.destroy();
   }
 }
 
 // Create and export singleton instance
-const characterManager = new CharacterManager();
-export default characterManager;
+export default CharacterManager;
+export const characterManager = new CharacterManager();

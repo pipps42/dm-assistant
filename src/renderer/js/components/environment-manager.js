@@ -278,5 +278,5 @@ class EnvironmentManager extends BaseManager {
 }
 
 // Create and export singleton instance
-const environmentManager = new EnvironmentManager();
-export default environmentManager;
+export default EnvironmentManager;
+export const environmentManager = new EnvironmentManager();

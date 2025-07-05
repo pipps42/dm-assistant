@@ -1,25 +1,28 @@
 /**
- * NPC Manager - Versione Ultra-Semplice
- * Zero listener duplicati, funziona sempre
+ * Modular NPC Manager - Versione completamente modulare
  */
 import BaseManager from "../core/base-manager.js";
 import * as NPCTemplates from "../templates/npc-templates.js";
 import ImageUpload from "../ui/image-upload.js";
-import modalManager from "../ui/modal-manager.js";
+import NPCDetailModal from "./npc-detail-modal.js";
+import NPCUtils from "./npc-utils.js";
+import { IFormHandler } from "./manager-factory.js";
 
-class NPCManager extends BaseManager {
-  constructor() {
-    super("npcs", NPCTemplates);
+/**
+ * NPC Form Handler - Gestione specifica dei form NPC
+ */
+class NPCFormHandler extends IFormHandler {
+  constructor(manager) {
+    super(manager);
     this.imageUpload = null;
   }
 
-  /**
-   * Process form data specifico per gli NPC
-   */
   processFormData(data) {
     // Convert environmentId to number or null
-    if (data.environmentId == "") {
+    if (data.environmentId === "" || data.environmentId === "null") {
       data.environmentId = null;
+    } else if (data.environmentId) {
+      data.environmentId = parseInt(data.environmentId);
     }
 
     // Get avatar from image upload
@@ -32,13 +35,30 @@ class NPCManager extends BaseManager {
       if (data[field]) data[field] = data[field].trim();
     });
 
-    // Ensure interactions array exists
+    // Ensure arrays exist
     if (!data.interactions) data.interactions = [];
+    if (!data.relationships) data.relationships = [];
+    if (!data.quests) data.quests = [];
+    if (!data.dialogues) data.dialogues = [];
+
+    // Process dialogue field if present
+    if (data.dialogue && typeof data.dialogue === "string") {
+      const dialogues = data.dialogue
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line)
+        .map((line) => ({
+          id: Date.now() + Math.random(),
+          text: line,
+          context: "general",
+          date: new Date().toISOString(),
+        }));
+
+      data.dialogues = [...(data.dialogues || []), ...dialogues];
+      delete data.dialogue;
+    }
   }
 
-  /**
-   * Setup componenti specifici del form NPC
-   */
   setupFormComponents(entity, mode) {
     // Setup image upload
     const uploadContainer = document.getElementById("npc-avatar-upload");
@@ -59,121 +79,242 @@ class NPCManager extends BaseManager {
         this.imageUpload.setValue(entity.avatar);
       }
     }
+
+    // Setup environment suggestions
+    this.setupEnvironmentSuggestions(entity);
+
+    // Setup profession-based suggestions
+    this.setupProfessionSuggestions();
+
+    // Setup dialogue helpers
+    this.setupDialogueHelpers();
   }
 
-  /**
-   * Gestisce azioni specifiche del detail NPC
-   * Chiamato dal listener globale del BaseManager
-   */
-  async handleDetailAction(action, entity, button) {
-    switch (action) {
-      case "add-interaction":
-        await this.addInteraction(entity);
-        break;
+  setupEnvironmentSuggestions(entity) {
+    const environmentSelect = document.querySelector(
+      'select[name="environmentId"]'
+    );
+    const professionSelect = document.querySelector(
+      'select[name="profession"]'
+    );
 
-      case "remove-interaction":
-        const interactionId = button.dataset.interactionId;
-        await this.removeInteraction(entity, interactionId);
-        break;
+    if (!environmentSelect || !professionSelect) return;
 
-      case "view-npc":
-        const npcId = button.dataset.npcId;
-        await this.openDetail(npcId);
-        break;
-    }
-  }
-
-  /**
-   * Aggiungi interazione all'NPC
-   */
-  async addInteraction(npc) {
-    const interaction = await modalManager.input({
-      title: "Aggiungi Interazione",
-      label: "Descrivi l'interazione con i giocatori:",
-      placeholder: "Es. Ha fornito informazioni sulla taverna locale...",
+    // When profession changes, suggest appropriate environments
+    professionSelect.addEventListener("change", () => {
+      const profession = professionSelect.value;
+      this.highlightSuggestedEnvironments(profession, environmentSelect);
     });
 
-    if (!interaction?.trim()) return;
+    // Initial setup
+    if (entity?.profession) {
+      this.highlightSuggestedEnvironments(entity.profession, environmentSelect);
+    }
+  }
 
-    if (!npc.interactions) npc.interactions = [];
+  highlightSuggestedEnvironments(profession, selectElement) {
+    const suggestions = {
+      Mercante: ["Città", "Villaggio", "Mercato", "Porto"],
+      Guardia: ["Città", "Villaggio", "Fortezza", "Castello"],
+      Taverniere: ["Città", "Villaggio", "Taverna"],
+      Fabbro: ["Città", "Villaggio", "Fortezza"],
+      Agricoltore: ["Villaggio", "Pianura"],
+      Soldato: ["Fortezza", "Castello", "Città"],
+      Chierico: ["Tempio", "Città", "Villaggio"],
+      Studioso: ["Biblioteca", "Accademia", "Torre", "Città"],
+      Ladro: ["Città", "Porto", "Rovine"],
+      Bardo: ["Taverna", "Città", "Castello"],
+      Cacciatore: ["Foresta", "Montagna", "Villaggio"],
+      Pescatore: ["Costa", "Porto", "Villaggio"],
+      Nobile: ["Castello", "Città", "Fortezza"],
+      Mago: ["Torre", "Biblioteca", "Accademia"],
+      Druido: ["Foresta", "Montagna", "Palude"],
+    };
 
-    npc.interactions.push({
-      id: Date.now(),
-      description: interaction.trim(),
-      date: new Date().toISOString(),
+    const suggested = suggestions[profession] || [];
+
+    // Reset all options
+    Array.from(selectElement.options).forEach((option) => {
+      option.style.fontWeight = "normal";
+      option.style.backgroundColor = "";
     });
 
-    await this.update(npc.id, npc);
+    // Highlight suggested options
+    if (suggested.length > 0) {
+      Array.from(selectElement.options).forEach((option) => {
+        const environments = window.dataStore?.get("environments") || [];
+        const env = environments.find((e) => e.id == option.value);
+        if (env && suggested.includes(env.type)) {
+          option.style.fontWeight = "bold";
+          option.style.backgroundColor = "var(--accent-color, #e3f2fd)";
+        }
+      });
+    }
+  }
 
-    // REFRESH SEMPLICE - aggiorna solo il contenuto
-    const updatedNPC = this.getById(npc.id);
-    if (updatedNPC) {
-      const newContent = this.templates.generateDetail(updatedNPC);
-      modalManager.updateCurrentContent(newContent);
+  setupProfessionSuggestions() {
+    const professionSelect = document.querySelector(
+      'select[name="profession"]'
+    );
+    const motivationsInput = document.querySelector(
+      'input[name="motivations"]'
+    );
+
+    if (!professionSelect || !motivationsInput) return;
+
+    professionSelect.addEventListener("change", () => {
+      const profession = professionSelect.value;
+      if (profession && !motivationsInput.value.trim()) {
+        const suggestion = this.getMotivationSuggestion(profession);
+        motivationsInput.placeholder = suggestion;
+      }
+    });
+  }
+
+  getMotivationSuggestion(profession) {
+    const motivations = {
+      Mercante: "Accumulare ricchezze, espandere il commercio",
+      Guardia: "Mantenere ordine e sicurezza, proteggere i cittadini",
+      Taverniere: "Offrire ospitalità, raccogliere informazioni",
+      Fabbro: "Creare oggetti di qualità, servire la comunità",
+      Agricoltore: "Nutrire la famiglia, proteggere i raccolti",
+      Soldato: "Servire con onore, proteggere la patria",
+      Chierico: "Diffondere la fede, aiutare i bisognosi",
+      Studioso: "Acquisire conoscenza, svelare misteri",
+      Ladro: "Sopravvivere, accumulare tesori",
+      Bardo: "Intrattenere, preservare storie e leggende",
+      Cacciatore: "Vivere in armonia con la natura, procacciare cibo",
+      Pescatore: "Mantenere la famiglia, rispettare il mare",
+      Nobile: "Mantenere status sociale, influenzare politica",
+      Mago: "Padroneggiare la magia, scoprire segreti arcani",
+      Druido: "Proteggere la natura, mantenere equilibrio",
+    };
+
+    return (
+      motivations[profession] || "Raggiungere i propri obiettivi personali"
+    );
+  }
+
+  setupDialogueHelpers() {
+    const dialogueSection = document.querySelector(".dialogue-section");
+    if (!dialogueSection) return;
+
+    // Add dialogue quick-add buttons
+    const quickDialogueContainer = document.createElement("div");
+    quickDialogueContainer.className = "quick-dialogue-container";
+    quickDialogueContainer.innerHTML = `
+      <small class="form-help">
+        <strong>Dialoghi rapidi:</strong>
+        <button type="button" class="btn-link dialogue-btn" data-type="greeting">Saluto</button>
+        <button type="button" class="btn-link dialogue-btn" data-type="suspicious">Sospettoso</button>
+        <button type="button" class="btn-link dialogue-btn" data-type="helpful">Disponibile</button>
+        <button type="button" class="btn-link dialogue-btn" data-type="dismissive">Scortese</button>
+      </small>
+    `;
+
+    const dialogueTextarea = document.querySelector(
+      'textarea[name="dialogue"]'
+    );
+    if (dialogueTextarea) {
+      dialogueTextarea.parentNode.appendChild(quickDialogueContainer);
+
+      quickDialogueContainer.addEventListener("click", (e) => {
+        const dialogueBtn = e.target.closest(".dialogue-btn");
+        if (!dialogueBtn) return;
+
+        const suggestion = this.getDialogueSuggestion(dialogueBtn.dataset.type);
+        if (suggestion) {
+          const currentValue = dialogueTextarea.value.trim();
+          const newValue = currentValue
+            ? `${currentValue}\n${suggestion}`
+            : suggestion;
+          dialogueTextarea.value = newValue;
+        }
+      });
+    }
+  }
+
+  getDialogueSuggestion(type) {
+    const suggestions = {
+      greeting: "Benvenuto, viaggiatore. Cosa ti porta qui?",
+      suspicious:
+        "Non mi fido degli stranieri... state attenti ai vostri passi.",
+      helpful: "Sarò felice di aiutarvi! Cosa posso fare per voi?",
+      dismissive: "Non ho tempo per chiacchiere. Sbrigatevi.",
+    };
+
+    return suggestions[type] || "";
+  }
+
+  destroy() {
+    if (this.imageUpload) {
+      this.imageUpload.destroy();
+      this.imageUpload = null;
+    }
+  }
+}
+
+/**
+ * Main NPC Manager Class
+ */
+class NPCManager extends BaseManager {
+  constructor() {
+    super("npcs", NPCTemplates, {
+      hasDetailView: false, // Uses modal
+      hasUtils: true,
+      hasFormComponents: true,
+    });
+
+    this.initializeComponents();
+  }
+
+  initializeComponents() {
+    // Initialize modular components
+    this.detailHandler = new NPCDetailModal(this);
+    this.utils = new NPCUtils(this);
+    this.formHandler = new NPCFormHandler(this);
+  }
+
+  /**
+   * Process form data - delegate to form handler
+   */
+  processFormData(data) {
+    if (this.formHandler) {
+      this.formHandler.processFormData(data);
     }
   }
 
   /**
-   * Rimuovi interazione dall'NPC
+   * Setup form components - delegate to form handler
    */
-  async removeInteraction(npc, interactionId) {
-    if (!npc.interactions) return;
-
-    // Handle both ID and index for legacy data
-    const id = parseInt(interactionId);
-    if (!isNaN(id) && id < npc.interactions.length) {
-      npc.interactions.splice(id, 1);
-    } else {
-      npc.interactions = npc.interactions.filter(
-        (int) => int.id != interactionId
-      );
-    }
-
-    await this.update(npc.id, npc);
-
-    // REFRESH SEMPLICE - aggiorna solo il contenuto
-    const updatedNPC = this.getById(npc.id);
-    if (updatedNPC) {
-      const newContent = this.templates.generateDetail(updatedNPC);
-      modalManager.updateCurrentContent(newContent);
+  setupFormComponents(entity, mode) {
+    if (this.formHandler) {
+      this.formHandler.setupFormComponents(entity, mode);
     }
   }
 
-  /**
-   * Apri form con ambiente preselezionato
-   */
-  openFormWithEnvironment(environmentId) {
-    const entity = { environmentId: parseInt(environmentId) };
-    this.openForm(entity);
-  }
+  // ========== DELEGATE METHODS TO UTILS ==========
 
   /**
    * Get NPCs by environment
    */
   getNPCsByEnvironment(environmentId) {
-    return this.getAll().filter((npc) => npc.environmentId == environmentId);
+    return this.utils.getNPCsByEnvironment(environmentId);
   }
 
   /**
    * Get NPCs for encounter selection
    */
   getNPCsForEncounter() {
-    return this.getAll().map((npc) => ({
-      id: npc.id,
-      name: npc.name,
-      type: "npc",
-      avatar: npc.avatar,
-      attitude: npc.attitude,
-      race: npc.race,
-      profession: npc.profession,
-    }));
+    return this.utils.getNPCsForEncounter();
   }
 
   /**
-   * Generate selection options HTML
+   * Generate NPC selection list
    */
   generateSelectionList() {
-    return this.getAll()
+    const npcs = this.getAll();
+    return npcs
       .map((npc) => this.templates.generateSelectionOption(npc))
       .join("");
   }
@@ -182,162 +323,282 @@ class NPCManager extends BaseManager {
    * Get NPC statistics
    */
   getNPCStats() {
-    const npcs = this.getAll();
-
-    const stats = {
-      total: npcs.length,
-      byAttitude: {},
-      byRace: {},
-      byProfession: {},
-      byEnvironment: {},
-      recent: 0,
-      totalInteractions: 0,
-    };
-
-    npcs.forEach((npc) => {
-      // Count by attitude
-      stats.byAttitude[npc.attitude] =
-        (stats.byAttitude[npc.attitude] || 0) + 1;
-
-      // Count by race
-      if (npc.race) {
-        stats.byRace[npc.race] = (stats.byRace[npc.race] || 0) + 1;
-      }
-
-      // Count by profession
-      if (npc.profession) {
-        stats.byProfession[npc.profession] =
-          (stats.byProfession[npc.profession] || 0) + 1;
-      }
-
-      // Count by environment
-      if (npc.environmentId) {
-        stats.byEnvironment[npc.environmentId] =
-          (stats.byEnvironment[npc.environmentId] || 0) + 1;
-      }
-
-      // Count recent (last week)
-      const created = new Date(npc.createdAt || 0);
-      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-      if (created > weekAgo) {
-        stats.recent++;
-      }
-
-      // Count total interactions
-      stats.totalInteractions += npc.interactions ? npc.interactions.length : 0;
-    });
-
-    return stats;
+    return this.utils.getEntityStats();
   }
 
   /**
-   * Export NPCs data
+   * Export NPCs with options
    */
-  exportNPCs() {
-    const npcs = this.getAll();
-    const exportData = {
-      npcs,
-      exportDate: new Date().toISOString(),
-      version: "1.0",
-    };
-
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: "application/json",
-    });
-
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `dnd-npcs-${new Date().toISOString().split("T")[0]}.json`;
-    a.click();
-
-    URL.revokeObjectURL(url);
-    this.showSuccess("NPCs esportati!");
+  exportNPCs(options = {}) {
+    return this.utils.exportEntities(options);
   }
 
   /**
-   * Search NPCs by name, race, profession, or attitude
+   * Search NPCs
    */
   searchNPCs(query) {
-    const searchTerm = query.toLowerCase();
-    return this.getAll().filter(
-      (npc) =>
-        npc.name.toLowerCase().includes(searchTerm) ||
-        (npc.race && npc.race.toLowerCase().includes(searchTerm)) ||
-        (npc.profession && npc.profession.toLowerCase().includes(searchTerm)) ||
-        npc.attitude.toLowerCase().includes(searchTerm) ||
-        (npc.description && npc.description.toLowerCase().includes(searchTerm))
-    );
+    return this.utils.searchEntities(query);
   }
 
   /**
-   * Get NPCs by attitude
+   * Get NPCs by various criteria
    */
   getNPCsByAttitude(attitude) {
-    return this.getAll().filter((npc) => npc.attitude === attitude);
+    return this.utils.filterEntities({ attitude });
   }
 
-  /**
-   * Get NPCs by race
-   */
   getNPCsByRace(race) {
-    return this.getAll().filter((npc) => npc.race === race);
+    return this.utils.filterEntities({ race });
   }
 
-  /**
-   * Get NPCs by profession
-   */
   getNPCsByProfession(profession) {
-    return this.getAll().filter((npc) => npc.profession === profession);
+    return this.utils.filterEntities({ profession });
   }
 
-  /**
-   * Get friendly NPCs (useful for encounters)
-   */
   getFriendlyNPCs() {
-    return this.getAll().filter((npc) =>
-      ["Amichevole", "Neutrale", "Protettivo", "Entusiasta"].includes(
-        npc.attitude
-      )
-    );
+    return this.utils.getFriendlyNPCs();
   }
 
-  /**
-   * Get hostile NPCs (useful for encounters)
-   */
   getHostileNPCs() {
-    return this.getAll().filter((npc) =>
-      ["Ostile", "Diffidente", "Sospettoso", "Arrogante"].includes(npc.attitude)
-    );
+    return this.utils.getHostileNPCs();
   }
 
-  /**
-   * Get NPCs with secrets (useful for plot hooks)
-   */
   getNPCsWithSecrets() {
-    return this.getAll().filter(
-      (npc) => npc.secrets && npc.secrets.trim().length > 0
+    return this.utils.getNPCsWithSecrets();
+  }
+
+  getNPCsWithUnrevealedSecrets() {
+    return this.utils.getNPCsWithUnrevealedSecrets();
+  }
+
+  getMostInteractedNPCs(limit = 10) {
+    return this.utils.getMostInteractedNPCs(limit);
+  }
+
+  getNPCsNeedingAttention() {
+    return this.utils.getNPCsNeedingAttention();
+  }
+
+  getQuestGivers() {
+    return this.utils.getQuestGivers();
+  }
+
+  getAvailableQuests() {
+    return this.utils.getAvailableQuests();
+  }
+
+  // ========== SPECIALIZED NPC METHODS ==========
+
+  /**
+   * Open form with preselected environment
+   */
+  openFormWithEnvironment(environmentId) {
+    const entity = { environmentId: parseInt(environmentId) };
+    this.openForm(entity);
+  }
+
+  /**
+   * Bulk attitude change
+   */
+  async bulkChangeAttitude(npcIds, newAttitude) {
+    const npcs = npcIds.map((id) => this.getById(id)).filter(Boolean);
+
+    if (npcs.length === 0) {
+      this.showError("Nessun NPC selezionato");
+      return;
+    }
+
+    const confirmed = await modalManager.confirm({
+      title: "Cambio Atteggiamento Multiplo",
+      message: `Cambiare l'atteggiamento di ${npcs.length} NPCs in "${newAttitude}"?`,
+      confirmText: "Cambia",
+    });
+
+    if (!confirmed) return;
+
+    let updated = 0;
+    for (const npc of npcs) {
+      const oldAttitude = npc.attitude;
+      npc.attitude = newAttitude;
+
+      // Add interaction entry
+      if (!npc.interactions) npc.interactions = [];
+      npc.interactions.push({
+        id: Date.now() + Math.random(),
+        description: `Atteggiamento cambiato da "${oldAttitude}" a "${newAttitude}" (operazione multipla)`,
+        date: new Date().toISOString(),
+        session: new Date().toISOString().split("T")[0],
+        type: "attitude-change",
+      });
+
+      await this.update(npc.id, npc);
+      updated++;
+    }
+
+    this.showSuccess(
+      `Atteggiamento di ${updated} NPCs cambiato in "${newAttitude}"!`
     );
   }
 
   /**
-   * Get most interacted NPCs (top 10)
+   * Bulk environment transfer
    */
-  getMostInteractedNPCs(limit = 10) {
-    return this.getAll()
-      .sort(
-        (a, b) => (b.interactions?.length || 0) - (a.interactions?.length || 0)
-      )
-      .slice(0, limit);
+  async bulkTransferEnvironment(npcIds, newEnvironmentId) {
+    const npcs = npcIds.map((id) => this.getById(id)).filter(Boolean);
+    const environments = window.dataStore?.get("environments") || [];
+    const newEnvironment = environments.find(
+      (env) => env.id == newEnvironmentId
+    );
+
+    if (npcs.length === 0) {
+      this.showError("Nessun NPC selezionato");
+      return;
+    }
+
+    const envName = newEnvironment
+      ? newEnvironment.name
+      : "nessuna ambientazione";
+    const confirmed = await modalManager.confirm({
+      title: "Trasferimento Multiplo",
+      message: `Trasferire ${npcs.length} NPCs in "${envName}"?`,
+      confirmText: "Trasferisci",
+    });
+
+    if (!confirmed) return;
+
+    let updated = 0;
+    for (const npc of npcs) {
+      const oldEnvironment = environments.find(
+        (env) => env.id == npc.environmentId
+      );
+      npc.environmentId = newEnvironmentId;
+
+      // Add interaction entry
+      if (!npc.interactions) npc.interactions = [];
+      npc.interactions.push({
+        id: Date.now() + Math.random(),
+        description: `Trasferito da "${
+          oldEnvironment?.name || "nessuna ambientazione"
+        }" a "${envName}" (operazione multipla)`,
+        date: new Date().toISOString(),
+        session: new Date().toISOString().split("T")[0],
+        type: "location-change",
+      });
+
+      await this.update(npc.id, npc);
+      updated++;
+    }
+
+    this.showSuccess(`${updated} NPCs trasferiti in "${envName}"!`);
+  }
+
+  /**
+   * Generate random NPC
+   */
+  generateRandomNPC(environmentId = null) {
+    const races = this.templates.NPC_DATA.races;
+    const professions = this.templates.NPC_DATA.professions;
+    const alignments = this.templates.NPC_DATA.alignments;
+    const attitudes = this.templates.NPC_DATA.attitudes;
+
+    const randomNPC = {
+      name: this.generateRandomName(),
+      race: races[Math.floor(Math.random() * races.length)],
+      profession: professions[Math.floor(Math.random() * professions.length)],
+      alignment: alignments[Math.floor(Math.random() * alignments.length)],
+      attitude: attitudes[Math.floor(Math.random() * attitudes.length)],
+      environmentId: environmentId,
+      description: "NPC generato casualmente",
+      avatar: "🧙",
+      interactions: [],
+      relationships: [],
+      quests: [],
+    };
+
+    return randomNPC;
+  }
+
+  /**
+   * Generate random name
+   */
+  generateRandomName() {
+    const firstNames = [
+      "Aldric",
+      "Brenna",
+      "Caius",
+      "Delara",
+      "Ewan",
+      "Fiora",
+      "Gareth",
+      "Hilda",
+      "Ivan",
+      "Jora",
+      "Kael",
+      "Lyra",
+      "Magnus",
+      "Nora",
+      "Orin",
+      "Petra",
+      "Quinn",
+      "Rosa",
+      "Soren",
+      "Thea",
+      "Ulric",
+      "Vera",
+      "Willem",
+      "Xara",
+      "Yorick",
+      "Zara",
+    ];
+
+    const lastNames = [
+      "Forgiavento",
+      "Pietraferma",
+      "Lunachiara",
+      "Tempesta",
+      "Fogliadoro",
+      "Martellonero",
+      "Fiammarossa",
+      "Ghiaccio",
+      "Stellaverde",
+      "Ombraluna",
+      "Corlame",
+      "Cantavento",
+      "Pioggiasera",
+      "Solealto",
+      "Nebbiascura",
+      "Fulmine",
+    ];
+
+    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+
+    return `${firstName} ${lastName}`;
+  }
+
+  /**
+   * Generate relationship map for environment
+   */
+  generateEnvironmentRelationshipMap(environmentId) {
+    const npcs = this.getNPCsByEnvironment(environmentId);
+    return this.utils
+      .generateRelationshipMap()
+      .filter((rel) => npcs.some((npc) => npc.id === rel.fromId));
+  }
+
+  /**
+   * Generate encounter suggestions
+   */
+  generateEncounterSuggestions(environmentId = null, partyLevel = 5) {
+    return this.utils.generateEncounterSuggestions(environmentId, partyLevel);
   }
 
   /**
    * Cleanup quando necessario
    */
   cleanup() {
-    if (this.imageUpload) {
-      this.imageUpload.destroy();
-      this.imageUpload = null;
+    if (this.formHandler) {
+      this.formHandler.destroy();
     }
   }
 
@@ -346,10 +607,10 @@ class NPCManager extends BaseManager {
    */
   destroy() {
     this.cleanup();
-    console.log("NPC manager destroyed");
+    super.destroy();
   }
 }
 
 // Create and export singleton instance
-const npcManager = new NPCManager();
-export default npcManager;
+export default NPCManager;
+export const npcManager = new NPCManager();
