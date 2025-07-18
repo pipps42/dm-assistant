@@ -1,0 +1,280 @@
+# ============================================
+# TAURI + REACT + TYPESCRIPT PROJECT
+# ============================================
+
+# ============================================
+# RUST / TAURI BACKEND
+# ============================================
+
+# Rust build artifacts
+src-tauri/target/
+src-tauri/Cargo.lock
+
+# Tauri build outputs
+src-tauri/gen/
+src-tauri/WixTools/
+
+# ============================================
+# NODE.JS / REACT FRONTEND
+# ============================================
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+out/
+
+# Cache directories
+.npm
+.yarn
+.pnpm-store/
+.cache/
+.parcel-cache/
+
+# Package manager files
+package-lock.json
+yarn.lock    
+pnpm-lock.yaml
+
+# TypeScript
+*.tsbuildinfo
+tsconfig.*
+
+# ============================================
+# DEVELOPMENT & IDE
+# ============================================
+
+# VS Code settings (opzionale - potresti voler commitare .vscode/settings.json)
+.vscode/
+# !.vscode/settings.json      
+# !.vscode/extensions.json    
+# !.vscode/tasks.json        
+
+# JetBrains IDEs
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+
+# ============================================
+# DATA & CONFIGURATION
+# ============================================
+
+# Application data (i tuoi file JSON)
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Configuration overrides
+config.local.json
+settings.local.json
+
+# ============================================
+# LOGS & DEBUGGING
+# ============================================
+
+# Log files
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# Debugging
+.vscode-test/
+
+# ============================================
+# OPERATING SYSTEM
+# ============================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.tmp
+*.temp
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ============================================
+# ASSETS & MEDIA
+# ============================================
+
+# Large binary files (uncomment if needed)
+*.mp4
+*.avi
+*.mov
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.webp
+*.pdf
+
+# ============================================
+# TEMPORARY & BACKUP FILES
+# ============================================
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*.orig
+
+# Backup files
+*~
+*.backup
+
+# ============================================
+# SECURITY & SECRETS
+# ============================================
+
+# API keys and secrets
+.env.secrets
+*.key
+*.pem
+*.p12
+*.pfx
+certificate.*
+
+# Local certificates
+ssl/
+certs/
+
+# ============================================
+# TESTING
+# ============================================
+
+# Test coverage
+coverage/
+.coverage
+.nyc_output
+
+# Test results
+test-results/
+junit.xml
+
+# ============================================
+# DOCUMENTATION
+# ============================================
+
+# Generated documentation
+docs/build/
+docs/_build/
+
+# ============================================
+# MISCELLANEOUS
+# ============================================
+
+# ESLint cache
+.eslintcache
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env.test
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# Next.js (if used)
+.next
+
+# Nuxt.js (if used)
+.nuxt
+
+# Storybook (if used)
+.out
+.storybook-out
+
+# Rush dependency tracker
+.rush
+
+# Nx (if used)
+.nx/cache
