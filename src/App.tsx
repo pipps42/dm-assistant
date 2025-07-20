@@ -1,20 +1,14 @@
 import { useState } from "react";
-import CharacterTestTool from "./tools/CharacterManager/CharacterTestTool";
-// Import diretto del nuovo componente
-import ImprovedCharacterTestTool from "@//tools/CharacterManager/ImprovedCharacterTestTool";
 import "@/assets/styles/globals.css";
+import { CharacterManagerTool } from "./tools";
 
 function App() {
-  const [currentView, setCurrentView] = useState<
-    "home" | "character-test" | "character-improved"
-  >("home");
+  const [currentView, setCurrentView] = useState<"home" | "character">("home");
 
   const renderCurrentView = () => {
     switch (currentView) {
-      case "character-test":
-        return <CharacterTestTool />;
-      case "character-improved":
-        return <ImprovedCharacterTestTool />;
+      case "character":
+        return <CharacterManagerTool />;
       case "home":
       default:
         return (
@@ -39,7 +33,7 @@ function App() {
                 }}
               >
                 <button
-                  onClick={() => setCurrentView("character-improved")}
+                  onClick={() => setCurrentView("character")}
                   style={{
                     padding: "1rem 2rem",
                     backgroundColor: "#10b981",
@@ -51,22 +45,7 @@ function App() {
                     fontWeight: "bold",
                   }}
                 >
-                  🎭 Character Manager (NEW!)
-                </button>
-
-                <button
-                  onClick={() => setCurrentView("character-test")}
-                  style={{
-                    padding: "1rem 2rem",
-                    backgroundColor: "#646cff",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    fontSize: "1rem",
-                  }}
-                >
-                  🎭 Character Test (Basic)
+                  🎭 Character Manager
                 </button>
 
                 <button
@@ -163,10 +142,6 @@ function App() {
                     relazioni, achievements
                   </li>
                   <li>
-                    <strong>ActionButton</strong> - Bottoni styled per azioni
-                    D&D
-                  </li>
-                  <li>
                     <strong>HealthTracker</strong> - Barra HP visuale con
                     animazioni
                   </li>
@@ -207,10 +182,8 @@ function App() {
 
   const getPageTitle = () => {
     switch (currentView) {
-      case "character-test":
-        return "Character Manager - Basic Test";
-      case "character-improved":
-        return "Character Manager - With Shared Components";
+      case "character":
+        return "Character Manager";
       default:
         return "DM Assistant";
     }

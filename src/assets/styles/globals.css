@@ -1,211 +1,417 @@
-/* DM Assistant - Unified Global Styles */
+/* src/assets/styles/globals.css */
+
+/* ================================================================
+   DM ASSISTANT - UNIFIED GLOBAL STYLES
+   ================================================================ */
+
+/* Import design system */
+@import "./variables.css";
+@import "./themes/light.css";
+@import "./themes/dark.css";
+
+/* Import Tailwind */
 @import "tailwindcss";
-
-/* ================================
-   CUSTOM PROPERTIES (DM Assistant Theme)
-   ================================ */
-:root {
-  --color-primary: #d20000;
-  --color-secondary: #8b0000;
-  --color-background: #1a1a1a;
-  --color-surface: #2d2d2d;
-  --color-text: #ffffff;
-  --color-text-secondary: #cccccc;
-
-  /* Font settings */
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-
-  /* Rendering optimizations */
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
-}
 
 /* ================================
    GLOBAL RESET & BASE STYLES
    ================================ */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+html {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  scroll-behavior: smooth;
+
+  /* Default light theme */
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
 body {
-  font-family: "Inter", sans-serif;
-  background-color: var(--color-background);
-  color: var(--color-text);
-  line-height: 1.6;
+  font-family: var(--font-family-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: var(--line-height-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 .App {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-}
-
-/* ================================
-   HOMEPAGE STYLES (da App.css)
-   ================================ */
-.container {
-  margin: 0;
-  padding-top: 10vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: 0.75s;
-}
-
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
-}
-
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafb);
-}
-
-.logo.tauri:hover {
-  filter: drop-shadow(0 0 2em #24c8db);
-}
-
-/* ================================
-   GLOBAL FORM ELEMENTS
-   ================================ */
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-
-a:hover {
-  color: #535bf2;
-}
-
-h1 {
-  text-align: center;
-}
-
-/* Base input and button styles (compatibili con tema scuro) */
-input,
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  transition: border-color 0.25s;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
-  outline: none;
-}
-
-/* Tema scuro di default per input/button */
-input,
-button {
-  color: var(--color-text);
-  background-color: var(--color-surface);
-  border-color: #4a5568;
-}
-
-button {
-  cursor: pointer;
-}
-
-button:hover {
-  border-color: #396cd8;
-  background-color: #4a5568;
-}
-
-button:active {
-  border-color: #396cd8;
-  background-color: #2d3748;
-}
-
-input:focus {
-  border-color: #396cd8;
-  box-shadow: 0 0 0 3px rgba(57, 108, 216, 0.1);
-}
-
-#greet-input {
-  margin-right: 5px;
-}
-
-/* ================================
-   DARK/LIGHT MODE RESPONSIVE
-   ================================ */
-
-/* Light mode override (quando il sistema preferisce light) */
-@media (prefers-color-scheme: light) {
-  :root {
-    --color-background: #f6f6f6;
-    --color-surface: #ffffff;
-    --color-text: #0f0f0f;
-    --color-text-secondary: #4a5568;
-  }
-
-  body {
-    background-color: var(--color-background);
-    color: var(--color-text);
-  }
-
-  input,
-  button {
-    color: #0f0f0f;
-    background-color: #ffffff;
-    border-color: #e2e8f0;
-  }
-
-  button:hover {
-    background-color: #f7fafc;
-  }
-
-  button:active {
-    background-color: #e2e8f0;
-  }
-}
-
-/* Dark mode (forza dark quando html ha class="dark") */
-html.dark {
-  color-scheme: dark;
-}
-
-html.dark body {
-  background-color: var(--color-background);
-  color: var(--color-text);
-}
-
-html.dark input,
-html.dark button {
-  color: var(--color-text);
-  background-color: var(--color-surface);
-  border-color: #4a5568;
-}
-
-html.dark a:hover {
-  color: #24c8db;
+  background-color: var(--bg-primary);
 }
 
 /* ================================
    UTILITY CLASSES
    ================================ */
 
-/* Utility per nascondere elementi in accessibilità */
+/* Focus utilities */
+.focus-ring:focus {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.focus-ring-inset:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--border-focus);
+}
+
+/* Text utilities */
+.text-primary {
+  color: var(--text-primary);
+}
+.text-secondary {
+  color: var(--text-secondary);
+}
+.text-tertiary {
+  color: var(--text-tertiary);
+}
+.text-inverse {
+  color: var(--text-inverse);
+}
+
+/* Background utilities */
+.bg-primary {
+  background-color: var(--bg-primary);
+}
+.bg-secondary {
+  background-color: var(--bg-secondary);
+}
+.bg-tertiary {
+  background-color: var(--bg-tertiary);
+}
+
+/* Surface utilities */
+.surface-primary {
+  background-color: var(--surface-primary);
+}
+.surface-secondary {
+  background-color: var(--surface-secondary);
+}
+.surface-elevated {
+  background-color: var(--surface-elevated);
+}
+
+/* Border utilities */
+.border-primary {
+  border-color: var(--border-primary);
+}
+.border-secondary {
+  border-color: var(--border-secondary);
+}
+.border-focus {
+  border-color: var(--border-focus);
+}
+
+/* State utilities */
+.state-error {
+  color: var(--state-error);
+}
+.state-success {
+  color: var(--state-success);
+}
+.state-warning {
+  color: var(--state-warning);
+}
+.state-info {
+  color: var(--state-info);
+}
+
+.bg-state-error {
+  background-color: var(--state-error-bg);
+}
+.bg-state-success {
+  background-color: var(--state-success-bg);
+}
+.bg-state-warning {
+  background-color: var(--state-warning-bg);
+}
+.bg-state-info {
+  background-color: var(--state-info-bg);
+}
+
+/* Transition utilities */
+.transition-fast {
+  transition: all var(--transition-fast);
+}
+.transition-normal {
+  transition: all var(--transition-normal);
+}
+.transition-slow {
+  transition: all var(--transition-slow);
+}
+
+/* Shadow utilities */
+.shadow-focus {
+  box-shadow: var(--shadow-focus);
+}
+
+/* ================================
+   COMPONENT BASE CLASSES
+   ================================ */
+
+/* Input base class */
+.input-base {
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  background-color: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  transition: var(--transition-fast);
+}
+
+.input-base:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-focus);
+}
+
+.input-base:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--surface-tertiary);
+}
+
+.input-base::placeholder {
+  color: var(--text-placeholder);
+}
+
+/* Button base class */
+.button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.button-base:focus {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.button-base:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ================================
+   TEXTAREA BASE STYLES
+   ================================ */
+
+textarea.input-base {
+  min-height: 5rem;
+  resize: vertical;
+  font-family: inherit;
+  line-height: var(--line-height-normal);
+}
+
+textarea.input-base:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-focus);
+}
+
+/* ================================
+   MODAL BASE STYLES
+   ================================ */
+
+.modal-overlay {
+  backdrop-filter: var(--modal-backdrop-blur);
+  -webkit-backdrop-filter: var(--modal-backdrop-blur);
+}
+
+.modal-content {
+  /* Ensure proper stacking and focus */
+  outline: none;
+}
+
+/* Modal body scroll behavior */
+.modal-content .dm-modal-body {
+  /* Enable smooth scrolling for modal content */
+  scroll-behavior: smooth;
+}
+
+/* Card base class */
+.card-base {
+  background-color: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+}
+
+.card-base:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* Modal base class */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--bg-overlay);
+  z-index: var(--z-modal-backdrop);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+.modal-content {
+  background-color: var(--surface-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-2xl);
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  z-index: var(--z-modal);
+}
+
+/* ================================
+   D&D SPECIFIC UTILITIES
+   ================================ */
+
+/* Health bar colors */
+.health-full {
+  background-color: var(--color-success-500);
+}
+.health-good {
+  background-color: var(--color-warning-500);
+}
+.health-low {
+  background-color: var(--color-error-500);
+}
+.health-critical {
+  background-color: var(--color-error-700);
+}
+
+/* Level badge styles */
+.level-badge {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-800);
+  border: 1px solid var(--color-primary-200);
+}
+
+html.dark .level-badge {
+  background-color: var(--color-primary-900);
+  color: var(--color-primary-300);
+  border-color: var(--color-primary-700);
+}
+
+/* Status indicators */
+.status-active {
+  color: var(--color-success-600);
+}
+
+.status-inactive {
+  color: var(--color-gray-400);
+}
+
+html.dark .status-active {
+  color: var(--color-success-400);
+}
+
+/* ================================
+   RESPONSIVE DESIGN UTILITIES
+   ================================ */
+
+/* Container queries support */
+@container (min-width: 640px) {
+  .container\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 768px) {
+  .container\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ================================
+   PRINT STYLES
+   ================================ */
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .card-base {
+    border: 1px solid #000;
+    box-shadow: none;
+  }
+}
+
+/* Component base class for button groups */
+.dm-button-group {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.dm-button-group-attached {
+  gap: 0;
+}
+
+.dm-button-group-attached .button-base {
+  border-radius: 0;
+}
+
+.dm-button-group-attached .button-base:first-child {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.dm-button-group-attached .button-base:last-child {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.dm-button-group-attached .button-base:not(:last-child) {
+  border-right-width: 0;
+}
+
+/* Responsive button groups */
+@media (max-width: 640px) {
+  .dm-button-group {
+    flex-direction: column;
+    gap: var(--space-2);
+    width: 100%;
+  }
+
+  .dm-button-group .button-base {
+    width: 100%;
+  }
+}
+
+/* Screen reader only */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -218,27 +424,23 @@ html.dark a:hover {
   border: 0;
 }
 
-/* Smooth scroll per navigazione */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Focus visible per accessibilità */
-.focus-visible:focus-visible {
-  outline: 2px solid #396cd8;
-  outline-offset: 2px;
-}
-
-/* ================================
-   PRINT STYLES
-   ================================ */
-@media print {
-  .no-print {
-    display: none !important;
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+}
 
-  body {
-    background: white !important;
-    color: black !important;
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .input-base,
+  .button-base,
+  .card-base {
+    border-width: 2px;
   }
 }

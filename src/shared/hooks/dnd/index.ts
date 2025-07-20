@@ -1,6 +1,6 @@
 // D&D specific hooks
 // export * from './useCampaign'
-// export * from './useCharacters'
+export * from "./useCharacters";
 // export * from './useNPCs'
 // export * from './useEnvironments'
 // export * from './useItems'

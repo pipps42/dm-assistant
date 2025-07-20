@@ -1,0 +1,702 @@
+/* ================================================================
+   CARD COMPONENT STYLES - USING DESIGN SYSTEM TOKENS
+   ================================================================ */
+
+/* ================================
+   CARD SIZE VARIANTS
+   ================================ */
+
+.dm-card-sm {
+  border-radius: var(--radius-md);
+}
+
+.dm-card-md {
+  border-radius: var(--radius-lg);
+}
+
+.dm-card-lg {
+  border-radius: var(--radius-xl);
+}
+
+/* ================================
+   CARD PADDING VARIANTS
+   ================================ */
+
+.dm-card-padding-sm {
+  padding: var(--card-padding-sm);
+}
+
+.dm-card-padding-md {
+  padding: var(--card-padding-md);
+}
+
+.dm-card-padding-lg {
+  padding: var(--card-padding-lg);
+}
+
+.dm-card-no-padding {
+  padding: 0;
+}
+
+/* ================================
+   CARD VARIANT STYLES
+   ================================ */
+
+/* Default variant */
+.dm-card-default {
+  background-color: var(--surface-primary);
+  border-color: var(--border-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Elevated variant */
+.dm-card-elevated {
+  background-color: var(--surface-elevated);
+  border-color: var(--border-primary);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Outlined variant */
+.dm-card-outlined {
+  background-color: var(--surface-primary);
+  border-color: var(--border-secondary);
+  border-width: 2px;
+  box-shadow: none;
+}
+
+/* Ghost variant */
+.dm-card-ghost {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+/* Interactive variant */
+.dm-card-interactive {
+  background-color: var(--surface-primary);
+  border-color: var(--border-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ================================
+   CARD HOVER & INTERACTIVE STATES
+   ================================ */
+
+.dm-card-hover:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.dm-card-clickable {
+  cursor: pointer;
+  transition: var(--transition-normal);
+}
+
+.dm-card-clickable:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  border-color: var(--border-secondary);
+}
+
+.dm-card-clickable:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-md);
+}
+
+.dm-card-clickable:focus {
+  outline: none;
+  box-shadow: var(--shadow-focus), var(--shadow-md);
+}
+
+/* ================================
+   CARD CONTENT STRUCTURE
+   ================================ */
+
+.dm-card-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.dm-card-content-with-side-image {
+  flex-direction: row;
+  gap: var(--space-4);
+}
+
+.dm-card-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Prevent flex overflow */
+}
+
+.dm-card-header {
+  margin-bottom: var(--space-3);
+}
+
+.dm-card-body {
+  flex: 1;
+}
+
+.dm-card-footer {
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-primary);
+}
+
+/* ================================
+   CARD IMAGE HANDLING
+   ================================ */
+
+.dm-card-with-image.dm-card-padding-sm,
+.dm-card-with-image.dm-card-padding-md,
+.dm-card-with-image.dm-card-padding-lg {
+  padding: 0;
+}
+
+.dm-card-image-container {
+  overflow: hidden;
+}
+
+.dm-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Top image */
+.dm-card-image-top {
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  height: 12rem;
+}
+
+.dm-card-image-top + .dm-card-content .dm-card-main {
+  padding: var(--space-4);
+}
+
+/* Left image */
+.dm-card-image-left {
+  width: 6rem;
+  height: 6rem;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+/* Right image */
+.dm-card-image-right {
+  width: 6rem;
+  height: 6rem;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.dm-card-content-with-side-image .dm-card-main {
+  padding: var(--space-4);
+}
+
+/* ================================
+   FEATURE CARD STYLES
+   ================================ */
+
+.dm-feature-card {
+  height: 100%;
+}
+
+.dm-feature-card-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dm-feature-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.dm-feature-card-icon {
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-600);
+  font-size: 1.25rem;
+}
+
+html.dark .dm-feature-card-icon {
+  background-color: var(--color-primary-900);
+  color: var(--color-primary-300);
+}
+
+.dm-feature-card-title-area {
+  flex: 1;
+  min-width: 0;
+}
+
+.dm-feature-card-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: var(--line-height-tight);
+}
+
+.dm-feature-card-status {
+  display: inline-block;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  margin-top: var(--space-1);
+}
+
+.dm-feature-card-status-new {
+  background-color: var(--color-success-100);
+  color: var(--color-success-700);
+}
+
+.dm-feature-card-status-coming-soon {
+  background-color: var(--color-warning-100);
+  color: var(--color-warning-700);
+}
+
+.dm-feature-card-status-beta {
+  background-color: var(--color-info-100);
+  color: var(--color-info-700);
+}
+
+html.dark .dm-feature-card-status-new {
+  background-color: var(--color-success-900);
+  color: var(--color-success-300);
+}
+
+html.dark .dm-feature-card-status-coming-soon {
+  background-color: var(--color-warning-900);
+  color: var(--color-warning-300);
+}
+
+html.dark .dm-feature-card-status-beta {
+  background-color: var(--color-info-900);
+  color: var(--color-info-300);
+}
+
+.dm-feature-card-description {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  margin: 0;
+}
+
+/* ================================
+   STATS CARD STYLES
+   ================================ */
+
+.dm-stats-card-content {
+  text-align: center;
+}
+
+.dm-stats-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.dm-stats-card-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+}
+
+.dm-stats-card-icon {
+  color: var(--text-tertiary);
+  font-size: 1rem;
+}
+
+.dm-stats-card-value {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: var(--space-2);
+}
+
+.dm-stats-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--font-size-xs);
+}
+
+.dm-stats-card-subtitle {
+  color: var(--text-tertiary);
+}
+
+.dm-stats-card-trend {
+  font-weight: var(--font-weight-medium);
+}
+
+.dm-stats-card-trend-up {
+  color: var(--color-success-600);
+}
+
+.dm-stats-card-trend-down {
+  color: var(--color-error-600);
+}
+
+.dm-stats-card-trend-neutral {
+  color: var(--text-tertiary);
+}
+
+html.dark .dm-stats-card-trend-up {
+  color: var(--color-success-400);
+}
+
+html.dark .dm-stats-card-trend-down {
+  color: var(--color-error-400);
+}
+
+/* ================================
+   IMAGE CARD STYLES
+   ================================ */
+
+.dm-image-card-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: var(--line-height-tight);
+}
+
+.dm-image-card-description {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  margin: 0;
+}
+
+/* ================================
+   TOOL CARD STYLES (D&D)
+   ================================ */
+
+.dm-tool-card {
+  border-left: 4px solid var(--color-primary-500);
+}
+
+.dm-tool-card-management {
+  border-left-color: var(--color-info-500);
+}
+
+.dm-tool-card-combat {
+  border-left-color: var(--color-error-500);
+}
+
+.dm-tool-card-world {
+  border-left-color: var(--color-success-500);
+}
+
+.dm-tool-card-utility {
+  border-left-color: var(--color-warning-500);
+}
+
+/* ================================
+   CHARACTER PREVIEW CARD STYLES
+   ================================ */
+
+.dm-character-preview-card {
+  border-left: 3px solid var(--color-success-500);
+}
+
+.dm-character-preview-card-inactive {
+  border-left-color: var(--color-gray-400);
+  opacity: 0.7;
+}
+
+.dm-character-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dm-character-preview-name {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.dm-character-preview-status {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.dm-character-preview-status.active {
+  color: var(--color-success-500);
+}
+
+.dm-character-preview-status.inactive {
+  color: var(--color-gray-400);
+}
+
+.dm-character-preview-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.dm-character-preview-info {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.dm-character-preview-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.dm-character-preview-level {
+  color: var(--color-primary-600);
+}
+
+.dm-character-preview-hp {
+  color: var(--color-success-600);
+}
+
+html.dark .dm-character-preview-level {
+  color: var(--color-primary-400);
+}
+
+html.dark .dm-character-preview-hp {
+  color: var(--color-success-400);
+}
+
+/* ================================
+   CAMPAIGN CARD STYLES
+   ================================ */
+
+.dm-campaign-card {
+  position: relative;
+}
+
+.dm-campaign-card-active {
+  border: 2px solid var(--color-primary-500);
+  box-shadow: var(--shadow-lg), 0 0 0 1px var(--color-primary-200);
+}
+
+html.dark .dm-campaign-card-active {
+  box-shadow: var(--shadow-lg), 0 0 0 1px var(--color-primary-800);
+}
+
+.dm-campaign-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.dm-campaign-card-name {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: var(--line-height-tight);
+  flex: 1;
+}
+
+.dm-campaign-card-active-badge {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-700);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+html.dark .dm-campaign-card-active-badge {
+  background-color: var(--color-primary-900);
+  color: var(--color-primary-300);
+}
+
+.dm-campaign-card-description {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  margin: 0;
+}
+
+.dm-campaign-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dm-campaign-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
+.dm-campaign-card-edit {
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: var(--space-1);
+  border-radius: var(--radius-base);
+  transition: var(--transition-fast);
+}
+
+.dm-campaign-card-edit:hover {
+  background-color: var(--surface-secondary);
+  color: var(--text-primary);
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+
+@media (max-width: 640px) {
+  .dm-card-content-with-side-image {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .dm-card-image-left,
+  .dm-card-image-right {
+    width: 100%;
+    height: 8rem;
+  }
+
+  .dm-feature-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .dm-feature-card-icon {
+    align-self: center;
+  }
+
+  .dm-stats-card-footer {
+    flex-direction: column;
+    gap: var(--space-1);
+    align-items: flex-start;
+  }
+
+  .dm-campaign-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dm-campaign-card-meta {
+    flex-direction: row;
+    gap: var(--space-3);
+  }
+}
+
+/* ================================
+   CARD GRID LAYOUTS
+   ================================ */
+
+.dm-card-grid {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.dm-card-grid-1 {
+  grid-template-columns: 1fr;
+}
+
+.dm-card-grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.dm-card-grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.dm-card-grid-4 {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+@media (max-width: 640px) {
+  .dm-card-grid-2,
+  .dm-card-grid-3,
+  .dm-card-grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================================
+   ACCESSIBILITY IMPROVEMENTS
+   ================================ */
+
+.dm-card-clickable:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* ================================
+   HIGH CONTRAST MODE
+   ================================ */
+
+@media (prefers-contrast: high) {
+  .dm-card-default,
+  .dm-card-elevated,
+  .dm-card-outlined,
+  .dm-card-interactive {
+    border-width: 2px;
+  }
+
+  .dm-card-clickable:focus {
+    box-shadow: 0 0 0 3px var(--border-focus);
+  }
+}
+
+/* ================================
+   REDUCED MOTION
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-card-hover:hover,
+  .dm-card-clickable:hover,
+  .dm-card-clickable:active {
+    transform: none;
+  }
+
+  .dm-card-clickable {
+    transition: none;
+  }
+}
+
+/* ================================
+   PRINT STYLES
+   ================================ */
+
+@media print {
+  .dm-card-default,
+  .dm-card-elevated,
+  .dm-card-outlined,
+  .dm-card-interactive {
+    border: 1px solid black !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  .dm-card-clickable {
+    cursor: default;
+  }
+
+  .dm-campaign-card-edit {
+    display: none;
+  }
+}
