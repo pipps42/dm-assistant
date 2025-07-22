@@ -147,7 +147,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
     return (
       <div
         ref={overlayRef}
-        className={`modal-overlay dm-modal-overlay ${overlayClassName}`}
+        className={`dm-modal-overlay ${overlayClassName}`}
         onClick={handleBackdropClick}
         onKeyDown={handleKeyDown}
         role="dialog"
@@ -157,7 +157,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
       >
         <div
           ref={ref || contentRef}
-          className={`modal-content dm-modal-content dm-modal-${size} ${contentClassName} ${className}`}
+          className={`dm-modal-content dm-modal-${size} ${contentClassName} ${className}`}
           tabIndex={-1}
         >
           {/* Modal Header */}
@@ -257,7 +257,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
         <div className="dm-confirm-modal-actions">
           <button
             type="button"
-            className={`button-base dm-button-md dm-button-${variant}`}
+            className={`dm-button dm-button-md dm-button-${variant}`}
             onClick={handleConfirm}
             disabled={loading}
           >
@@ -265,7 +265,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
           </button>
           <button
             type="button"
-            className="button-base dm-button-md dm-button-secondary"
+            className="dm-button dm-button-md dm-button-secondary"
             onClick={onClose}
             disabled={loading}
           >

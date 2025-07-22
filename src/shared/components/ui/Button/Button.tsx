@@ -52,7 +52,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     // Base button classes using design system
     const buttonClasses = [
-      "button-base", // Base class from globals.css
+      "dm-button", // Base class from globals.css
       `dm-button-${size}`, // Size variant
       `dm-button-${variant}`, // Color variant
       fullWidth ? "dm-button-full" : "",

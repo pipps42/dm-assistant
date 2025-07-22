@@ -76,7 +76,7 @@
 }
 
 /* Ensure buttons in form actions have consistent sizing */
-.dm-form-actions .button-base {
+.dm-form-actions .dm-button {
   min-width: 6rem;
 }
 
@@ -375,7 +375,7 @@
   }
 
   /* Stack form actions */
-  .dm-form-actions .button-base {
+  .dm-form-actions .dm-button {
     width: 100%;
     min-width: 0;
   }

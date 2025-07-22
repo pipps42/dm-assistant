@@ -190,7 +190,7 @@
   flex-wrap: wrap;
 }
 
-.dm-confirm-modal-actions .button-base {
+.dm-confirm-modal-actions .dm-button {
   min-width: 6rem;
 }
 
@@ -282,7 +282,7 @@
     flex-direction: column;
   }
 
-  .dm-confirm-modal-actions .button-base {
+  .dm-confirm-modal-actions .dm-button {
     width: 100%;
   }
 }

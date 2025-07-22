@@ -442,7 +442,7 @@ html.dark .dm-button-outline:hover:not(:disabled) {
    DISABLED STATE
    ================================ */
 
-.button-base:disabled {
+.dm-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
@@ -486,19 +486,19 @@ html.dark .dm-button-outline:hover:not(:disabled) {
   gap: 0;
 }
 
-.dm-button-group-attached .button-base {
+.dm-button-group-attached .dm-button {
   border-radius: 0;
 }
 
-.dm-button-group-attached .button-base:first-child {
+.dm-button-group-attached .dm-button:first-child {
   border-radius: var(--radius-md) 0 0 var(--radius-md);
 }
 
-.dm-button-group-attached .button-base:last-child {
+.dm-button-group-attached .dm-button:last-child {
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
 }
 
-.dm-button-group-attached .button-base:not(:last-child) {
+.dm-button-group-attached .dm-button:not(:last-child) {
   border-right-width: 0;
 }
 
@@ -507,7 +507,7 @@ html.dark .dm-button-outline:hover:not(:disabled) {
    ================================ */
 
 @media (prefers-contrast: high) {
-  .button-base {
+  .dm-button {
     border-width: 2px;
   }
 

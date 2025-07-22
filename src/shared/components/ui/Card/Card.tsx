@@ -45,7 +45,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
   ) => {
     // CSS classes using design system
     const cardClasses = [
-      "card-base", // Base class from globals.css
+      "dm-card", // Base class from globals.css
       "transition-normal", // Transition utility
       `dm-card-${size}`,
       `dm-card-${variant}`,

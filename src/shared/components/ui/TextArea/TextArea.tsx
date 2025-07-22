@@ -117,7 +117,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
 
     // CSS classes using design system
     const textareaClasses = [
-      "input-base", // Base class from globals.css
+      "dm-input", // Base class from globals.css
       "transition-fast",
       `dm-textarea-${size}`,
       `dm-textarea-${variant}`,

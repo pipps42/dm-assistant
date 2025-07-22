@@ -1,0 +1,580 @@
+/* ================================================================
+   DM ASSISTANT DESIGN SYSTEM - UTILITY CLASSES
+   ================================================================ */
+
+/* ================================
+   FOCUS UTILITIES
+   ================================ */
+
+.focus-ring:focus {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.focus-ring-inset:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--border-focus);
+}
+
+.focus-ring-select:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-focus);
+}
+
+.focus-ring-table:focus {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* ================================
+   TEXT UTILITIES
+   ================================ */
+
+.text-primary {
+  color: var(--text-primary);
+}
+.text-secondary {
+  color: var(--text-secondary);
+}
+.text-tertiary {
+  color: var(--text-tertiary);
+}
+.text-inverse {
+  color: var(--text-inverse);
+}
+
+/* ================================
+   BACKGROUND UTILITIES
+   ================================ */
+
+.bg-primary {
+  background-color: var(--bg-primary);
+}
+.bg-secondary {
+  background-color: var(--bg-secondary);
+}
+.bg-tertiary {
+  background-color: var(--bg-tertiary);
+}
+
+/* Surface utilities */
+.surface-primary {
+  background-color: var(--surface-primary);
+}
+.surface-secondary {
+  background-color: var(--surface-secondary);
+}
+.surface-elevated {
+  background-color: var(--surface-elevated);
+}
+
+/* ================================
+   BORDER UTILITIES
+   ================================ */
+
+.border-primary {
+  border-color: var(--border-primary);
+}
+.border-secondary {
+  border-color: var(--border-secondary);
+}
+.border-focus {
+  border-color: var(--border-focus);
+}
+
+/* ================================
+   STATE UTILITIES
+   ================================ */
+
+.state-error {
+  color: var(--state-error);
+}
+.state-success {
+  color: var(--state-success);
+}
+.state-warning {
+  color: var(--state-warning);
+}
+.state-info {
+  color: var(--state-info);
+}
+
+.bg-state-error {
+  background-color: var(--state-error-bg);
+}
+.bg-state-success {
+  background-color: var(--state-success-bg);
+}
+.bg-state-warning {
+  background-color: var(--state-warning-bg);
+}
+.bg-state-info {
+  background-color: var(--state-info-bg);
+}
+
+/* ================================
+   TRANSITION UTILITIES
+   ================================ */
+
+.transition-fast {
+  transition: all var(--transition-fast);
+}
+.transition-normal {
+  transition: all var(--transition-normal);
+}
+.transition-slow {
+  transition: all var(--transition-slow);
+}
+
+/* ================================
+   SHADOW UTILITIES
+   ================================ */
+
+.shadow-focus {
+  box-shadow: var(--shadow-focus);
+}
+
+.dropdown-shadow {
+  box-shadow: var(--shadow-lg);
+}
+
+.dropdown-border {
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+}
+
+/* ================================
+   LAYOUT UTILITIES
+   ================================ */
+
+/* Table layout utilities */
+.table-fixed {
+  table-layout: fixed;
+}
+
+.table-auto {
+  table-layout: auto;
+}
+
+/* Position utilities for dropdowns */
+.dropdown-position {
+  position: absolute;
+  z-index: var(--z-dropdown);
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+
+/* ================================
+   SCROLLBAR UTILITIES
+   ================================ */
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: var(--surface-secondary);
+  border-radius: var(--radius-sm);
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--border-secondary);
+  border-radius: var(--radius-sm);
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+.scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+/* ================================
+   SELECTION UTILITIES
+   ================================ */
+
+.user-select-none {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* ================================
+   OVERFLOW UTILITIES
+   ================================ */
+
+.overflow-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.overflow-break-word {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* ================================
+   ANIMATION UTILITIES
+   ================================ */
+
+.animate-slide-down {
+  animation: slideDown var(--transition-fast) ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp var(--transition-fast) ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--transition-fast) ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ================================
+   CHECKBOX UTILITIES
+   ================================ */
+
+.checkbox-base {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.checkbox-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkbox-mark {
+  display: inline-block;
+  width: var(--table-checkbox-size);
+  height: var(--table-checkbox-size);
+  border: 2px solid var(--border-secondary);
+  border-radius: var(--radius-sm);
+  background-color: var(--surface-primary);
+  transition: var(--transition-fast);
+  position: relative;
+}
+
+.checkbox-input:checked + .checkbox-mark {
+  background-color: var(--color-primary-500);
+  border-color: var(--color-primary-500);
+}
+
+.checkbox-input:focus + .checkbox-mark {
+  box-shadow: var(--shadow-focus);
+}
+
+/* ================================
+   LOADING SPINNER UTILITY
+   ================================ */
+
+.spinner-base {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--border-primary);
+  border-top-color: var(--color-primary-500);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* ================================
+   BADGE UTILITY
+   ================================ */
+
+.badge-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 var(--space-1);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-700);
+  border-radius: var(--radius-full);
+}
+
+html.dark .badge-base {
+  background-color: var(--color-primary-900);
+  color: var(--color-primary-300);
+}
+
+/* ================================
+   EMPTY STATE UTILITY
+   ================================ */
+
+.empty-state-base {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.empty-state-icon {
+  font-size: 2rem;
+  margin-bottom: var(--space-2);
+  opacity: 0.5;
+}
+
+.empty-state-text {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--space-1);
+}
+
+.empty-state-description {
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+}
+
+/* ================================
+   D&D SPECIFIC UTILITIES
+   ================================ */
+
+/* Health bar colors */
+.health-full {
+  background-color: var(--color-success-500);
+}
+.health-good {
+  background-color: var(--color-warning-500);
+}
+.health-low {
+  background-color: var(--color-error-500);
+}
+.health-critical {
+  background-color: var(--color-error-700);
+}
+
+/* Level badge styles */
+.level-badge {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-800);
+  border: 1px solid var(--color-primary-200);
+}
+
+html.dark .level-badge {
+  background-color: var(--color-primary-900);
+  color: var(--color-primary-300);
+  border-color: var(--color-primary-700);
+}
+
+/* Status indicators */
+.status-active {
+  color: var(--color-success-600);
+}
+
+.status-inactive {
+  color: var(--color-gray-400);
+}
+
+html.dark .status-active {
+  color: var(--color-success-400);
+}
+
+/* ================================
+   BUTTON GROUP UTILITIES
+   ================================ */
+
+.dm-button-group {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.dm-button-group-attached {
+  gap: 0;
+}
+
+.dm-button-group-attached .dm-button {
+  border-radius: 0;
+}
+
+.dm-button-group-attached .dm-button:first-child {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.dm-button-group-attached .dm-button:last-child {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.dm-button-group-attached .dm-button:not(:last-child) {
+  border-right-width: 0;
+}
+
+/* ================================
+   ACCESSIBILITY UTILITIES
+   ================================ */
+
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ================================
+   RESPONSIVE UTILITIES
+   ================================ */
+
+/* Container queries support */
+@container (min-width: 640px) {
+  .container\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 768px) {
+  .container\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Responsive button groups */
+@media (max-width: 640px) {
+  .mobile-stack {
+    flex-direction: column !important;
+  }
+
+  .mobile-full-width {
+    width: 100% !important;
+  }
+
+  .mobile-hide {
+    display: none !important;
+  }
+
+  .dm-button-group {
+    flex-direction: column;
+    gap: var(--space-2);
+    width: 100%;
+  }
+
+  .dm-button-group .dm-button {
+    width: 100%;
+  }
+}
+
+/* ================================
+   MOTION & CONTRAST PREFERENCES
+   ================================ */
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .no-motion {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .no-motion * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .high-contrast-border {
+    border-width: 2px !important;
+  }
+
+  .high-contrast-focus:focus {
+    outline: 3px solid var(--border-focus) !important;
+    outline-offset: 2px !important;
+  }
+
+  .dm-input,
+  .dm-button,
+  .dm-card {
+    border-width: 2px;
+  }
+}
+
+/* ================================
+   PRINT UTILITIES
+   ================================ */
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .dm-card {
+    border: 1px solid #000;
+    box-shadow: none;
+  }
+}

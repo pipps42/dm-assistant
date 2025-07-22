@@ -47,7 +47,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const inputStyles = {
       // Base styles using CSS custom properties
       base: [
-        "input-base", // Base class from globals.css
+        "dm-input", // Base class from globals.css
         "transition-fast", // Transition utility
       ].join(" "),
 
