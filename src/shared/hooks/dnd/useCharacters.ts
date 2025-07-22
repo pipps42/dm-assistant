@@ -10,6 +10,7 @@ import {
 } from "@/core/entities/Character";
 import { CharacterService } from "@/core/services/CharacterService";
 import { charactersApi } from "@/tauri/commands/characters";
+import { useCampaign } from "./useCampaign";
 
 interface UseCharactersState {
   characters: PlayerCharacter[];
@@ -76,8 +77,13 @@ interface UseCharactersReturn extends UseCharactersState, UseCharactersActions {
  * Provides complete character management functionality with state management
  */
 export function useCharacters(campaignId?: string): UseCharactersReturn {
+  const { currentCampaign } = useCampaign();
+
+  // Use provided campaignId or fall back to current campaign
+  const activeCampaignId = campaignId || currentCampaign?.id;
+
   const [state, setState] = useState<UseCharactersState>({
-    characters: [],
+    campaigns: [],
     currentCharacter: null,
     loading: false,
     error: null,
@@ -98,6 +104,16 @@ export function useCharacters(campaignId?: string): UseCharactersReturn {
     },
     [updateState]
   );
+
+  // Auto-load characters when campaign changes
+  useEffect(() => {
+    if (activeCampaignId) {
+      loadCharactersByCampaign(activeCampaignId);
+    } else {
+      // Clear characters if no campaign
+      updateState({ characters: [] });
+    }
+  }, [activeCampaignId]);
 
   // CRUD Operations
   const createCharacter = useCallback(
@@ -466,7 +482,11 @@ export function useCharacters(campaignId?: string): UseCharactersReturn {
     // State
     ...state,
 
-    // Actions
+    // Current campaign info
+    activeCampaignId,
+    hasActiveCampaign: !!activeCampaignId,
+
+    // Actions (all existing methods)
     createCharacter,
     getCharacter,
     updateCharacter,

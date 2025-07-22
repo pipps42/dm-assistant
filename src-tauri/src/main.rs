@@ -11,6 +11,37 @@ use tauri::Manager;
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
+            // Campaign commands
+            commands::campaigns::create_campaign,
+            commands::campaigns::get_campaign,
+            commands::campaigns::get_all_campaigns,
+            commands::campaigns::get_active_campaigns,
+            commands::campaigns::get_campaign_summaries,
+            commands::campaigns::update_campaign,
+            commands::campaigns::delete_campaign,
+            commands::campaigns::archive_campaign,
+            commands::campaigns::set_current_campaign,
+            commands::campaigns::get_current_campaign,
+            commands::campaigns::clear_current_campaign,
+            commands::campaigns::get_recent_campaigns,
+            commands::campaigns::start_campaign_session,
+            commands::campaigns::update_campaign_stats,
+            commands::campaigns::get_app_settings,
+            commands::campaigns::update_app_theme,
+            commands::campaigns::update_backup_settings,
+            commands::campaigns::export_campaign,
+            commands::campaigns::import_campaign,
+            commands::campaigns::backup_campaigns,
+            commands::campaigns::campaigns_file_exists,
+            commands::campaigns::initialize_app,
+            commands::campaigns::validate_campaign_name,
+            commands::campaigns::get_campaign_count,
+            commands::campaigns::get_active_campaign_count,
+            commands::campaigns::duplicate_campaign,
+            commands::campaigns::complete_campaign,
+            commands::campaigns::pause_campaign,
+            commands::campaigns::resume_campaign,
+            
             // Character commands
             commands::characters::create_character,
             commands::characters::get_character_with_campaign,
@@ -41,7 +72,13 @@ fn main() {
             
             println!("File system initialized");
             
-            // Future: Load configuration, initialize services, etc.
+            // Initialize campaigns and settings
+            if let Err(e) = crate::services::campaign_storage::CampaignStorageService::initialize_app() {
+                eprintln!("Failed to initialize campaign storage: {}", e);
+                return Err(Box::new(e));
+            }
+            
+            println!("Campaign system initialized");
             
             Ok(())
         })
