@@ -333,4 +333,21 @@
   --avatar-size-xl: 4rem; /* 64px */
   --avatar-border-radius: var(--radius-full);
   --avatar-border-width: 2px;
+
+  /* ================================
+   TOOLPANEL COMPONENT TOKENS
+   ================================ */
+
+  --toolpanel-width-sm: 16rem; /* 256px */
+  --toolpanel-width-md: 20rem; /* 320px */
+  --toolpanel-width-lg: 24rem; /* 384px */
+  --toolpanel-width-xl: 28rem; /* 448px */
+  --toolpanel-min-height: 8rem; /* 128px */
+  --toolpanel-max-height: 32rem; /* 512px */
+  --toolpanel-header-height: 2.5rem; /* 40px */
+  --toolpanel-border-radius: var(--radius-lg);
+  --toolpanel-border-width: 1px;
+  --toolpanel-shadow: var(--shadow-lg);
+  --toolpanel-z-index: var(--z-modal);
+  --toolpanel-transition: all var(--transition-normal) ease-in-out;
 }
