@@ -4,6 +4,18 @@
 
 :root {
   /* ================================
+     APPSHELL COMPONENT TOKENS
+     ================================ */
+
+  --appshell-header-height: 4rem; /* 64px */
+  --appshell-footer-height: 2.5rem; /* 40px */
+  --appshell-sidebar-width: 16rem; /* 256px */
+  --appshell-sidebar-collapsed-width: 4rem; /* 64px */
+  --appshell-content-padding: var(--space-6);
+  --appshell-gap: var(--space-4);
+  --appshell-border-width: 1px;
+
+  /* ================================
      TOAST COMPONENT TOKENS
      ================================ */
 
