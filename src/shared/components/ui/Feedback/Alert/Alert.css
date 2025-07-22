@@ -1,0 +1,423 @@
+/* ================================================================
+   ALERT COMPONENT STYLES - USING DESIGN SYSTEM TOKENS
+   ================================================================ */
+
+/* ================================
+   ALERT BASE STYLES
+   ================================ */
+
+.dm-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--alert-padding);
+  border: var(--alert-border-width) solid;
+  border-radius: var(--alert-border-radius);
+  font-family: inherit;
+  position: relative;
+  transition: var(--transition-fast);
+}
+
+/* ================================
+   ALERT SIZES
+   ================================ */
+
+.dm-alert-sm {
+  padding: var(--space-3);
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.dm-alert-md {
+  padding: var(--alert-padding);
+  gap: var(--space-3);
+  font-size: var(--font-size-base);
+}
+
+.dm-alert-lg {
+  padding: var(--space-6);
+  gap: var(--space-4);
+  font-size: var(--font-size-lg);
+}
+
+/* ================================
+   ALERT VARIANTS
+   ================================ */
+
+.dm-alert-info {
+  background-color: var(--state-info-bg);
+  border-color: var(--color-info-200);
+  color: var(--color-info-800);
+}
+
+.dm-alert-success {
+  background-color: var(--state-success-bg);
+  border-color: var(--color-success-200);
+  color: var(--color-success-800);
+}
+
+.dm-alert-warning {
+  background-color: var(--state-warning-bg);
+  border-color: var(--color-warning-200);
+  color: var(--color-warning-800);
+}
+
+.dm-alert-error {
+  background-color: var(--state-error-bg);
+  border-color: var(--color-error-200);
+  color: var(--color-error-800);
+}
+
+/* ================================
+   ALERT LAYOUTS
+   ================================ */
+
+/* Inline alert (default) */
+.dm-alert-inline {
+  border-radius: var(--alert-border-radius);
+  margin: var(--space-2) 0;
+}
+
+/* Banner alert (full width, no border radius on sides) */
+.dm-alert-banner {
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  margin: 0;
+  border-left-width: 4px;
+  border-left-style: solid;
+}
+
+.dm-alert-banner.dm-alert-info {
+  border-left-color: var(--state-info);
+}
+
+.dm-alert-banner.dm-alert-success {
+  border-left-color: var(--state-success);
+}
+
+.dm-alert-banner.dm-alert-warning {
+  border-left-color: var(--state-warning);
+}
+
+.dm-alert-banner.dm-alert-error {
+  border-left-color: var(--state-error);
+}
+
+/* ================================
+   ALERT ICON
+   ================================ */
+
+.dm-alert-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--alert-icon-size);
+  height: var(--alert-icon-size);
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.dm-alert-icon-svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Icon colors per variant */
+.dm-alert-info .dm-alert-icon {
+  color: var(--state-info);
+}
+
+.dm-alert-success .dm-alert-icon {
+  color: var(--state-success);
+}
+
+.dm-alert-warning .dm-alert-icon {
+  color: var(--state-warning);
+}
+
+.dm-alert-error .dm-alert-icon {
+  color: var(--state-error);
+}
+
+/* ================================
+   ALERT CONTENT
+   ================================ */
+
+.dm-alert-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--alert-title-gap);
+}
+
+.dm-alert-title {
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  margin: 0;
+}
+
+.dm-alert-message {
+  line-height: var(--line-height-normal);
+  margin: 0;
+}
+
+.dm-alert-message p {
+  margin: 0;
+}
+
+.dm-alert-message p + p {
+  margin-top: var(--space-2);
+}
+
+/* Content adjustments for different sizes */
+.dm-alert-sm .dm-alert-content {
+  gap: var(--space-1);
+}
+
+.dm-alert-sm .dm-alert-title {
+  font-size: var(--font-size-sm);
+}
+
+.dm-alert-sm .dm-alert-message {
+  font-size: var(--font-size-xs);
+}
+
+.dm-alert-lg .dm-alert-content {
+  gap: var(--space-3);
+}
+
+.dm-alert-lg .dm-alert-title {
+  font-size: var(--font-size-xl);
+}
+
+.dm-alert-lg .dm-alert-message {
+  font-size: var(--font-size-lg);
+}
+
+/* ================================
+   ALERT ACTIONS
+   ================================ */
+
+.dm-alert-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.dm-alert-action {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1-5) var(--space-3);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-base);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-decoration: none;
+  line-height: 1;
+}
+
+.dm-alert-action-primary {
+  background-color: currentColor;
+  color: var(--text-inverse);
+  border-color: currentColor;
+}
+
+.dm-alert-action-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.dm-alert-action-secondary {
+  background-color: transparent;
+  color: currentColor;
+  border-color: currentColor;
+}
+
+.dm-alert-action-secondary:hover {
+  background-color: currentColor;
+  color: var(--text-inverse);
+}
+
+/* Size-specific action styles */
+.dm-alert-sm .dm-alert-actions {
+  gap: var(--space-1-5);
+  margin-top: var(--space-2);
+}
+
+.dm-alert-sm .dm-alert-action {
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-xs);
+}
+
+.dm-alert-lg .dm-alert-actions {
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.dm-alert-lg .dm-alert-action {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-base);
+}
+
+/* ================================
+   ALERT CLOSE BUTTON
+   ================================ */
+
+.dm-alert-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--alert-close-size);
+  height: var(--alert-close-size);
+  border: none;
+  background: transparent;
+  color: currentColor;
+  border-radius: var(--radius-base);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  flex-shrink: 0;
+  opacity: 0.7;
+  margin-left: var(--space-2);
+}
+
+.dm-alert-close:hover {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dm-alert-close:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px currentColor;
+}
+
+.dm-alert-close-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Close button adjustments for sizes */
+.dm-alert-sm .dm-alert-close {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.dm-alert-sm .dm-alert-close-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.dm-alert-lg .dm-alert-close {
+  width: 2rem;
+  height: 2rem;
+}
+
+.dm-alert-lg .dm-alert-close-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* ================================
+   DARK MODE SUPPORT
+   ================================ */
+
+html.dark .dm-alert-info {
+  background-color: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+}
+
+html.dark .dm-alert-success {
+  background-color: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
+  color: #86efac;
+}
+
+html.dark .dm-alert-warning {
+  background-color: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+}
+
+html.dark .dm-alert-error {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+
+@media (max-width: 640px) {
+  .dm-alert {
+    padding: var(--space-3);
+    gap: var(--space-2);
+  }
+
+  .dm-alert-lg {
+    padding: var(--space-4);
+    gap: var(--space-3);
+    font-size: var(--font-size-base);
+  }
+
+  .dm-alert-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dm-alert-action {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .dm-alert-banner {
+    border-radius: 0;
+    margin-left: calc(-1 * var(--space-4));
+    margin-right: calc(-1 * var(--space-4));
+  }
+}
+
+/* ================================
+   HIGH CONTRAST MODE
+   ================================ */
+
+@media (prefers-contrast: high) {
+  .dm-alert {
+    border-width: 2px;
+  }
+
+  .dm-alert-banner {
+    border-left-width: 6px;
+  }
+
+  .dm-alert-close:focus {
+    outline: 3px solid currentColor;
+    outline-offset: 2px;
+  }
+}
+
+/* ================================
+   PRINT STYLES
+   ================================ */
+
+@media print {
+  .dm-alert {
+    border: 2px solid #000;
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none;
+  }
+
+  .dm-alert-close {
+    display: none;
+  }
+
+  .dm-alert-actions {
+    display: none;
+  }
+}

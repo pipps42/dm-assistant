@@ -1,0 +1,353 @@
+/* ================================================================
+   DM ASSISTANT DESIGN SYSTEM - COMPONENT-SPECIFIC TOKENS
+   ================================================================ */
+
+:root {
+  /* ================================
+     APPSHELL COMPONENT TOKENS
+     ================================ */
+
+  --appshell-header-height: 4rem; /* 64px */
+  --appshell-footer-height: 2.5rem; /* 40px */
+  --appshell-sidebar-width: 16rem; /* 256px */
+  --appshell-sidebar-collapsed-width: 4rem; /* 64px */
+  --appshell-content-padding: var(--space-6);
+  --appshell-gap: var(--space-4);
+  --appshell-border-width: 1px;
+
+  /* ================================
+   SIDEBAR COMPONENT TOKENS
+   ================================ */
+
+  --sidebar-width-sm: 12rem; /* 192px */
+  --sidebar-width-md: 16rem; /* 256px */
+  --sidebar-width-lg: 20rem; /* 320px */
+  --sidebar-width-collapsed: 4rem; /* 64px */
+
+  --sidebar-header-height: 4rem; /* 64px */
+  --sidebar-footer-height: 3rem; /* 48px */
+  --sidebar-padding: var(--space-4);
+  --sidebar-item-height: 2.5rem; /* 40px */
+  --sidebar-item-padding-x: var(--space-3);
+  --sidebar-item-padding-y: var(--space-2);
+  --sidebar-item-gap: var(--space-2);
+  --sidebar-group-gap: var(--space-4);
+  --sidebar-icon-size: 1.25rem; /* 20px */
+  --sidebar-badge-size: 1.125rem; /* 18px */
+  --sidebar-border-radius: var(--radius-md);
+  --sidebar-transition: all var(--transition-normal) ease-in-out;
+
+  /* ================================
+   TABS COMPONENT TOKENS
+   ================================ */
+
+  --tabs-height-sm: 2rem; /* 32px */
+  --tabs-height-md: 2.5rem; /* 40px */
+  --tabs-height-lg: 3rem; /* 48px */
+  --tabs-padding-x-sm: var(--space-3);
+  --tabs-padding-x-md: var(--space-4);
+  --tabs-padding-x-lg: var(--space-5);
+  --tabs-gap: var(--space-1);
+  --tabs-border-width: 2px;
+  --tabs-border-radius: var(--radius-md);
+  --tabs-content-padding: var(--space-4);
+
+  /* ================================
+   BREADCRUMBS COMPONENT TOKENS
+   ================================ */
+
+  --breadcrumb-height: 2rem; /* 32px */
+  --breadcrumb-separator-margin: var(--space-2);
+  --breadcrumb-item-padding: var(--space-1);
+  --breadcrumb-gap: var(--space-1);
+
+  /* ================================
+   MENU COMPONENT TOKENS
+   ================================ */
+
+  --menu-min-width: 8rem; /* 128px */
+  --menu-max-width: 20rem; /* 320px */
+  --menu-max-height: 16rem; /* 256px */
+  --menu-padding: var(--space-1);
+  --menu-item-height: 2.25rem; /* 36px */
+  --menu-item-padding-x: var(--space-3);
+  --menu-item-padding-y: var(--space-2);
+  --menu-border-radius: var(--radius-md);
+  --menu-separator-margin: var(--space-1);
+
+  /* ================================
+     TOAST COMPONENT TOKENS
+     ================================ */
+
+  --toast-width: 20rem; /* 320px */
+  --toast-max-width: 24rem; /* 384px */
+  --toast-padding: var(--space-4);
+  --toast-border-radius: var(--radius-lg);
+  --toast-enter-duration: 300ms;
+  --toast-exit-duration: 200ms;
+  --toast-gap: var(--space-3);
+  --toast-icon-size: 1.25rem; /* 20px */
+  --toast-close-size: 1.5rem; /* 24px */
+
+  /* ================================
+     ALERT COMPONENT TOKENS
+     ================================ */
+
+  --alert-padding: var(--space-4);
+  --alert-border-radius: var(--radius-md);
+  --alert-border-width: 1px;
+  --alert-icon-size: 1.25rem; /* 20px */
+  --alert-close-size: 1.5rem; /* 24px */
+  --alert-title-gap: var(--space-2);
+
+  /* ================================
+     CHECKBOX & RADIO COMPONENT TOKENS
+     ================================ */
+
+  --checkbox-size-sm: 0.875rem; /* 14px */
+  --checkbox-size-md: 1rem; /* 16px */
+  --checkbox-size-lg: 1.125rem; /* 18px */
+  --checkbox-border-width: 2px;
+  --checkbox-border-radius: var(--radius-base);
+  --checkbox-check-size: 0.625rem; /* 10px */
+
+  --radio-size-sm: 0.875rem; /* 14px */
+  --radio-size-md: 1rem; /* 16px */
+  --radio-size-lg: 1.125rem; /* 18px */
+  --radio-border-width: 2px;
+  --radio-dot-size: 0.375rem; /* 6px */
+
+  /* ================================
+     INPUT COMPONENT TOKENS
+     ================================ */
+
+  --input-height-sm: 2rem; /* 32px */
+  --input-height-md: 2.5rem; /* 40px */
+  --input-height-lg: 3rem; /* 48px */
+  --input-padding-x-sm: var(--space-3);
+  --input-padding-x-md: var(--space-3);
+  --input-padding-x-lg: var(--space-4);
+  --input-padding-y-sm: var(--space-1-5);
+  --input-padding-y-md: var(--space-2);
+  --input-padding-y-lg: var(--space-3);
+
+  /* ================================
+     BUTTON COMPONENT TOKENS
+     ================================ */
+
+  --button-height-sm: 2rem;
+  --button-height-md: 2.5rem;
+  --button-height-lg: 3rem;
+  --button-padding-x-sm: var(--space-3);
+  --button-padding-x-md: var(--space-4);
+  --button-padding-x-lg: var(--space-6);
+
+  /* ================================
+     TEXTAREA COMPONENT TOKENS
+     ================================ */
+
+  --textarea-min-height-sm: 4rem; /* 64px */
+  --textarea-min-height-md: 5rem; /* 80px */
+  --textarea-min-height-lg: 6rem; /* 96px */
+  --textarea-max-height: 20rem; /* 320px */
+  --textarea-line-height: 1.5;
+
+  /* ================================
+     MODAL COMPONENT TOKENS
+     ================================ */
+
+  --modal-max-width-xs: 20rem; /* 320px */
+  --modal-max-width-sm: 24rem; /* 384px */
+  --modal-max-width-md: 32rem; /* 512px */
+  --modal-max-width-lg: 48rem; /* 768px */
+  --modal-max-width-xl: 64rem; /* 1024px */
+  --modal-backdrop-blur: blur(4px);
+  --modal-enter-duration: 200ms;
+  --modal-exit-duration: 150ms;
+
+  /* ================================
+     CARD COMPONENT TOKENS
+     ================================ */
+
+  --card-padding-sm: var(--space-3);
+  --card-padding-md: var(--space-4);
+  --card-padding-lg: var(--space-6);
+  --card-radius: var(--radius-lg);
+
+  /* ================================
+     TABLE COMPONENT TOKENS
+     ================================ */
+
+  --table-border-width: 1px;
+  --table-header-height-sm: 2.5rem; /* 40px */
+  --table-header-height-md: 3rem; /* 48px */
+  --table-header-height-lg: 3.5rem; /* 56px */
+  --table-row-height-sm: 2.5rem; /* 40px */
+  --table-row-height-md: 3rem; /* 48px */
+  --table-row-height-lg: 3.5rem; /* 56px */
+  --table-selection-width: 3rem; /* 48px */
+  --table-checkbox-size: 1rem; /* 16px */
+
+  /* ================================
+     PAGINATION COMPONENT TOKENS
+     ================================ */
+
+  --pagination-button-size: 2rem; /* 32px */
+  --pagination-button-size-sm: 1.75rem; /* 28px */
+  --pagination-gap: var(--space-1);
+
+  /* ================================
+     SELECT COMPONENT TOKENS
+     ================================ */
+
+  --select-min-height-sm: var(--input-height-sm);
+  --select-min-height-md: var(--input-height-md);
+  --select-min-height-lg: var(--input-height-lg);
+  --select-dropdown-max-height: 12rem; /* 192px */
+  --select-dropdown-offset: var(--space-1);
+  --select-option-height: 2.5rem; /* 40px */
+  --select-option-padding-x: var(--space-3);
+  --select-option-padding-y: var(--space-2);
+  --select-group-label-height: 2rem; /* 32px */
+  --select-search-height: 3rem; /* 48px */
+  --select-clear-size: 1rem; /* 16px */
+  --select-arrow-size: 0.75rem; /* 12px */
+
+  /* ================================
+     FORM COMPONENT TOKENS
+     ================================ */
+
+  --form-field-gap: var(--space-2);
+  --form-section-gap: var(--space-6);
+  --form-actions-gap: var(--space-3);
+  --form-group-padding: var(--space-4);
+
+  /* ================================
+     DROPDOWN COMPONENT TOKENS
+     ================================ */
+
+  --dropdown-min-width: 8rem; /* 128px */
+  --dropdown-max-width: 20rem; /* 320px */
+  --dropdown-max-height: 16rem; /* 256px */
+  --dropdown-padding: var(--space-1);
+  --dropdown-item-height: 2.5rem; /* 40px */
+  --dropdown-item-padding-x: var(--space-3);
+  --dropdown-border-radius: var(--radius-md);
+
+  /* ================================
+   LOADING COMPONENT TOKENS
+   ================================ */
+
+  --loading-spinner-size-sm: 1rem; /* 16px */
+  --loading-spinner-size-md: 1.5rem; /* 24px */
+  --loading-spinner-size-lg: 2rem; /* 32px */
+  --loading-spinner-size-xl: 3rem; /* 48px */
+  --loading-spinner-stroke-width: 2px;
+  --loading-gap: var(--space-3);
+  --loading-overlay-backdrop: rgba(255, 255, 255, 0.8);
+  --loading-overlay-backdrop-dark: rgba(0, 0, 0, 0.8);
+
+  /* ================================
+   TOOLTIP COMPONENT TOKENS
+   ================================ */
+
+  --tooltip-max-width: 16rem; /* 256px */
+  --tooltip-padding-x: var(--space-3);
+  --tooltip-padding-y: var(--space-2);
+  --tooltip-border-radius: var(--radius-md);
+  --tooltip-offset: var(--space-2);
+  --tooltip-arrow-size: 0.375rem; /* 6px */
+  --tooltip-delay: 700ms;
+  --tooltip-z-index: var(--z-tooltip);
+
+  /* ================================
+   BADGE COMPONENT TOKENS
+   ================================ */
+
+  --badge-height-sm: 1.125rem; /* 18px */
+  --badge-height-md: 1.25rem; /* 20px */
+  --badge-height-lg: 1.5rem; /* 24px */
+  --badge-padding-x-sm: var(--space-1-5);
+  --badge-padding-x-md: var(--space-2);
+  --badge-padding-x-lg: var(--space-2-5);
+  --badge-border-radius: var(--radius-md);
+  --badge-border-radius-pill: var(--radius-full);
+  --badge-dot-size-sm: 0.375rem; /* 6px */
+  --badge-dot-size-md: 0.5rem; /* 8px */
+  --badge-dot-size-lg: 0.625rem; /* 10px */
+  --badge-icon-size: 0.75rem; /* 12px */
+  --badge-remove-size: 0.875rem; /* 14px */
+
+  /* ================================
+     PROGRESS COMPONENT TOKENS
+     ================================ */
+
+  --progress-height-sm: 0.375rem; /* 6px */
+  --progress-height-md: 0.5rem; /* 8px */
+  --progress-height-lg: 0.75rem; /* 12px */
+  --progress-border-radius: var(--radius-full);
+
+  /* ================================
+     SLIDER COMPONENT TOKENS
+     ================================ */
+
+  --slider-track-height: 0.375rem; /* 6px */
+  --slider-thumb-size: 1rem; /* 16px */
+  --slider-thumb-size-lg: 1.25rem; /* 20px */
+  --slider-track-border-radius: var(--radius-full);
+  --slider-thumb-border-radius: var(--radius-full);
+
+  /* ================================
+   SWITCH COMPONENT TOKENS
+   ================================ */
+
+  --switch-width-sm: 1.75rem; /* 28px */
+  --switch-width-md: 2.25rem; /* 36px */
+  --switch-width-lg: 2.75rem; /* 44px */
+  --switch-height-sm: 0.875rem; /* 14px */
+  --switch-height-md: 1.25rem; /* 20px */
+  --switch-height-lg: 1.5rem; /* 24px */
+  --switch-thumb-size-sm: 0.625rem; /* 10px */
+  --switch-thumb-size-md: 0.875rem; /* 14px */
+  --switch-thumb-size-lg: 1.125rem; /* 18px */
+  --switch-border-radius: var(--radius-full);
+  --switch-transition: all var(--transition-normal) ease-in-out;
+
+  /* ================================
+     ACCORDION COMPONENT TOKENS
+     ================================ */
+
+  --accordion-trigger-height: 3rem; /* 48px */
+  --accordion-trigger-padding: var(--space-4);
+  --accordion-content-padding: var(--space-4);
+  --accordion-border-radius: var(--radius-lg);
+
+  /* ================================
+     AVATAR COMPONENT TOKENS
+     ================================ */
+
+  --avatar-size-xs: 1.5rem; /* 24px */
+  --avatar-size-sm: 2rem; /* 32px */
+  --avatar-size-md: 2.5rem; /* 40px */
+  --avatar-size-lg: 3rem; /* 48px */
+  --avatar-size-xl: 4rem; /* 64px */
+  --avatar-border-radius: var(--radius-full);
+  --avatar-border-width: 2px;
+
+  /* ================================
+   TOOLPANEL COMPONENT TOKENS
+   ================================ */
+
+  --toolpanel-width-sm: 16rem; /* 256px */
+  --toolpanel-width-md: 20rem; /* 320px */
+  --toolpanel-width-lg: 24rem; /* 384px */
+  --toolpanel-width-xl: 28rem; /* 448px */
+  --toolpanel-min-height: 8rem; /* 128px */
+  --toolpanel-max-height: 32rem; /* 512px */
+  --toolpanel-header-height: 2.5rem; /* 40px */
+  --toolpanel-border-radius: var(--radius-lg);
+  --toolpanel-border-width: 1px;
+  --toolpanel-shadow: var(--shadow-lg);
+  --toolpanel-z-index: var(--z-modal);
+  --toolpanel-transition: all var(--transition-normal) ease-in-out;
+}

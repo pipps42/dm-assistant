@@ -1,0 +1,107 @@
+/* ================================================================
+   DARK THEME - SEMANTIC TOKEN OVERRIDES
+   ================================================================ */
+
+html.dark {
+  color-scheme: dark;
+
+  /* ================================
+     BACKGROUND COLORS - DARK MODE
+     ================================ */
+
+  --bg-primary: var(--color-gray-900); /* Main app background */
+  --bg-secondary: var(--color-gray-800); /* Secondary sections */
+  --bg-tertiary: var(--color-gray-700); /* Tertiary elements */
+  --bg-overlay: rgba(0, 0, 0, 0.75); /* Modal overlays */
+
+  /* ================================
+     SURFACE COLORS - DARK MODE
+     ================================ */
+
+  --surface-primary: var(--color-gray-800); /* Cards, panels */
+  --surface-secondary: var(--color-gray-700); /* Nested surfaces */
+  --surface-tertiary: var(--color-gray-600); /* Input backgrounds */
+  --surface-elevated: var(--color-gray-700); /* Elevated cards */
+
+  /* ================================
+     BORDER COLORS - DARK MODE
+     ================================ */
+
+  --border-primary: var(--color-gray-700); /* Default borders */
+  --border-secondary: var(--color-gray-600); /* Secondary borders */
+  --border-focus: var(--color-primary-400); /* Focus states */
+  --border-error: var(--color-error-400); /* Error borders */
+  --border-success: var(--color-success-400); /* Success borders */
+  --border-warning: var(--color-warning-400); /* Warning borders */
+
+  /* ================================
+     TEXT COLORS - DARK MODE
+     ================================ */
+
+  --text-primary: var(--color-gray-100); /* Primary text */
+  --text-secondary: var(--color-gray-300); /* Secondary text */
+  --text-tertiary: var(--color-gray-500); /* Tertiary text */
+  --text-inverse: var(--color-gray-900); /* Inverse text */
+  --text-placeholder: var(--color-gray-500); /* Placeholder text */
+
+  /* ================================
+     STATE COLORS - DARK MODE
+     ================================ */
+
+  --state-error: var(--color-error-400);
+  --state-error-bg: rgba(239, 68, 68, 0.1); /* Error background */
+  --state-success: var(--color-success-400);
+  --state-success-bg: rgba(34, 197, 94, 0.1); /* Success background */
+  --state-warning: var(--color-warning-400);
+  --state-warning-bg: rgba(245, 158, 11, 0.1); /* Warning background */
+  --state-info: var(--color-info-400);
+  --state-info-bg: rgba(59, 130, 246, 0.1); /* Info background */
+
+  /* ================================
+     COMPONENT-SPECIFIC OVERRIDES
+     ================================ */
+
+  /* Shadows - Softer in dark mode */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3),
+    0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4),
+    0 10px 10px -5px rgba(0, 0, 0, 0.3);
+
+  /* Focus ring - Better visibility in dark */
+  --shadow-focus: 0 0 0 3px rgba(239, 68, 68, 0.4);
+}
+
+/* ================================
+   DARK MODE - SCROLLBAR STYLING
+   ================================ */
+
+html.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+html.dark ::-webkit-scrollbar-track {
+  background: var(--color-gray-800);
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: var(--color-gray-600);
+  border-radius: var(--radius-sm);
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gray-500);
+}
+
+/* ================================
+   DARK MODE - SELECTION STYLING
+   ================================ */
+
+html.dark ::selection {
+  background: rgba(239, 68, 68, 0.3);
+  color: var(--text-primary);
+}

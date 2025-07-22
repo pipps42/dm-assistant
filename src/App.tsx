@@ -1,155 +1,255 @@
-// src/App.tsx
-import React, { useState } from "react";
-import { CharactersPage } from "./pages/CharactersPage";
-import { Users, Settings, Home, Map, Sword } from "lucide-react";
-import "./App.css";
-
-type PageType = "home" | "characters" | "npcs" | "environments" | "settings";
-
-interface NavigationItem {
-  id: PageType;
-  label: string;
-  icon: React.ReactNode;
-}
-
-const navigationItems: NavigationItem[] = [
-  { id: "home", label: "Dashboard", icon: <Home className="w-5 h-5" /> },
-  {
-    id: "characters",
-    label: "Personaggi",
-    icon: <Users className="w-5 h-5" />,
-  },
-  { id: "npcs", label: "NPC", icon: <Sword className="w-5 h-5" /> },
-  {
-    id: "environments",
-    label: "Ambientazioni",
-    icon: <Map className="w-5 h-5" />,
-  },
-  {
-    id: "settings",
-    label: "Impostazioni",
-    icon: <Settings className="w-5 h-5" />,
-  },
-];
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import DemoHomePage from "@/pages/DemoHomePage";
+import DemoTokensPage from "@/pages/DemoTokensPage";
+import DemoComponentsPage from "@/pages/DemoComponentsPage";
+import DemoFormsPage from "@/pages/DemoFormsPage";
+import DemoTablesPage from "@/pages/DemoTablesPage";
+import { ToastProvider } from "@/shared/components/ui/Feedback/Toast";
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<PageType>("characters");
+  return (
+    <ToastProvider position="top-right" maxToasts={5}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<DemoHomePage />} />
+          <Route path="/demo/tokens" element={<DemoTokensPage />} />
+          <Route path="/demo/components" element={<DemoComponentsPage />} />
+          <Route path="/demo/forms" element={<DemoFormsPage />} />
+          <Route path="/demo/tables" element={<DemoTablesPage />} />
+        </Routes>
+      </Router>
+    </ToastProvider>
+  );
+}
 
-  const renderCurrentPage = () => {
-    switch (currentPage) {
+export default App;
+
+/* import { useState } from "react";
+import "@/assets/styles/globals.css";
+import { CharacterManagerTool } from "./tools";
+
+function App() {
+  const [currentView, setCurrentView] = useState<"home" | "character">("home");
+
+  const renderCurrentView = () => {
+    switch (currentView) {
+      case "character":
+        return <CharacterManagerTool />;
       case "home":
-        return <DashboardPage />;
-      case "characters":
-        return <CharactersPage />;
-      case "npcs":
-        return <NPCsPage />;
-      case "environments":
-        return <EnvironmentsPage />;
-      case "settings":
-        return <SettingsPage />;
       default:
-        return <CharactersPage />;
+        return (
+          <div className="container">
+            <h1>DM Assistant</h1>
+            <div className="row">
+              <p>
+                Benvenuto in DM Assistant - Il tuo compagno per gestire campagne
+                D&D 5e
+              </p>
+            </div>
+
+            <div className="row" style={{ marginTop: "2rem" }}>
+              <h2>Tools Disponibili</h2>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "1rem",
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                  marginTop: "1rem",
+                }}
+              >
+                <button
+                  onClick={() => setCurrentView("character")}
+                  style={{
+                    padding: "1rem 2rem",
+                    backgroundColor: "#10b981",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontSize: "1rem",
+                    fontWeight: "bold",
+                  }}
+                >
+                  🎭 Character Manager
+                </button>
+
+                <button
+                  disabled
+                  style={{
+                    padding: "1rem 2rem",
+                    backgroundColor: "#ccc",
+                    color: "#666",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "1rem",
+                  }}
+                >
+                  🏰 Campaign Manager (Coming Soon)
+                </button>
+
+                <button
+                  disabled
+                  style={{
+                    padding: "1rem 2rem",
+                    backgroundColor: "#ccc",
+                    color: "#666",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "1rem",
+                  }}
+                >
+                  👥 NPC Manager (Coming Soon)
+                </button>
+
+                <button
+                  disabled
+                  style={{
+                    padding: "1rem 2rem",
+                    backgroundColor: "#ccc",
+                    color: "#666",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "1rem",
+                  }}
+                >
+                  ⚔️ Combat Tracker (Coming Soon)
+                </button>
+
+                <button
+                  disabled
+                  style={{
+                    padding: "1rem 2rem",
+                    backgroundColor: "#ccc",
+                    color: "#666",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "1rem",
+                  }}
+                >
+                  🐉 Bestiary (Coming Soon)
+                </button>
+
+                <button
+                  disabled
+                  style={{
+                    padding: "1rem 2rem",
+                    backgroundColor: "#ccc",
+                    color: "#666",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "1rem",
+                  }}
+                >
+                  🎲 Dice Roller (Coming Soon)
+                </button>
+              </div>
+            </div>
+
+            <div className="row" style={{ marginTop: "2rem" }}>
+              <h3>🆕 Novità: Shared Components UI</h3>
+              <div
+                style={{
+                  textAlign: "left",
+                  maxWidth: "600px",
+                  margin: "0 auto",
+                }}
+              >
+                <p>
+                  <strong>✨ Implementato:</strong>
+                </p>
+                <ul style={{ marginLeft: "2rem" }}>
+                  <li>
+                    <strong>CharacterCard</strong> - Cards professionali per
+                    visualizzare PG
+                  </li>
+                  <li>
+                    <strong>StatusBadge</strong> - Badge per livello, stato,
+                    relazioni, achievements
+                  </li>
+                  <li>
+                    <strong>HealthTracker</strong> - Barra HP visuale con
+                    animazioni
+                  </li>
+                  <li>
+                    <strong>UI/UX migliorata</strong> - Design moderno e
+                    responsive
+                  </li>
+                </ul>
+
+                <p style={{ marginTop: "1rem" }}>
+                  <strong>🎯 Confronta le Versioni:</strong>
+                </p>
+                <ul style={{ marginLeft: "2rem" }}>
+                  <li>
+                    <strong>Character Manager (NEW!)</strong> - Con shared
+                    components
+                  </li>
+                  <li>
+                    <strong>Character Test (Basic)</strong> - Versione originale
+                    senza styling
+                  </li>
+                </ul>
+
+                <p style={{ marginTop: "1rem" }}>
+                  <strong>🚧 Prossimi Passi:</strong>
+                </p>
+                <ul style={{ marginLeft: "2rem" }}>
+                  <li>NPCCard, QuestTracker, DiceRoller components</li>
+                  <li>Campaign Management system</li>
+                  <li>CharacterManager tool definitivo</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        );
+    }
+  };
+
+  const getPageTitle = () => {
+    switch (currentView) {
+      case "character":
+        return "Character Manager";
+      default:
+        return "DM Assistant";
     }
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Sidebar */}
-      <nav className="w-64 bg-white dark:bg-gray-800 shadow-lg flex flex-col">
-        {/* Header */}
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-            D&D Assistant
-          </h1>
-          <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-            Dungeon Master Tools
-          </p>
+    <div className="App">
+      {currentView !== "home" && (
+        <div
+          style={{
+            padding: "1rem",
+            backgroundColor: "#f5f5f5",
+            borderBottom: "1px solid #ddd",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <button
+            onClick={() => setCurrentView("home")}
+            style={{
+              padding: "0.5rem 1rem",
+              backgroundColor: "#646cff",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            ← Torna alla Home
+          </button>
+          <h2 style={{ margin: 0 }}>{getPageTitle()}</h2>
+          <div></div>
         </div>
+      )}
 
-        {/* Navigation */}
-        <div className="flex-1 p-4">
-          <ul className="space-y-2">
-            {navigationItems.map((item) => (
-              <li key={item.id}>
-                <button
-                  onClick={() => setCurrentPage(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                    currentPage === item.id
-                      ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                  }`}
-                >
-                  {item.icon}
-                  <span className="font-medium">{item.label}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Footer */}
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-          <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
-            Tauri + React + TypeScript
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-hidden">
-        <div className="h-full overflow-y-auto p-6">{renderCurrentPage()}</div>
-      </main>
+      {renderCurrentView()}
     </div>
   );
 }
 
-// Placeholder components per le altre pagine
-const DashboardPage: React.FC = () => (
-  <div className="text-center py-12">
-    <Home className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-      Dashboard
-    </h2>
-    <p className="text-gray-600 dark:text-gray-300">
-      Panoramica della tua campagna (da implementare)
-    </p>
-  </div>
-);
-
-const NPCsPage: React.FC = () => (
-  <div className="text-center py-12">
-    <Sword className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-      NPC
-    </h2>
-    <p className="text-gray-600 dark:text-gray-300">
-      Gestione NPC (da migrare dal progetto esistente)
-    </p>
-  </div>
-);
-
-const EnvironmentsPage: React.FC = () => (
-  <div className="text-center py-12">
-    <Map className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-      Ambientazioni
-    </h2>
-    <p className="text-gray-600 dark:text-gray-300">
-      Gestione ambientazioni (da migrare dal progetto esistente)
-    </p>
-  </div>
-);
-
-const SettingsPage: React.FC = () => (
-  <div className="text-center py-12">
-    <Settings className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-      Impostazioni
-    </h2>
-    <p className="text-gray-600 dark:text-gray-300">
-      Configurazione dell'applicazione (da implementare)
-    </p>
-  </div>
-);
-
 export default App;
+ */

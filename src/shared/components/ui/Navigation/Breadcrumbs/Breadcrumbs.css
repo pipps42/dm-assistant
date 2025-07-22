@@ -1,0 +1,272 @@
+/* ================================================================
+   BREADCRUMBS COMPONENT STYLES - USING DESIGN SYSTEM TOKENS
+   ================================================================ */
+
+/* ================================
+   BREADCRUMBS BASE STYLES
+   ================================ */
+
+.dm-breadcrumbs {
+  width: 100%;
+  overflow: hidden;
+}
+
+.dm-breadcrumbs-list {
+  display: flex;
+  align-items: center;
+  gap: var(--breadcrumb-gap);
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-height: var(--breadcrumb-height);
+}
+
+/* ================================
+   BREADCRUMBS SIZES
+   ================================ */
+
+.dm-breadcrumbs-sm {
+  font-size: var(--font-size-xs);
+}
+
+.dm-breadcrumbs-md {
+  font-size: var(--font-size-sm);
+}
+
+.dm-breadcrumbs-lg {
+  font-size: var(--font-size-base);
+}
+
+/* ================================
+   BREADCRUMB ITEM WRAPPER
+   ================================ */
+
+.dm-breadcrumb-item-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--breadcrumb-separator-margin);
+  min-width: 0;
+}
+
+/* ================================
+   BREADCRUMB ITEM BASE STYLES
+   ================================ */
+
+.dm-breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  padding: var(--breadcrumb-item-padding);
+  border-radius: var(--radius-base);
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all var(--transition-normal) ease-in-out;
+  min-width: 0;
+  position: relative;
+}
+
+.dm-breadcrumb-item:hover:not(.dm-breadcrumb-item-current):not(
+    .dm-breadcrumb-item-disabled
+  ) {
+  color: var(--text-primary);
+  background-color: var(--surface-secondary);
+}
+
+.dm-breadcrumb-item:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 1px;
+}
+
+.dm-breadcrumb-item[role="button"] {
+  cursor: pointer;
+}
+
+/* ================================
+   BREADCRUMB ITEM STATES
+   ================================ */
+
+.dm-breadcrumb-item-current {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+  cursor: default;
+}
+
+.dm-breadcrumb-item-disabled {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ================================
+   BREADCRUMB ITEM SIZES
+   ================================ */
+
+.dm-breadcrumb-item-sm {
+  padding: var(--space-0-5) var(--space-1);
+  font-size: var(--font-size-xs);
+}
+
+.dm-breadcrumb-item-md {
+  padding: var(--space-1) var(--space-1-5);
+  font-size: var(--font-size-sm);
+}
+
+.dm-breadcrumb-item-lg {
+  padding: var(--space-1-5) var(--space-2);
+  font-size: var(--font-size-base);
+}
+
+/* ================================
+   BREADCRUMB ITEM ELEMENTS
+   ================================ */
+
+.dm-breadcrumb-item-icon {
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dm-breadcrumb-item-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.dm-breadcrumb-item-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* ================================
+   BREADCRUMB SEPARATOR
+   ================================ */
+
+.dm-breadcrumb-separator {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  font-size: 0.75em;
+  user-select: none;
+}
+
+.dm-breadcrumb-separator-icon {
+  width: 0.75em;
+  height: 0.75em;
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+
+@media (max-width: 640px) {
+  .dm-breadcrumbs-list {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: var(--space-1);
+  }
+
+  .dm-breadcrumbs-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dm-breadcrumb-item-wrapper {
+    flex-shrink: 0;
+  }
+
+  .dm-breadcrumb-item-label {
+    max-width: 8rem;
+  }
+
+  /* Show only last 2 items on very small screens */
+  .dm-breadcrumb-item-wrapper:not(:nth-last-child(-n + 3)) {
+    display: none;
+  }
+
+  /* Show ellipsis before visible items */
+  .dm-breadcrumbs-list:before {
+    content: "⋯";
+    color: var(--text-tertiary);
+    font-weight: var(--font-weight-bold);
+    padding: 0 var(--space-1);
+    flex-shrink: 0;
+  }
+
+  .dm-breadcrumbs-list:has(
+      .dm-breadcrumb-item-wrapper:nth-child(1):nth-last-child(-n + 3)
+    ):before {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .dm-breadcrumb-item-label {
+    max-width: 6rem;
+  }
+
+  .dm-breadcrumb-item-sm,
+  .dm-breadcrumb-item-md,
+  .dm-breadcrumb-item-lg {
+    padding: var(--space-0-5) var(--space-1);
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* ================================
+   DARK MODE SUPPORT
+   ================================ */
+
+html.dark .dm-breadcrumb-separator {
+  color: var(--text-tertiary);
+}
+
+/* ================================
+   HIGH CONTRAST MODE
+   ================================ */
+
+@media (prefers-contrast: high) {
+  .dm-breadcrumb-item-current {
+    text-decoration: underline;
+  }
+
+  .dm-breadcrumb-separator {
+    font-weight: var(--font-weight-bold);
+  }
+}
+
+/* ================================
+   REDUCED MOTION
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-breadcrumb-item {
+    transition: none;
+  }
+}
+
+/* ================================
+   PRINT STYLES
+   ================================ */
+
+@media print {
+  .dm-breadcrumbs {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+  }
+
+  .dm-breadcrumb-item:hover {
+    background-color: transparent;
+  }
+
+  .dm-breadcrumb-separator {
+    color: var(--text-secondary);
+  }
+}

@@ -1,0 +1,413 @@
+/* ================================================================
+   BADGE COMPONENT STYLES - USING DESIGN SYSTEM TOKENS
+   ================================================================ */
+
+/* ================================
+   BADGE BASE STYLES
+   ================================ */
+
+.dm-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  border: 1px solid transparent;
+  border-radius: var(--badge-border-radius);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  transition: all var(--transition-normal) ease-in-out;
+  text-decoration: none;
+  outline: none;
+}
+
+.dm-badge:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 1px;
+}
+
+/* ================================
+   BADGE SIZES
+   ================================ */
+
+.dm-badge-sm {
+  height: var(--badge-height-sm);
+  padding: 0 var(--badge-padding-x-sm);
+  font-size: var(--font-size-xs);
+}
+
+.dm-badge-md {
+  height: var(--badge-height-md);
+  padding: 0 var(--badge-padding-x-md);
+  font-size: var(--font-size-xs);
+}
+
+.dm-badge-lg {
+  height: var(--badge-height-lg);
+  padding: 0 var(--badge-padding-x-lg);
+  font-size: var(--font-size-sm);
+}
+
+/* ================================
+   BADGE SHAPES
+   ================================ */
+
+.dm-badge-pill {
+  border-radius: var(--badge-border-radius-pill);
+}
+
+/* ================================
+   BADGE CLICKABLE STATE
+   ================================ */
+
+.dm-badge-clickable {
+  cursor: pointer;
+  background: none;
+  border: 1px solid transparent;
+}
+
+.dm-badge-clickable:hover {
+  transform: translateY(-1px);
+}
+
+.dm-badge-clickable:active {
+  transform: translateY(0);
+}
+
+/* ================================
+   BADGE VARIANTS
+   ================================ */
+
+.dm-badge-default {
+  background-color: var(--surface-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+.dm-badge-default:hover {
+  background-color: var(--surface-tertiary);
+}
+
+.dm-badge-primary {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-700);
+  border-color: var(--color-primary-200);
+}
+
+.dm-badge-primary:hover {
+  background-color: var(--color-primary-200);
+}
+
+.dm-badge-secondary {
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-700);
+  border-color: var(--color-gray-200);
+}
+
+.dm-badge-secondary:hover {
+  background-color: var(--color-gray-200);
+}
+
+.dm-badge-success {
+  background-color: var(--color-success-100);
+  color: var(--color-success-700);
+  border-color: var(--color-success-200);
+}
+
+.dm-badge-success:hover {
+  background-color: var(--color-success-200);
+}
+
+.dm-badge-warning {
+  background-color: var(--color-warning-100);
+  color: var(--color-warning-700);
+  border-color: var(--color-warning-200);
+}
+
+.dm-badge-warning:hover {
+  background-color: var(--color-warning-200);
+}
+
+.dm-badge-error {
+  background-color: var(--color-error-100);
+  color: var(--color-error-700);
+  border-color: var(--color-error-200);
+}
+
+.dm-badge-error:hover {
+  background-color: var(--color-error-200);
+}
+
+.dm-badge-info {
+  background-color: var(--color-info-100);
+  color: var(--color-info-700);
+  border-color: var(--color-info-200);
+}
+
+.dm-badge-info:hover {
+  background-color: var(--color-info-200);
+}
+
+.dm-badge-outline {
+  background-color: transparent;
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+.dm-badge-outline:hover {
+  background-color: var(--surface-secondary);
+}
+
+/* ================================
+   BADGE DOT VARIANT
+   ================================ */
+
+.dm-badge-dot {
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  gap: 0;
+}
+
+.dm-badge-dot.dm-badge-sm {
+  width: var(--badge-dot-size-sm);
+  height: var(--badge-dot-size-sm);
+}
+
+.dm-badge-dot.dm-badge-md {
+  width: var(--badge-dot-size-md);
+  height: var(--badge-dot-size-md);
+}
+
+.dm-badge-dot.dm-badge-lg {
+  width: var(--badge-dot-size-lg);
+  height: var(--badge-dot-size-lg);
+}
+
+.dm-badge-dot.dm-badge-primary {
+  background-color: var(--color-primary-500);
+}
+
+.dm-badge-dot.dm-badge-success {
+  background-color: var(--color-success-500);
+}
+
+.dm-badge-dot.dm-badge-warning {
+  background-color: var(--color-warning-500);
+}
+
+.dm-badge-dot.dm-badge-error {
+  background-color: var(--color-error-500);
+}
+
+.dm-badge-dot.dm-badge-info {
+  background-color: var(--color-info-500);
+}
+
+.dm-badge-dot.dm-badge-secondary {
+  background-color: var(--color-gray-500);
+}
+
+.dm-badge-dot.dm-badge-default {
+  background-color: var(--text-secondary);
+}
+
+/* ================================
+   BADGE ELEMENTS
+   ================================ */
+
+.dm-badge-icon {
+  flex-shrink: 0;
+  width: var(--badge-icon-size);
+  height: var(--badge-icon-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dm-badge-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.dm-badge-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.dm-badge-remove {
+  flex-shrink: 0;
+  width: var(--badge-remove-size);
+  height: var(--badge-remove-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: currentColor;
+  opacity: 0.7;
+  transition: all var(--transition-normal) ease-in-out;
+  margin-left: var(--space-0-5);
+}
+
+.dm-badge-remove:hover {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dm-badge-remove:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 1px;
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+
+@media (max-width: 640px) {
+  .dm-badge-lg {
+    height: var(--badge-height-md);
+    padding: 0 var(--badge-padding-x-md);
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* ================================
+   DARK MODE SUPPORT
+   ================================ */
+
+html.dark .dm-badge-default {
+  background-color: var(--surface-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-secondary);
+}
+
+html.dark .dm-badge-default:hover {
+  background-color: var(--surface-tertiary);
+}
+
+html.dark .dm-badge-outline {
+  border-color: var(--border-secondary);
+}
+
+html.dark .dm-badge-outline:hover {
+  background-color: var(--surface-secondary);
+}
+
+html.dark .dm-badge-secondary {
+  background-color: var(--color-gray-800);
+  color: var(--color-gray-300);
+  border-color: var(--color-gray-700);
+}
+
+html.dark .dm-badge-secondary:hover {
+  background-color: var(--color-gray-700);
+}
+
+html.dark .dm-badge-primary {
+  background-color: var(--color-primary-900);
+  color: var(--color-primary-300);
+  border-color: var(--color-primary-800);
+}
+
+html.dark .dm-badge-primary:hover {
+  background-color: var(--color-primary-800);
+}
+
+html.dark .dm-badge-success {
+  background-color: var(--color-success-900);
+  color: var(--color-success-300);
+  border-color: var(--color-success-800);
+}
+
+html.dark .dm-badge-success:hover {
+  background-color: var(--color-success-800);
+}
+
+html.dark .dm-badge-warning {
+  background-color: var(--color-warning-900);
+  color: var(--color-warning-300);
+  border-color: var(--color-warning-800);
+}
+
+html.dark .dm-badge-warning:hover {
+  background-color: var(--color-warning-800);
+}
+
+html.dark .dm-badge-error {
+  background-color: var(--color-error-900);
+  color: var(--color-error-300);
+  border-color: var(--color-error-800);
+}
+
+html.dark .dm-badge-error:hover {
+  background-color: var(--color-error-800);
+}
+
+html.dark .dm-badge-info {
+  background-color: var(--color-info-900);
+  color: var(--color-info-300);
+  border-color: var(--color-info-800);
+}
+
+html.dark .dm-badge-info:hover {
+  background-color: var(--color-info-800);
+}
+
+html.dark .dm-badge-remove:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ================================
+   HIGH CONTRAST MODE
+   ================================ */
+
+@media (prefers-contrast: high) {
+  .dm-badge {
+    border-width: 2px;
+  }
+
+  .dm-badge-dot {
+    border: 2px solid var(--surface-primary);
+  }
+}
+
+/* ================================
+   REDUCED MOTION
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-badge {
+    transition: none;
+  }
+
+  .dm-badge-clickable:hover {
+    transform: none;
+  }
+
+  .dm-badge-clickable:active {
+    transform: none;
+  }
+}
+
+/* ================================
+   PRINT STYLES
+   ================================ */
+
+@media print {
+  .dm-badge {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--text-primary) !important;
+  }
+
+  .dm-badge-remove {
+    display: none;
+  }
+}

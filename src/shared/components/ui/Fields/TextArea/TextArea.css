@@ -1,0 +1,326 @@
+/* ================================================================
+   TEXTAREA COMPONENT STYLES - USING DESIGN SYSTEM TOKENS
+   ================================================================ */
+
+/* ================================
+   TEXTAREA SIZE VARIANTS
+   ================================ */
+
+.dm-textarea-sm {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  min-height: 4rem; /* ~3 rows */
+}
+
+.dm-textarea-md {
+  padding: var(--space-2-5) var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  min-height: 5rem; /* ~3 rows */
+}
+
+.dm-textarea-lg {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  min-height: 6rem; /* ~3 rows */
+}
+
+/* ================================
+   TEXTAREA VARIANT STYLES
+   ================================ */
+
+/* Outlined variant (default) */
+.dm-textarea-outlined {
+  background-color: var(--surface-primary);
+  border-color: var(--border-primary);
+}
+
+.dm-textarea-outlined:hover:not(:disabled):not(:focus) {
+  border-color: var(--border-secondary);
+}
+
+.dm-textarea-outlined:focus {
+  border-color: var(--border-focus);
+  background-color: var(--surface-primary);
+  box-shadow: var(--shadow-focus);
+}
+
+/* Filled variant */
+.dm-textarea-filled {
+  background-color: var(--surface-tertiary);
+  border-color: transparent;
+}
+
+.dm-textarea-filled:hover:not(:disabled):not(:focus) {
+  background-color: var(--surface-secondary);
+}
+
+.dm-textarea-filled:focus {
+  background-color: var(--surface-primary);
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-focus);
+}
+
+/* Ghost variant */
+.dm-textarea-ghost {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.dm-textarea-ghost:hover:not(:disabled):not(:focus) {
+  background-color: var(--surface-secondary);
+}
+
+.dm-textarea-ghost:focus {
+  background-color: var(--surface-primary);
+  border-color: var(--border-primary);
+  box-shadow: var(--shadow-focus);
+}
+
+/* ================================
+   TEXTAREA STATE VARIANTS
+   ================================ */
+
+/* Error state */
+.dm-textarea-error {
+  border-color: var(--border-error) !important;
+  background-color: var(--state-error-bg);
+}
+
+.dm-textarea-error:focus {
+  border-color: var(--border-error) !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+/* Success state */
+.dm-textarea-success {
+  border-color: var(--border-success) !important;
+  background-color: var(--state-success-bg);
+}
+
+.dm-textarea-success:focus {
+  border-color: var(--border-success) !important;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+/* Warning state */
+.dm-textarea-warning {
+  border-color: var(--border-warning) !important;
+  background-color: var(--state-warning-bg);
+}
+
+.dm-textarea-warning:focus {
+  border-color: var(--border-warning) !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+/* ================================
+   RESIZE OPTIONS
+   ================================ */
+
+.dm-textarea-resize-none {
+  resize: none;
+}
+
+.dm-textarea-resize-vertical {
+  resize: vertical;
+}
+
+.dm-textarea-resize-horizontal {
+  resize: horizontal;
+}
+
+.dm-textarea-resize-both {
+  resize: both;
+}
+
+/* Auto-resize specific styling */
+.dm-textarea-auto-resize {
+  resize: none;
+  overflow-y: hidden;
+}
+
+.dm-textarea-auto-resize:focus {
+  overflow-y: auto;
+}
+
+/* ================================
+   LABEL & HELPER TEXT
+   ================================ */
+
+.dm-textarea-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-1);
+  color: var(--text-primary);
+}
+
+.dm-textarea-helper {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-tight);
+}
+
+.dm-textarea-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: var(--space-1);
+  gap: var(--space-2);
+}
+
+.dm-textarea-count {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ================================
+   DISABLED STATE
+   ================================ */
+
+.dm-textarea-outlined:disabled,
+.dm-textarea-filled:disabled,
+.dm-textarea-ghost:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--surface-tertiary);
+  resize: none;
+}
+
+/* ================================
+   FOCUS STATES & ACCESSIBILITY
+   ================================ */
+
+/* Enhanced focus for accessibility */
+.dm-textarea-outlined:focus-visible,
+.dm-textarea-filled:focus-visible,
+.dm-textarea-ghost:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* ================================
+   SCROLLBAR STYLING
+   ================================ */
+
+.dm-textarea-outlined::-webkit-scrollbar,
+.dm-textarea-filled::-webkit-scrollbar,
+.dm-textarea-ghost::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dm-textarea-outlined::-webkit-scrollbar-track,
+.dm-textarea-filled::-webkit-scrollbar-track,
+.dm-textarea-ghost::-webkit-scrollbar-track {
+  background: var(--surface-secondary);
+  border-radius: var(--radius-sm);
+}
+
+.dm-textarea-outlined::-webkit-scrollbar-thumb,
+.dm-textarea-filled::-webkit-scrollbar-thumb,
+.dm-textarea-ghost::-webkit-scrollbar-thumb {
+  background: var(--border-secondary);
+  border-radius: var(--radius-sm);
+}
+
+.dm-textarea-outlined::-webkit-scrollbar-thumb:hover,
+.dm-textarea-filled::-webkit-scrollbar-thumb:hover,
+.dm-textarea-ghost::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+/* ================================
+   PLACEHOLDER STYLING
+   ================================ */
+
+.dm-textarea-outlined::placeholder,
+.dm-textarea-filled::placeholder,
+.dm-textarea-ghost::placeholder {
+  color: var(--text-placeholder);
+  opacity: 1;
+}
+
+.dm-textarea-outlined:focus::placeholder,
+.dm-textarea-filled:focus::placeholder,
+.dm-textarea-ghost:focus::placeholder {
+  opacity: 0.7;
+}
+
+/* ================================
+   RESPONSIVE ADJUSTMENTS
+   ================================ */
+
+@media (max-width: 640px) {
+  .dm-textarea-lg {
+    padding: var(--space-2-5) var(--space-3);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+  }
+
+  .dm-textarea-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+
+  .dm-textarea-count {
+    align-self: flex-end;
+  }
+}
+
+/* ================================
+   HIGH CONTRAST MODE
+   ================================ */
+
+@media (prefers-contrast: high) {
+  .dm-textarea-outlined,
+  .dm-textarea-filled,
+  .dm-textarea-ghost {
+    border-width: 2px;
+  }
+
+  .dm-textarea-outlined:focus,
+  .dm-textarea-filled:focus,
+  .dm-textarea-ghost:focus {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.3);
+  }
+}
+
+/* ================================
+   PRINT STYLES
+   ================================ */
+
+@media print {
+  .dm-textarea-outlined,
+  .dm-textarea-filled,
+  .dm-textarea-ghost {
+    background: white !important;
+    border: 1px solid black !important;
+    box-shadow: none !important;
+  }
+
+  .dm-textarea-count {
+    display: none;
+  }
+}
+
+/* ================================
+   REDUCED MOTION
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-textarea-auto-resize {
+    transition: none;
+  }
+
+  .dm-textarea-outlined,
+  .dm-textarea-filled,
+  .dm-textarea-ghost {
+    transition: none;
+  }
+}

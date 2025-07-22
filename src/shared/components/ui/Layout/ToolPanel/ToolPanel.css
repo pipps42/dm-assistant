@@ -1,0 +1,388 @@
+/* ================================================================
+   TOOLPANEL COMPONENT STYLES - USING DESIGN SYSTEM TOKENS
+   ================================================================ */
+
+/* ================================
+   TOOLPANEL BASE STYLES
+   ================================ */
+
+.dm-toolpanel {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface-primary);
+  border: var(--toolpanel-border-width) solid var(--border-primary);
+  border-radius: var(--toolpanel-border-radius);
+  box-shadow: var(--toolpanel-shadow);
+  overflow: hidden;
+  user-select: none;
+  z-index: var(--toolpanel-z-index);
+  transition: var(--toolpanel-transition);
+}
+
+.dm-toolpanel:focus-within {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* ================================
+   TOOLPANEL SIZES
+   ================================ */
+
+.dm-toolpanel-sm {
+  width: var(--toolpanel-width-sm);
+  min-height: var(--toolpanel-min-height);
+  max-height: calc(var(--toolpanel-max-height) * 0.75);
+}
+
+.dm-toolpanel-md {
+  width: var(--toolpanel-width-md);
+  min-height: var(--toolpanel-min-height);
+  max-height: var(--toolpanel-max-height);
+}
+
+.dm-toolpanel-lg {
+  width: var(--toolpanel-width-lg);
+  min-height: calc(var(--toolpanel-min-height) * 1.5);
+  max-height: calc(var(--toolpanel-max-height) * 1.25);
+}
+
+.dm-toolpanel-xl {
+  width: var(--toolpanel-width-xl);
+  min-height: calc(var(--toolpanel-min-height) * 2);
+  max-height: calc(var(--toolpanel-max-height) * 1.5);
+}
+
+/* ================================
+   TOOLPANEL STATES
+   ================================ */
+
+.dm-toolpanel-minimized {
+  height: var(--toolpanel-header-height) !important;
+  min-height: var(--toolpanel-header-height) !important;
+  overflow: hidden;
+}
+
+.dm-toolpanel-dragging {
+  opacity: 0.9;
+  cursor: move;
+  transform: rotate(1deg);
+  box-shadow: var(--shadow-xl);
+}
+
+/* ================================
+   TOOLPANEL HEADER
+   ================================ */
+
+.dm-toolpanel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--toolpanel-header-height);
+  padding: 0 var(--space-3);
+  background-color: var(--surface-secondary);
+  border-bottom: 1px solid var(--border-primary);
+  flex-shrink: 0;
+}
+
+.dm-toolpanel-header-draggable {
+  cursor: move;
+  user-select: none;
+}
+
+.dm-toolpanel-header-draggable:hover {
+  background-color: var(--surface-tertiary);
+}
+
+.dm-toolpanel-header-draggable:active {
+  background-color: var(--surface-tertiary);
+  opacity: 0.8;
+}
+
+/* ================================
+   TOOLPANEL TITLE
+   ================================ */
+
+.dm-toolpanel-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+/* ================================
+   TOOLPANEL ACTIONS
+   ================================ */
+
+.dm-toolpanel-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.dm-toolpanel-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: none;
+  background: none;
+  color: var(--text-secondary);
+  border-radius: var(--radius-base);
+  cursor: pointer;
+  transition: all var(--transition-normal) ease-in-out;
+}
+
+.dm-toolpanel-action:hover {
+  background-color: var(--surface-tertiary);
+  color: var(--text-primary);
+}
+
+.dm-toolpanel-action:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 1px;
+}
+
+.dm-toolpanel-action-close:hover {
+  background-color: var(--color-error-100);
+  color: var(--color-error-600);
+}
+
+/* ================================
+   TOOLPANEL CONTENT
+   ================================ */
+
+.dm-toolpanel-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--space-4);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-primary) transparent;
+}
+
+.dm-toolpanel-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dm-toolpanel-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dm-toolpanel-content::-webkit-scrollbar-thumb {
+  background-color: var(--border-primary);
+  border-radius: var(--radius-full);
+}
+
+.dm-toolpanel-content::-webkit-scrollbar-thumb:hover {
+  background-color: var(--border-secondary);
+}
+
+/* ================================
+   TOOLPANEL RESIZE HANDLE
+   ================================ */
+
+.dm-toolpanel-resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 1rem;
+  height: 1rem;
+  cursor: se-resize;
+  background: linear-gradient(
+    -45deg,
+    transparent 30%,
+    var(--border-primary) 30%,
+    var(--border-primary) 40%,
+    transparent 40%,
+    transparent 60%,
+    var(--border-primary) 60%,
+    var(--border-primary) 70%,
+    transparent 70%
+  );
+  border-radius: 0 0 var(--toolpanel-border-radius) 0;
+}
+
+.dm-toolpanel-resize-handle:hover {
+  background: linear-gradient(
+    -45deg,
+    transparent 30%,
+    var(--color-primary-500) 30%,
+    var(--color-primary-500) 40%,
+    transparent 40%,
+    transparent 60%,
+    var(--color-primary-500) 60%,
+    var(--color-primary-500) 70%,
+    transparent 70%
+  );
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+
+@media (max-width: 768px) {
+  .dm-toolpanel {
+    max-width: calc(100vw - 2rem);
+    max-height: calc(100vh - 4rem);
+  }
+
+  .dm-toolpanel-xl,
+  .dm-toolpanel-lg {
+    width: var(--toolpanel-width-md);
+    max-height: calc(100vh - 4rem);
+  }
+
+  .dm-toolpanel-md {
+    width: var(--toolpanel-width-sm);
+  }
+
+  .dm-toolpanel-content {
+    padding: var(--space-3);
+  }
+}
+
+@media (max-width: 640px) {
+  .dm-toolpanel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: auto;
+    width: 100% !important;
+    max-height: 50vh;
+    border-radius: var(--toolpanel-border-radius) var(--toolpanel-border-radius)
+      0 0;
+    box-shadow: var(--shadow-xl);
+  }
+
+  .dm-toolpanel-header-draggable {
+    cursor: default;
+  }
+
+  .dm-toolpanel-resize-handle {
+    display: none;
+  }
+}
+
+/* ================================
+   DARK MODE SUPPORT
+   ================================ */
+
+html.dark .dm-toolpanel {
+  background-color: var(--surface-primary);
+  border-color: var(--border-secondary);
+  box-shadow: var(--shadow-xl);
+}
+
+html.dark .dm-toolpanel-header {
+  background-color: var(--surface-secondary);
+  border-bottom-color: var(--border-secondary);
+}
+
+html.dark .dm-toolpanel-content {
+  scrollbar-color: var(--border-secondary) transparent;
+}
+
+html.dark .dm-toolpanel-content::-webkit-scrollbar-thumb {
+  background-color: var(--border-secondary);
+}
+
+html.dark .dm-toolpanel-resize-handle {
+  background: linear-gradient(
+    -45deg,
+    transparent 30%,
+    var(--border-secondary) 30%,
+    var(--border-secondary) 40%,
+    transparent 40%,
+    transparent 60%,
+    var(--border-secondary) 60%,
+    var(--border-secondary) 70%,
+    transparent 70%
+  );
+}
+
+html.dark .dm-toolpanel-action-close:hover {
+  background-color: var(--color-error-900);
+  color: var(--color-error-300);
+}
+
+/* ================================
+   HIGH CONTRAST MODE
+   ================================ */
+
+@media (prefers-contrast: high) {
+  .dm-toolpanel {
+    border-width: 2px;
+  }
+
+  .dm-toolpanel-header {
+    border-bottom-width: 2px;
+  }
+
+  .dm-toolpanel:focus-within {
+    outline-width: 3px;
+  }
+}
+
+/* ================================
+   REDUCED MOTION
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-toolpanel {
+    transition: none;
+  }
+
+  .dm-toolpanel-dragging {
+    transform: none;
+    opacity: 1;
+  }
+
+  .dm-toolpanel-action {
+    transition: none;
+  }
+}
+
+/* ================================
+   PRINT STYLES
+   ================================ */
+
+@media print {
+  .dm-toolpanel {
+    display: none;
+  }
+}
+
+/* ================================
+   FOCUS MANAGEMENT
+   ================================ */
+
+.dm-toolpanel-content:focus {
+  outline: none;
+}
+
+.dm-toolpanel-content:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: -2px;
+}
+
+/* ================================
+   LAYER MANAGEMENT
+   ================================ */
+
+.dm-toolpanel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: var(--toolpanel-z-index);
+}

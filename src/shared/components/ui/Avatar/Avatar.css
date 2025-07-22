@@ -1,0 +1,524 @@
+/* ================================================================
+   AVATAR COMPONENT STYLES - USING DESIGN SYSTEM TOKENS
+   ================================================================ */
+
+/* ================================
+   AVATAR BASE STYLES
+   ================================ */
+
+.dm-avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--avatar-border-radius);
+  overflow: hidden;
+  vertical-align: middle;
+  user-select: none;
+  flex-shrink: 0;
+  background-color: var(--surface-secondary);
+  color: var(--text-primary);
+  border: none;
+  outline: none;
+}
+
+.dm-avatar:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* ================================
+   AVATAR SIZES
+   ================================ */
+
+.dm-avatar-xs {
+  width: var(--avatar-size-xs);
+  height: var(--avatar-size-xs);
+  font-size: var(--font-size-xs);
+}
+
+.dm-avatar-sm {
+  width: var(--avatar-size-sm);
+  height: var(--avatar-size-sm);
+  font-size: var(--font-size-xs);
+}
+
+.dm-avatar-md {
+  width: var(--avatar-size-md);
+  height: var(--avatar-size-md);
+  font-size: var(--font-size-sm);
+}
+
+.dm-avatar-lg {
+  width: var(--avatar-size-lg);
+  height: var(--avatar-size-lg);
+  font-size: var(--font-size-base);
+}
+
+.dm-avatar-xl {
+  width: var(--avatar-size-xl);
+  height: var(--avatar-size-xl);
+  font-size: var(--font-size-lg);
+}
+
+.dm-avatar-2xl {
+  width: var(--avatar-size-2xl);
+  height: var(--avatar-size-2xl);
+  font-size: var(--font-size-xl);
+}
+
+/* ================================
+   AVATAR SHAPES
+   ================================ */
+
+.dm-avatar-square {
+  border-radius: var(--radius-md);
+}
+
+/* ================================
+   AVATAR BORDERED
+   ================================ */
+
+.dm-avatar-bordered {
+  border: var(--avatar-border-width) solid var(--border-primary);
+}
+
+/* ================================
+   AVATAR CLICKABLE
+   ================================ */
+
+.dm-avatar-clickable {
+  cursor: pointer;
+  transition: all var(--transition-normal) ease-in-out;
+}
+
+.dm-avatar-clickable:hover {
+  transform: scale(1.05);
+}
+
+.dm-avatar-clickable:active {
+  transform: scale(0.95);
+}
+
+/* ================================
+   AVATAR IMAGE
+   ================================ */
+
+.dm-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+/* ================================
+   AVATAR FALLBACK
+   ================================ */
+
+.dm-avatar-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: inherit;
+  color: inherit;
+}
+
+.dm-avatar-initials {
+  font-weight: var(--avatar-font-weight);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.dm-avatar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60%;
+  height: 60%;
+}
+
+.dm-avatar-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ================================
+   AVATAR VARIANTS
+   ================================ */
+
+.dm-avatar-primary {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-700);
+}
+
+.dm-avatar-secondary {
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-700);
+}
+
+.dm-avatar-success {
+  background-color: var(--color-success-100);
+  color: var(--color-success-700);
+}
+
+.dm-avatar-warning {
+  background-color: var(--color-warning-100);
+  color: var(--color-warning-700);
+}
+
+.dm-avatar-error {
+  background-color: var(--color-error-100);
+  color: var(--color-error-700);
+}
+
+/* ================================
+   AVATAR GENERATED COLORS
+   ================================ */
+
+.dm-avatar-color-primary {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-700);
+}
+
+.dm-avatar-color-success {
+  background-color: var(--color-success-100);
+  color: var(--color-success-700);
+}
+
+.dm-avatar-color-warning {
+  background-color: var(--color-warning-100);
+  color: var(--color-warning-700);
+}
+
+.dm-avatar-color-error {
+  background-color: var(--color-error-100);
+  color: var(--color-error-700);
+}
+
+.dm-avatar-color-info {
+  background-color: var(--color-info-100);
+  color: var(--color-info-700);
+}
+
+.dm-avatar-color-purple {
+  background-color: #f3e8ff;
+  color: #7c3aed;
+}
+
+.dm-avatar-color-pink {
+  background-color: #fdf2f8;
+  color: #ec4899;
+}
+
+.dm-avatar-color-cyan {
+  background-color: #ecfeff;
+  color: #0891b2;
+}
+
+/* ================================
+   AVATAR STATUS INDICATORS
+   ================================ */
+
+.dm-avatar-status {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid var(--surface-primary);
+}
+
+/* Status positioning based on avatar size */
+.dm-avatar-xs .dm-avatar-status {
+  width: 0.375rem;
+  height: 0.375rem;
+  bottom: 0;
+  right: 0;
+}
+
+.dm-avatar-sm .dm-avatar-status {
+  width: 0.5rem;
+  height: 0.5rem;
+  bottom: 0;
+  right: 0;
+}
+
+.dm-avatar-md .dm-avatar-status,
+.dm-avatar-lg .dm-avatar-status {
+  width: 0.75rem;
+  height: 0.75rem;
+  bottom: 0;
+  right: 0;
+}
+
+.dm-avatar-xl .dm-avatar-status,
+.dm-avatar-2xl .dm-avatar-status {
+  width: 1rem;
+  height: 1rem;
+  bottom: 0.125rem;
+  right: 0.125rem;
+}
+
+/* Status colors */
+.dm-avatar-status-online {
+  background-color: var(--color-success-500);
+}
+
+.dm-avatar-status-offline {
+  background-color: var(--color-gray-400);
+}
+
+.dm-avatar-status-away {
+  background-color: var(--color-warning-500);
+}
+
+.dm-avatar-status-busy {
+  background-color: var(--color-error-500);
+}
+
+/* ================================
+   AVATAR GROUP STYLES
+   ================================ */
+
+.dm-avatar-group {
+  display: flex;
+  align-items: center;
+}
+
+/* ================================
+   AVATAR GROUP SPACING
+   ================================ */
+
+.dm-avatar-group-spacing-tight .dm-avatar-group-item:not(:first-child) {
+  margin-left: -0.25rem;
+}
+
+.dm-avatar-group-spacing-normal .dm-avatar-group-item:not(:first-child) {
+  margin-left: -0.5rem;
+}
+
+.dm-avatar-group-spacing-loose .dm-avatar-group-item:not(:first-child) {
+  margin-left: -0.75rem;
+}
+
+/* Adjust spacing based on avatar size */
+.dm-avatar-group-xs.dm-avatar-group-spacing-normal
+  .dm-avatar-group-item:not(:first-child) {
+  margin-left: -0.25rem;
+}
+
+.dm-avatar-group-sm.dm-avatar-group-spacing-normal
+  .dm-avatar-group-item:not(:first-child) {
+  margin-left: -0.375rem;
+}
+
+.dm-avatar-group-lg.dm-avatar-group-spacing-normal
+  .dm-avatar-group-item:not(:first-child),
+.dm-avatar-group-xl.dm-avatar-group-spacing-normal
+  .dm-avatar-group-item:not(:first-child),
+.dm-avatar-group-2xl.dm-avatar-group-spacing-normal
+  .dm-avatar-group-item:not(:first-child) {
+  margin-left: -0.75rem;
+}
+
+/* ================================
+   AVATAR GROUP ITEMS
+   ================================ */
+
+.dm-avatar-group-item {
+  position: relative;
+  border: 2px solid var(--surface-primary);
+  transition: transform var(--transition-normal) ease-in-out;
+}
+
+.dm-avatar-group-item:hover {
+  transform: scale(1.1);
+  z-index: 1;
+}
+
+/* ================================
+   AVATAR EXTRA COUNT
+   ================================ */
+
+.dm-avatar-extra {
+  background-color: var(--surface-tertiary);
+  color: var(--text-secondary);
+  border: 2px solid var(--surface-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+
+@media (max-width: 640px) {
+  .dm-avatar-2xl {
+    width: var(--avatar-size-xl);
+    height: var(--avatar-size-xl);
+    font-size: var(--font-size-lg);
+  }
+
+  .dm-avatar-xl {
+    width: var(--avatar-size-lg);
+    height: var(--avatar-size-lg);
+    font-size: var(--font-size-base);
+  }
+
+  .dm-avatar-group-spacing-normal .dm-avatar-group-item:not(:first-child) {
+    margin-left: -0.375rem;
+  }
+}
+
+/* ================================
+   DARK MODE SUPPORT
+   ================================ */
+
+html.dark .dm-avatar {
+  background-color: var(--surface-secondary);
+  color: var(--text-primary);
+}
+
+html.dark .dm-avatar-bordered {
+  border-color: var(--border-secondary);
+}
+
+html.dark .dm-avatar-primary {
+  background-color: var(--color-primary-900);
+  color: var(--color-primary-300);
+}
+
+html.dark .dm-avatar-secondary {
+  background-color: var(--color-gray-800);
+  color: var(--color-gray-300);
+}
+
+html.dark .dm-avatar-success {
+  background-color: var(--color-success-900);
+  color: var(--color-success-300);
+}
+
+html.dark .dm-avatar-warning {
+  background-color: var(--color-warning-900);
+  color: var(--color-warning-300);
+}
+
+html.dark .dm-avatar-error {
+  background-color: var(--color-error-900);
+  color: var(--color-error-300);
+}
+
+html.dark .dm-avatar-color-primary {
+  background-color: var(--color-primary-900);
+  color: var(--color-primary-300);
+}
+
+html.dark .dm-avatar-color-success {
+  background-color: var(--color-success-900);
+  color: var(--color-success-300);
+}
+
+html.dark .dm-avatar-color-warning {
+  background-color: var(--color-warning-900);
+  color: var(--color-warning-300);
+}
+
+html.dark .dm-avatar-color-error {
+  background-color: var(--color-error-900);
+  color: var(--color-error-300);
+}
+
+html.dark .dm-avatar-color-info {
+  background-color: var(--color-info-900);
+  color: var(--color-info-300);
+}
+
+html.dark .dm-avatar-color-purple {
+  background-color: #581c87;
+  color: #c4b5fd;
+}
+
+html.dark .dm-avatar-color-pink {
+  background-color: #831843;
+  color: #f9a8d4;
+}
+
+html.dark .dm-avatar-color-cyan {
+  background-color: #164e63;
+  color: #67e8f9;
+}
+
+html.dark .dm-avatar-extra {
+  background-color: var(--surface-tertiary);
+  color: var(--text-secondary);
+}
+
+html.dark .dm-avatar-group-item {
+  border-color: var(--surface-primary);
+}
+
+html.dark .dm-avatar-status {
+  border-color: var(--surface-primary);
+}
+
+/* ================================
+   HIGH CONTRAST MODE
+   ================================ */
+
+@media (prefers-contrast: high) {
+  .dm-avatar-bordered {
+    border-width: 3px;
+  }
+
+  .dm-avatar-group-item {
+    border-width: 3px;
+  }
+
+  .dm-avatar-status {
+    border-width: 3px;
+  }
+}
+
+/* ================================
+   REDUCED MOTION
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-avatar-clickable {
+    transition: none;
+  }
+
+  .dm-avatar-clickable:hover {
+    transform: none;
+  }
+
+  .dm-avatar-clickable:active {
+    transform: none;
+  }
+
+  .dm-avatar-group-item {
+    transition: none;
+  }
+
+  .dm-avatar-group-item:hover {
+    transform: none;
+  }
+}
+
+/* ================================
+   PRINT STYLES
+   ================================ */
+
+@media print {
+  .dm-avatar {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--text-primary) !important;
+  }
+
+  .dm-avatar-status {
+    display: none;
+  }
+
+  .dm-avatar-image {
+    filter: grayscale(100%);
+  }
+}

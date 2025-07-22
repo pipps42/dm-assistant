@@ -1,0 +1,61 @@
+/* ================================================================
+   DM ASSISTANT - UNIFIED GLOBAL STYLES
+   ================================================================ */
+
+/* Import design system tokens */
+@import "./design-tokens.css";
+@import "./component-tokens.css";
+
+/* Import component base classes */
+@import "./component-base.css";
+
+/* Import utilities */
+@import "./utilities.css";
+
+/* Import themes */
+@import "./themes/light.css";
+@import "./themes/dark.css";
+
+/* Import Tailwind */
+@import "tailwindcss";
+
+/* ================================
+   GLOBAL RESET & BASE STYLES
+   ================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  scroll-behavior: smooth;
+
+  /* Default light theme */
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: var(--line-height-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-primary);
+}

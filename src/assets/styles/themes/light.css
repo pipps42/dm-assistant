@@ -1,0 +1,108 @@
+/* ================================================================
+   LIGHT THEME - SEMANTIC TOKEN OVERRIDES
+   ================================================================ */
+
+html:not(.dark),
+html.light {
+  color-scheme: light;
+
+  /* ================================
+     BACKGROUND COLORS - LIGHT MODE
+     ================================ */
+
+  --bg-primary: var(--color-gray-50); /* Main app background */
+  --bg-secondary: #ffffff; /* Secondary sections */
+  --bg-tertiary: var(--color-gray-100); /* Tertiary elements */
+  --bg-overlay: rgba(0, 0, 0, 0.5); /* Modal overlays */
+
+  /* ================================
+     SURFACE COLORS - LIGHT MODE
+     ================================ */
+
+  --surface-primary: #ffffff; /* Cards, panels */
+  --surface-secondary: var(--color-gray-50); /* Nested surfaces */
+  --surface-tertiary: var(--color-gray-100); /* Input backgrounds */
+  --surface-elevated: #ffffff; /* Elevated cards */
+
+  /* ================================
+     BORDER COLORS - LIGHT MODE
+     ================================ */
+
+  --border-primary: var(--color-gray-200); /* Default borders */
+  --border-secondary: var(--color-gray-300); /* Secondary borders */
+  --border-focus: var(--color-primary-500); /* Focus states */
+  --border-error: var(--color-error-500); /* Error borders */
+  --border-success: var(--color-success-500); /* Success borders */
+  --border-warning: var(--color-warning-500); /* Warning borders */
+
+  /* ================================
+     TEXT COLORS - LIGHT MODE
+     ================================ */
+
+  --text-primary: var(--color-gray-900); /* Primary text */
+  --text-secondary: var(--color-gray-600); /* Secondary text */
+  --text-tertiary: var(--color-gray-400); /* Tertiary text */
+  --text-inverse: #ffffff; /* Inverse text */
+  --text-placeholder: var(--color-gray-400); /* Placeholder text */
+
+  /* ================================
+     STATE COLORS - LIGHT MODE
+     ================================ */
+
+  --state-error: var(--color-error-500);
+  --state-error-bg: var(--color-error-50); /* Error background */
+  --state-success: var(--color-success-500);
+  --state-success-bg: var(--color-success-50); /* Success background */
+  --state-warning: var(--color-warning-500);
+  --state-warning-bg: var(--color-warning-50); /* Warning background */
+  --state-info: var(--color-info-500);
+  --state-info-bg: var(--color-info-50); /* Info background */
+
+  /* ================================
+     COMPONENT-SPECIFIC OVERRIDES
+     ================================ */
+
+  /* Shadows - Standard in light mode */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* Focus ring */
+  --shadow-focus: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+/* ================================
+   LIGHT MODE - SCROLLBAR STYLING
+   ================================ */
+
+html:not(.dark) ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+html:not(.dark) ::-webkit-scrollbar-track {
+  background: var(--color-gray-100);
+}
+
+html:not(.dark) ::-webkit-scrollbar-thumb {
+  background: var(--color-gray-300);
+  border-radius: var(--radius-sm);
+}
+
+html:not(.dark) ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gray-400);
+}
+
+/* ================================
+   LIGHT MODE - SELECTION STYLING
+   ================================ */
+
+html:not(.dark) ::selection {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--text-primary);
+}

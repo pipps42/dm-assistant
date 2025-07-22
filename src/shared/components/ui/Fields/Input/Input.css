@@ -1,0 +1,290 @@
+/* ================================================================
+   INPUT COMPONENT STYLES - USING DESIGN SYSTEM TOKENS
+   ================================================================ */
+
+/* ================================
+   INPUT SIZE VARIANTS
+   ================================ */
+
+.dm-input-sm {
+  height: var(--input-height-sm);
+  padding: var(--input-padding-y-sm) var(--input-padding-x-sm);
+  font-size: var(--font-size-sm);
+}
+
+.dm-input-md {
+  height: var(--input-height-md);
+  padding: var(--input-padding-y-md) var(--input-padding-x-md);
+  font-size: var(--font-size-sm);
+}
+
+.dm-input-lg {
+  height: var(--input-height-lg);
+  padding: var(--input-padding-y-lg) var(--input-padding-x-lg);
+  font-size: var(--font-size-base);
+}
+
+/* ================================
+   INPUT VARIANT STYLES
+   ================================ */
+
+/* Outlined variant (default) */
+.dm-input-outlined {
+  background-color: var(--surface-primary);
+  border-color: var(--border-primary);
+}
+
+.dm-input-outlined:hover {
+  border-color: var(--border-secondary);
+}
+
+.dm-input-outlined:focus {
+  border-color: var(--border-focus);
+  background-color: var(--surface-primary);
+  box-shadow: var(--shadow-focus);
+}
+
+/* Filled variant */
+.dm-input-filled {
+  background-color: var(--surface-tertiary);
+  border-color: transparent;
+}
+
+.dm-input-filled:hover {
+  background-color: var(--surface-secondary);
+}
+
+.dm-input-filled:focus {
+  background-color: var(--surface-primary);
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-focus);
+}
+
+/* Ghost variant */
+.dm-input-ghost {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.dm-input-ghost:hover {
+  background-color: var(--surface-secondary);
+}
+
+.dm-input-ghost:focus {
+  background-color: var(--surface-primary);
+  border-color: var(--border-primary);
+  box-shadow: var(--shadow-focus);
+}
+
+/* ================================
+   INPUT STATE VARIANTS
+   ================================ */
+
+/* Error state */
+.dm-input-error {
+  border-color: var(--border-error) !important;
+  background-color: var(--state-error-bg);
+}
+
+.dm-input-error:focus {
+  border-color: var(--border-error) !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+/* Success state */
+.dm-input-success {
+  border-color: var(--border-success) !important;
+  background-color: var(--state-success-bg);
+}
+
+.dm-input-success:focus {
+  border-color: var(--border-success) !important;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+/* Warning state */
+.dm-input-warning {
+  border-color: var(--border-warning) !important;
+  background-color: var(--state-warning-bg);
+}
+
+.dm-input-warning:focus {
+  border-color: var(--border-warning) !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+/* ================================
+   ICON POSITIONING & SIZING
+   ================================ */
+
+/* Icon container base */
+.dm-input-icon-container {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Icon sizes */
+.dm-icon-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+.dm-icon-md {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.dm-icon-lg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Icon positions - Small */
+.dm-input-icon-pos-left-sm {
+  left: var(--space-2-5);
+}
+
+.dm-input-icon-pos-right-sm {
+  right: var(--space-2-5);
+}
+
+/* Icon positions - Medium */
+.dm-input-icon-pos-left-md {
+  left: var(--space-3);
+}
+
+.dm-input-icon-pos-right-md {
+  right: var(--space-3);
+}
+
+/* Icon positions - Large */
+.dm-input-icon-pos-left-lg {
+  left: var(--space-3);
+}
+
+.dm-input-icon-pos-right-lg {
+  right: var(--space-3);
+}
+
+/* Icon padding adjustments */
+.dm-input-icon-left-sm {
+  padding-left: calc(var(--space-2-5) + 1rem + var(--space-2));
+}
+
+.dm-input-icon-right-sm {
+  padding-right: calc(var(--space-2-5) + 1rem + var(--space-2));
+}
+
+.dm-input-icon-left-md {
+  padding-left: calc(var(--space-3) + 1.25rem + var(--space-2));
+}
+
+.dm-input-icon-right-md {
+  padding-right: calc(var(--space-3) + 1.25rem + var(--space-2));
+}
+
+.dm-input-icon-left-lg {
+  padding-left: calc(var(--space-3) + 1.5rem + var(--space-2));
+}
+
+.dm-input-icon-right-lg {
+  padding-right: calc(var(--space-3) + 1.5rem + var(--space-2));
+}
+
+/* ================================
+   LABEL & HELPER TEXT
+   ================================ */
+
+.dm-input-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-1);
+  color: var(--text-primary);
+}
+
+.dm-input-helper {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-tight);
+}
+
+/* ================================
+   LOADING SPINNER
+   ================================ */
+
+.dm-loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ================================
+   DISABLED STATE
+   ================================ */
+
+.dm-input-outlined:disabled,
+.dm-input-filled:disabled,
+.dm-input-ghost:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--surface-tertiary);
+}
+
+/* ================================
+   FOCUS STATES
+   ================================ */
+
+/* Enhanced focus for accessibility */
+.dm-input-outlined:focus-visible,
+.dm-input-filled:focus-visible,
+.dm-input-ghost:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* ================================
+   RESPONSIVE ADJUSTMENTS
+   ================================ */
+
+@media (max-width: 640px) {
+  .dm-input-lg {
+    height: var(--input-height-md);
+    font-size: var(--font-size-sm);
+  }
+
+  .dm-input-icon-left-lg,
+  .dm-input-icon-right-lg {
+    padding-left: calc(var(--space-3) + 1.25rem + var(--space-2));
+    padding-right: calc(var(--space-3) + 1.25rem + var(--space-2));
+  }
+}
+
+/* ================================
+   HIGH CONTRAST MODE
+   ================================ */
+
+@media (prefers-contrast: high) {
+  .dm-input-outlined,
+  .dm-input-filled,
+  .dm-input-ghost {
+    border-width: 2px;
+  }
+
+  .dm-input-outlined:focus,
+  .dm-input-filled:focus,
+  .dm-input-ghost:focus {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.3);
+  }
+}

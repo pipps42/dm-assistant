@@ -1,0 +1,324 @@
+/* ================================================================
+   SWITCH COMPONENT STYLES - USING DESIGN SYSTEM TOKENS
+   ================================================================ */
+
+/* ================================
+   SWITCH WRAPPER
+   ================================ */
+
+.dm-switch-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.dm-switch-container {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ================================
+   SWITCH INPUT (HIDDEN)
+   ================================ */
+
+.dm-switch-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ================================
+   SWITCH BASE STYLES
+   ================================ */
+
+.dm-switch {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  transition: var(--switch-transition);
+}
+
+.dm-switch:focus-within {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+  border-radius: var(--switch-border-radius);
+}
+
+.dm-switch-disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ================================
+   SWITCH SIZES
+   ================================ */
+
+.dm-switch-sm {
+  width: var(--switch-width-sm);
+  height: var(--switch-height-sm);
+}
+
+.dm-switch-md {
+  width: var(--switch-width-md);
+  height: var(--switch-height-md);
+}
+
+.dm-switch-lg {
+  width: var(--switch-width-lg);
+  height: var(--switch-height-lg);
+}
+
+/* ================================
+   SWITCH TRACK
+   ================================ */
+
+.dm-switch-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: var(--surface-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--switch-border-radius);
+  transition: var(--switch-transition);
+  display: flex;
+  align-items: center;
+}
+
+.dm-switch:hover:not(.dm-switch-disabled) .dm-switch-track {
+  background-color: var(--surface-secondary);
+}
+
+.dm-switch-checked .dm-switch-track {
+  background-color: var(--color-primary-500);
+  border-color: var(--color-primary-500);
+}
+
+.dm-switch-checked:hover:not(.dm-switch-disabled) .dm-switch-track {
+  background-color: var(--color-primary-600);
+  border-color: var(--color-primary-600);
+}
+
+/* ================================
+   SWITCH THUMB
+   ================================ */
+
+.dm-switch-thumb {
+  position: absolute;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+  transition: var(--switch-transition);
+  border: 1px solid var(--border-primary);
+}
+
+/* ================================
+   SWITCH THUMB SIZES
+   ================================ */
+
+.dm-switch-sm .dm-switch-thumb {
+  width: var(--switch-thumb-size-sm);
+  height: var(--switch-thumb-size-sm);
+  left: 2px;
+  transform: translateX(0);
+}
+
+.dm-switch-md .dm-switch-thumb {
+  width: var(--switch-thumb-size-md);
+  height: var(--switch-thumb-size-md);
+  left: 3px;
+  transform: translateX(0);
+}
+
+.dm-switch-lg .dm-switch-thumb {
+  width: var(--switch-thumb-size-lg);
+  height: var(--switch-thumb-size-lg);
+  left: 3px;
+  transform: translateX(0);
+}
+
+/* ================================
+   SWITCH THUMB CHECKED POSITIONS
+   ================================ */
+
+.dm-switch-checked.dm-switch-sm .dm-switch-thumb {
+  transform: translateX(
+    calc(var(--switch-width-sm) - var(--switch-thumb-size-sm) - 4px)
+  );
+}
+
+.dm-switch-checked.dm-switch-md .dm-switch-thumb {
+  transform: translateX(
+    calc(var(--switch-width-md) - var(--switch-thumb-size-md) - 6px)
+  );
+}
+
+.dm-switch-checked.dm-switch-lg .dm-switch-thumb {
+  transform: translateX(
+    calc(var(--switch-width-lg) - var(--switch-thumb-size-lg) - 6px)
+  );
+}
+
+/* ================================
+   SWITCH THUMB STATES
+   ================================ */
+
+.dm-switch:hover:not(.dm-switch-disabled) .dm-switch-thumb {
+  box-shadow: var(--shadow-md);
+}
+
+.dm-switch-checked .dm-switch-thumb {
+  border-color: var(--color-primary-300);
+}
+
+.dm-switch:active:not(.dm-switch-disabled) .dm-switch-thumb {
+  box-shadow: var(--shadow-lg);
+}
+
+/* ================================
+   SWITCH CONTENT
+   ================================ */
+
+.dm-switch-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+  min-width: 0;
+}
+
+.dm-switch-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  cursor: pointer;
+  line-height: var(--line-height-tight);
+}
+
+.dm-switch-disabled .dm-switch-label {
+  cursor: not-allowed;
+}
+
+.dm-switch-required {
+  color: var(--color-error-500);
+  margin-left: var(--space-0-5);
+}
+
+.dm-switch-description {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+
+@media (max-width: 640px) {
+  .dm-switch-wrapper {
+    gap: var(--space-2);
+  }
+
+  .dm-switch-lg {
+    width: var(--switch-width-md);
+    height: var(--switch-height-md);
+  }
+
+  .dm-switch-lg .dm-switch-thumb {
+    width: var(--switch-thumb-size-md);
+    height: var(--switch-thumb-size-md);
+  }
+
+  .dm-switch-checked.dm-switch-lg .dm-switch-thumb {
+    transform: translateX(
+      calc(var(--switch-width-md) - var(--switch-thumb-size-md) - 6px)
+    );
+  }
+}
+
+/* ================================
+   DARK MODE SUPPORT
+   ================================ */
+
+html.dark .dm-switch-track {
+  background-color: var(--surface-tertiary);
+  border-color: var(--border-secondary);
+}
+
+html.dark .dm-switch:hover:not(.dm-switch-disabled) .dm-switch-track {
+  background-color: var(--surface-secondary);
+}
+
+html.dark .dm-switch-checked .dm-switch-track {
+  background-color: var(--color-primary-600);
+  border-color: var(--color-primary-600);
+}
+
+html.dark .dm-switch-checked:hover:not(.dm-switch-disabled) .dm-switch-track {
+  background-color: var(--color-primary-500);
+  border-color: var(--color-primary-500);
+}
+
+html.dark .dm-switch-thumb {
+  background-color: var(--surface-primary);
+  border-color: var(--border-secondary);
+}
+
+html.dark .dm-switch-checked .dm-switch-thumb {
+  background-color: white;
+  border-color: var(--color-primary-200);
+}
+
+/* ================================
+   HIGH CONTRAST MODE
+   ================================ */
+
+@media (prefers-contrast: high) {
+  .dm-switch-track {
+    border-width: 2px;
+  }
+
+  .dm-switch-thumb {
+    border-width: 2px;
+  }
+
+  .dm-switch:focus-within {
+    outline-width: 3px;
+  }
+}
+
+/* ================================
+   REDUCED MOTION
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-switch,
+  .dm-switch-track,
+  .dm-switch-thumb {
+    transition: none;
+  }
+}
+
+/* ================================
+   PRINT STYLES
+   ================================ */
+
+@media print {
+  .dm-switch-wrapper::after {
+    content: " [" attr(aria-checked) "]";
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+  }
+
+  .dm-switch {
+    display: none;
+  }
+}

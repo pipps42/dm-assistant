@@ -1,0 +1,229 @@
+/* ================================================================
+   DM ASSISTANT DESIGN SYSTEM - COMPONENT BASE CLASSES
+   ================================================================ */
+
+/* ================================
+   INPUT BASE CLASSES
+   ================================ */
+
+.dm-input {
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  background-color: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  transition: var(--transition-fast);
+}
+
+.dm-input:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-focus);
+}
+
+.dm-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--surface-tertiary);
+}
+
+.dm-input::placeholder {
+  color: var(--text-placeholder);
+}
+
+/* ================================
+   TEXTAREA BASE CLASSES
+   ================================ */
+
+textarea.dm-input {
+  min-height: 5rem;
+  resize: vertical;
+  font-family: inherit;
+  line-height: var(--line-height-normal);
+}
+
+textarea.dm-input:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-focus);
+}
+
+/* ================================
+   BUTTON BASE CLASSES
+   ================================ */
+
+.dm-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.dm-button:focus {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.dm-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ================================
+   CARD BASE CLASSES
+   ================================ */
+
+.dm-card {
+  background-color: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+}
+
+.dm-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* ================================
+   MODAL BASE CLASSES
+   ================================ */
+
+.dm-modal-overlay {
+  backdrop-filter: var(--modal-backdrop-blur);
+  -webkit-backdrop-filter: var(--modal-backdrop-blur);
+  position: fixed;
+  inset: 0;
+  background-color: var(--bg-overlay);
+  z-index: var(--z-modal-backdrop);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+.dm-modal-content {
+  /* Ensure proper stacking and focus */
+  outline: none;
+  background-color: var(--surface-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-2xl);
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  z-index: var(--z-modal);
+}
+
+/* Modal body scroll behavior */
+.dm-modal-content .dm-modal-body {
+  /* Enable smooth scrolling for modal content */
+  scroll-behavior: smooth;
+}
+
+/* ================================
+   TABLE BASE CLASSES
+   ================================ */
+
+.table-base {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: inherit;
+  background-color: var(--surface-primary);
+  border: var(--table-border-width) solid var(--border-primary);
+  border-radius: var(--radius-lg);
+}
+
+/* ================================
+   SELECT BASE CLASSES
+   ================================ */
+
+.select-base {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  background-color: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+/* ================================
+   FORM BASE CLASSES
+   ================================ */
+
+.form-base {
+  display: flex;
+  flex-direction: column;
+  gap: var(--form-field-gap);
+  width: 100%;
+}
+
+/* ================================
+   CHECKBOX BASE CLASSES
+   ================================ */
+
+.dm-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+}
+
+.dm-checkbox-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--checkbox-border-width) solid var(--border-primary);
+  border-radius: var(--checkbox-border-radius);
+  background-color: var(--surface-primary);
+  transition: var(--transition-fast);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* ================================
+   RADIO BASE CLASSES
+   ================================ */
+
+.dm-radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+}
+
+.dm-radio-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--radio-border-width) solid var(--border-primary);
+  border-radius: var(--radius-full);
+  background-color: var(--surface-primary);
+  transition: var(--transition-fast);
+  cursor: pointer;
+  flex-shrink: 0;
+}
