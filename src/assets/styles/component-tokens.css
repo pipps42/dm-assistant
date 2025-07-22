@@ -235,8 +235,21 @@
   --dropdown-border-radius: var(--radius-md);
 
   /* ================================
-     TOOLTIP COMPONENT TOKENS
-     ================================ */
+   LOADING COMPONENT TOKENS
+   ================================ */
+
+  --loading-spinner-size-sm: 1rem; /* 16px */
+  --loading-spinner-size-md: 1.5rem; /* 24px */
+  --loading-spinner-size-lg: 2rem; /* 32px */
+  --loading-spinner-size-xl: 3rem; /* 48px */
+  --loading-spinner-stroke-width: 2px;
+  --loading-gap: var(--space-3);
+  --loading-overlay-backdrop: rgba(255, 255, 255, 0.8);
+  --loading-overlay-backdrop-dark: rgba(0, 0, 0, 0.8);
+
+  /* ================================
+   TOOLTIP COMPONENT TOKENS
+   ================================ */
 
   --tooltip-max-width: 16rem; /* 256px */
   --tooltip-padding-x: var(--space-3);
@@ -244,18 +257,26 @@
   --tooltip-border-radius: var(--radius-md);
   --tooltip-offset: var(--space-2);
   --tooltip-arrow-size: 0.375rem; /* 6px */
+  --tooltip-delay: 700ms;
+  --tooltip-z-index: var(--z-tooltip);
 
   /* ================================
-     BADGE COMPONENT TOKENS
-     ================================ */
+   BADGE COMPONENT TOKENS
+   ================================ */
 
-  --badge-height-sm: 1.25rem; /* 20px */
-  --badge-height-md: 1.5rem; /* 24px */
-  --badge-height-lg: 1.75rem; /* 28px */
+  --badge-height-sm: 1.125rem; /* 18px */
+  --badge-height-md: 1.25rem; /* 20px */
+  --badge-height-lg: 1.5rem; /* 24px */
   --badge-padding-x-sm: var(--space-1-5);
   --badge-padding-x-md: var(--space-2);
   --badge-padding-x-lg: var(--space-2-5);
-  --badge-border-radius: var(--radius-full);
+  --badge-border-radius: var(--radius-md);
+  --badge-border-radius-pill: var(--radius-full);
+  --badge-dot-size-sm: 0.375rem; /* 6px */
+  --badge-dot-size-md: 0.5rem; /* 8px */
+  --badge-dot-size-lg: 0.625rem; /* 10px */
+  --badge-icon-size: 0.75rem; /* 12px */
+  --badge-remove-size: 0.875rem; /* 14px */
 
   /* ================================
      PROGRESS COMPONENT TOKENS
@@ -277,19 +298,20 @@
   --slider-thumb-border-radius: var(--radius-full);
 
   /* ================================
-     SWITCH COMPONENT TOKENS
-     ================================ */
+   SWITCH COMPONENT TOKENS
+   ================================ */
 
-  --switch-width-sm: 2rem; /* 32px */
-  --switch-width-md: 2.75rem; /* 44px */
-  --switch-width-lg: 3.25rem; /* 52px */
-  --switch-height-sm: 1.125rem; /* 18px */
-  --switch-height-md: 1.375rem; /* 22px */
-  --switch-height-lg: 1.625rem; /* 26px */
-  --switch-thumb-size-sm: 0.875rem; /* 14px */
-  --switch-thumb-size-md: 1.125rem; /* 18px */
-  --switch-thumb-size-lg: 1.375rem; /* 22px */
+  --switch-width-sm: 1.75rem; /* 28px */
+  --switch-width-md: 2.25rem; /* 36px */
+  --switch-width-lg: 2.75rem; /* 44px */
+  --switch-height-sm: 0.875rem; /* 14px */
+  --switch-height-md: 1.25rem; /* 20px */
+  --switch-height-lg: 1.5rem; /* 24px */
+  --switch-thumb-size-sm: 0.625rem; /* 10px */
+  --switch-thumb-size-md: 0.875rem; /* 14px */
+  --switch-thumb-size-lg: 1.125rem; /* 18px */
   --switch-border-radius: var(--radius-full);
+  --switch-transition: all var(--transition-normal) ease-in-out;
 
   /* ================================
      ACCORDION COMPONENT TOKENS

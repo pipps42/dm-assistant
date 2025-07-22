@@ -1,0 +1,415 @@
+/* ================================================================
+   LOADING COMPONENT STYLES - USING DESIGN SYSTEM TOKENS
+   ================================================================ */
+
+/* ================================
+   SPINNER BASE STYLES
+   ================================ */
+
+.dm-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ================================
+   SPINNER SIZES
+   ================================ */
+
+.dm-spinner-sm {
+  width: var(--loading-spinner-size-sm);
+  height: var(--loading-spinner-size-sm);
+}
+
+.dm-spinner-md {
+  width: var(--loading-spinner-size-md);
+  height: var(--loading-spinner-size-md);
+}
+
+.dm-spinner-lg {
+  width: var(--loading-spinner-size-lg);
+  height: var(--loading-spinner-size-lg);
+}
+
+.dm-spinner-xl {
+  width: var(--loading-spinner-size-xl);
+  height: var(--loading-spinner-size-xl);
+}
+
+/* ================================
+   SPINNER COLORS
+   ================================ */
+
+.dm-spinner-primary {
+  color: var(--color-primary-500);
+}
+
+.dm-spinner-secondary {
+  color: var(--text-secondary);
+}
+
+.dm-spinner-white {
+  color: white;
+}
+
+/* ================================
+   SPINNER VARIANT - DEFAULT
+   ================================ */
+
+.dm-spinner-spinner .dm-spinner-svg {
+  width: 100%;
+  height: 100%;
+  animation: spin 1s linear infinite;
+}
+
+.dm-spinner-spinner .dm-spinner-track {
+  opacity: 0.2;
+}
+
+.dm-spinner-spinner .dm-spinner-fill {
+  animation: spinnerFill 1.5s ease-in-out infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinnerFill {
+  0% {
+    stroke-dasharray: 0 31.416;
+  }
+  50% {
+    stroke-dasharray: 15.708 15.708;
+  }
+  100% {
+    stroke-dasharray: 31.416 0;
+  }
+}
+
+/* ================================
+   SPINNER VARIANT - PULSE
+   ================================ */
+
+.dm-spinner-pulse .dm-spinner-pulse {
+  width: 100%;
+  height: 100%;
+  background-color: currentColor;
+  border-radius: 50%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+}
+
+/* ================================
+   SPINNER VARIANT - DOTS
+   ================================ */
+
+.dm-spinner-dots {
+  display: flex;
+  gap: calc(var(--loading-spinner-size-sm) * 0.25);
+}
+
+.dm-spinner-dots .dm-spinner-dot {
+  width: calc(var(--loading-spinner-size-sm) * 0.3);
+  height: calc(var(--loading-spinner-size-sm) * 0.3);
+  background-color: currentColor;
+  border-radius: 50%;
+  animation: dotBounce 1.4s ease-in-out infinite both;
+}
+
+.dm-spinner-dots.dm-spinner-md .dm-spinner-dot {
+  width: calc(var(--loading-spinner-size-md) * 0.3);
+  height: calc(var(--loading-spinner-size-md) * 0.3);
+}
+
+.dm-spinner-dots.dm-spinner-lg .dm-spinner-dot {
+  width: calc(var(--loading-spinner-size-lg) * 0.3);
+  height: calc(var(--loading-spinner-size-lg) * 0.3);
+}
+
+.dm-spinner-dots.dm-spinner-xl .dm-spinner-dot {
+  width: calc(var(--loading-spinner-size-xl) * 0.3);
+  height: calc(var(--loading-spinner-size-xl) * 0.3);
+}
+
+.dm-spinner-dots .dm-spinner-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.dm-spinner-dots .dm-spinner-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes dotBounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ================================
+   LOADING COMPONENT STYLES
+   ================================ */
+
+.dm-loading {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--loading-gap);
+}
+
+.dm-loading-centered {
+  justify-content: center;
+  min-height: 4rem;
+}
+
+.dm-loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  text-align: center;
+}
+
+.dm-loading-text {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.dm-loading-description {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  max-width: 16rem;
+  line-height: var(--line-height-normal);
+}
+
+/* Loading sizes affect text */
+.dm-loading-sm .dm-loading-text {
+  font-size: var(--font-size-xs);
+}
+
+.dm-loading-lg .dm-loading-text {
+  font-size: var(--font-size-base);
+}
+
+.dm-loading-xl .dm-loading-text {
+  font-size: var(--font-size-lg);
+}
+
+/* ================================
+   LOADING OVERLAY STYLES
+   ================================ */
+
+.dm-loading-overlay-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.dm-loading-overlay-content {
+  position: relative;
+  z-index: 1;
+}
+
+.dm-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--loading-overlay-backdrop);
+  z-index: 2;
+  border-radius: inherit;
+}
+
+.dm-loading-overlay-blur {
+  backdrop-filter: blur(2px);
+}
+
+/* ================================
+   LOADING BUTTON STYLES
+   ================================ */
+
+.dm-loading-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-normal) ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.dm-loading-button:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+.dm-loading-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ================================
+   LOADING BUTTON SIZES
+   ================================ */
+
+.dm-loading-button-sm {
+  height: var(--button-height-sm);
+  padding: 0 var(--button-padding-x-sm);
+  font-size: var(--font-size-sm);
+}
+
+.dm-loading-button-md {
+  height: var(--button-height-md);
+  padding: 0 var(--button-padding-x-md);
+  font-size: var(--font-size-sm);
+}
+
+.dm-loading-button-lg {
+  height: var(--button-height-lg);
+  padding: 0 var(--button-padding-x-lg);
+  font-size: var(--font-size-base);
+}
+
+/* ================================
+   LOADING BUTTON VARIANTS
+   ================================ */
+
+.dm-loading-button-primary {
+  background-color: var(--color-primary-500);
+  color: white;
+}
+
+.dm-loading-button-primary:hover:not(:disabled) {
+  background-color: var(--color-primary-600);
+}
+
+.dm-loading-button-primary:active {
+  background-color: var(--color-primary-700);
+}
+
+.dm-loading-button-secondary {
+  background-color: var(--surface-secondary);
+  color: var(--text-primary);
+}
+
+.dm-loading-button-secondary:hover:not(:disabled) {
+  background-color: var(--surface-tertiary);
+}
+
+.dm-loading-button-outline {
+  background-color: transparent;
+  color: var(--color-primary-600);
+  border: 1px solid var(--color-primary-500);
+}
+
+.dm-loading-button-outline:hover:not(:disabled) {
+  background-color: var(--color-primary-50);
+}
+
+/* ================================
+   LOADING BUTTON STATES
+   ================================ */
+
+.dm-loading-button-loading {
+  pointer-events: none;
+}
+
+.dm-loading-button-text {
+  transition: opacity var(--transition-normal) ease-in-out;
+}
+
+.dm-loading-button-text-loading {
+  opacity: 0.7;
+}
+
+/* ================================
+   DARK MODE SUPPORT
+   ================================ */
+
+html.dark .dm-loading-overlay {
+  background-color: var(--loading-overlay-backdrop-dark);
+}
+
+html.dark .dm-loading-button-secondary {
+  background-color: var(--surface-secondary);
+  color: var(--text-primary);
+}
+
+html.dark .dm-loading-button-outline {
+  color: var(--color-primary-400);
+  border-color: var(--color-primary-400);
+}
+
+html.dark .dm-loading-button-outline:hover:not(:disabled) {
+  background-color: var(--color-primary-900);
+}
+
+/* ================================
+   REDUCED MOTION
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-spinner-svg,
+  .dm-spinner-pulse,
+  .dm-spinner-dot {
+    animation: none;
+  }
+
+  .dm-spinner-spinner .dm-spinner-track {
+    opacity: 0.5;
+  }
+
+  .dm-spinner-spinner .dm-spinner-fill {
+    stroke-dasharray: 15.708 15.708;
+  }
+}
+
+/* ================================
+   PRINT STYLES
+   ================================ */
+
+@media print {
+  .dm-loading-overlay {
+    display: none;
+  }
+
+  .dm-spinner {
+    display: none;
+  }
+
+  .dm-loading-text::after {
+    content: " (Loading...)";
+  }
+}

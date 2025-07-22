@@ -1,0 +1,311 @@
+/* ================================================================
+   PROGRESS COMPONENT STYLES - USING DESIGN SYSTEM TOKENS
+   ================================================================ */
+
+/* ================================
+   PROGRESS WRAPPER
+   ================================ */
+
+.dm-progress-wrapper {
+  width: 100%;
+}
+
+/* ================================
+   PROGRESS HEADER
+   ================================ */
+
+.dm-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+  gap: var(--space-2);
+}
+
+.dm-progress-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.dm-progress-value {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* ================================
+   PROGRESS BASE STYLES
+   ================================ */
+
+.dm-progress {
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--progress-border-radius);
+}
+
+/* ================================
+   PROGRESS SIZES
+   ================================ */
+
+.dm-progress-sm {
+  height: var(--progress-height-sm);
+}
+
+.dm-progress-md {
+  height: var(--progress-height-md);
+}
+
+.dm-progress-lg {
+  height: var(--progress-height-lg);
+}
+
+/* ================================
+   PROGRESS TRACK
+   ================================ */
+
+.dm-progress-track {
+  width: 100%;
+  height: 100%;
+  background-color: var(--surface-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: inherit;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ================================
+   PROGRESS FILL
+   ================================ */
+
+.dm-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  transition: var(--progress-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ================================
+   PROGRESS VARIANTS
+   ================================ */
+
+.dm-progress-default .dm-progress-fill {
+  background-color: var(--color-primary-500);
+}
+
+.dm-progress-success .dm-progress-fill {
+  background-color: var(--color-success-500);
+}
+
+.dm-progress-warning .dm-progress-fill {
+  background-color: var(--color-warning-500);
+}
+
+.dm-progress-error .dm-progress-fill {
+  background-color: var(--color-error-500);
+}
+
+/* ================================
+   INDETERMINATE STATE
+   ================================ */
+
+.dm-progress-indeterminate .dm-progress-track {
+  overflow: hidden;
+}
+
+.dm-progress-indeterminate-bar {
+  width: 30%;
+  height: 100%;
+  background-color: var(--color-primary-500);
+  border-radius: inherit;
+  animation: progressIndeterminate 2s ease-in-out infinite;
+  position: absolute;
+  top: 0;
+  left: -30%;
+}
+
+.dm-progress-indeterminate.dm-progress-success .dm-progress-indeterminate-bar {
+  background-color: var(--color-success-500);
+}
+
+.dm-progress-indeterminate.dm-progress-warning .dm-progress-indeterminate-bar {
+  background-color: var(--color-warning-500);
+}
+
+.dm-progress-indeterminate.dm-progress-error .dm-progress-indeterminate-bar {
+  background-color: var(--color-error-500);
+}
+
+@keyframes progressIndeterminate {
+  0% {
+    left: -30%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* ================================
+   PROGRESS FILL GRADIENT EFFECT
+   ================================ */
+
+.dm-progress-fill::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  animation: progressShine 2s ease-in-out infinite;
+}
+
+@keyframes progressShine {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+
+@media (max-width: 640px) {
+  .dm-progress-header {
+    margin-bottom: var(--space-1-5);
+  }
+
+  .dm-progress-label {
+    font-size: var(--font-size-xs);
+  }
+
+  .dm-progress-value {
+    font-size: var(--font-size-xs);
+  }
+
+  .dm-progress-lg {
+    height: var(--progress-height-md);
+  }
+}
+
+/* ================================
+   DARK MODE SUPPORT
+   ================================ */
+
+html.dark .dm-progress-track {
+  background-color: var(--surface-tertiary);
+  border-color: var(--border-secondary);
+}
+
+html.dark .dm-progress-default .dm-progress-fill {
+  background-color: var(--color-primary-600);
+}
+
+html.dark .dm-progress-success .dm-progress-fill {
+  background-color: var(--color-success-600);
+}
+
+html.dark .dm-progress-warning .dm-progress-fill {
+  background-color: var(--color-warning-600);
+}
+
+html.dark .dm-progress-error .dm-progress-fill {
+  background-color: var(--color-error-600);
+}
+
+html.dark
+  .dm-progress-indeterminate.dm-progress-default
+  .dm-progress-indeterminate-bar {
+  background-color: var(--color-primary-600);
+}
+
+html.dark
+  .dm-progress-indeterminate.dm-progress-success
+  .dm-progress-indeterminate-bar {
+  background-color: var(--color-success-600);
+}
+
+html.dark
+  .dm-progress-indeterminate.dm-progress-warning
+  .dm-progress-indeterminate-bar {
+  background-color: var(--color-warning-600);
+}
+
+html.dark
+  .dm-progress-indeterminate.dm-progress-error
+  .dm-progress-indeterminate-bar {
+  background-color: var(--color-error-600);
+}
+
+/* ================================
+   HIGH CONTRAST MODE
+   ================================ */
+
+@media (prefers-contrast: high) {
+  .dm-progress-track {
+    border-width: 2px;
+  }
+
+  .dm-progress-fill::before {
+    display: none;
+  }
+}
+
+/* ================================
+   REDUCED MOTION
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-progress-fill {
+    transition: none;
+  }
+
+  .dm-progress-indeterminate-bar {
+    animation: none;
+    left: 0;
+    width: 100%;
+    opacity: 0.6;
+  }
+
+  .dm-progress-fill::before {
+    animation: none;
+    display: none;
+  }
+}
+
+/* ================================
+   PRINT STYLES
+   ================================ */
+
+@media print {
+  .dm-progress-wrapper::after {
+    content: " (" attr(aria-valuetext) ")";
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+  }
+
+  .dm-progress {
+    border: 1px solid var(--text-secondary);
+    background: transparent;
+  }
+
+  .dm-progress-fill::before {
+    display: none;
+  }
+}
