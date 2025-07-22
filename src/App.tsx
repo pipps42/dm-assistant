@@ -1,4 +1,25 @@
-import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import DemoHomePage from "@/pages/DemoHomePage";
+import DemoTokensPage from "@/pages/DemoTokensPage";
+import DemoComponentsPage from "@/pages/DemoComponentsPage";
+import DemoFormsPage from "@/pages/DemoFormsPage";
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<DemoHomePage />} />
+        <Route path="/demo/tokens" element={<DemoTokensPage />} />
+        <Route path="/demo/components" element={<DemoComponentsPage />} />
+        <Route path="/demo/forms" element={<DemoFormsPage />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
+
+/* import { useState } from "react";
 import "@/assets/styles/globals.css";
 import { CharacterManagerTool } from "./tools";
 
@@ -226,3 +247,4 @@ function App() {
 }
 
 export default App;
+ */
