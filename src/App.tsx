@@ -4,18 +4,21 @@ import DemoTokensPage from "@/pages/DemoTokensPage";
 import DemoComponentsPage from "@/pages/DemoComponentsPage";
 import DemoFormsPage from "@/pages/DemoFormsPage";
 import DemoTablesPage from "@/pages/DemoTablesPage";
+import { ToastProvider } from "@/shared/components/ui/Toast";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<DemoHomePage />} />
-        <Route path="/demo/tokens" element={<DemoTokensPage />} />
-        <Route path="/demo/components" element={<DemoComponentsPage />} />
-        <Route path="/demo/forms" element={<DemoFormsPage />} />
-        <Route path="/demo/tables" element={<DemoTablesPage />} />
-      </Routes>
-    </Router>
+    <ToastProvider position="top-right" maxToasts={5}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<DemoHomePage />} />
+          <Route path="/demo/tokens" element={<DemoTokensPage />} />
+          <Route path="/demo/components" element={<DemoComponentsPage />} />
+          <Route path="/demo/forms" element={<DemoFormsPage />} />
+          <Route path="/demo/tables" element={<DemoTablesPage />} />
+        </Routes>
+      </Router>
+    </ToastProvider>
   );
 }
 

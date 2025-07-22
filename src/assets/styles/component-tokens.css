@@ -4,6 +4,31 @@
 
 :root {
   /* ================================
+     TOAST COMPONENT TOKENS
+     ================================ */
+
+  --toast-width: 20rem; /* 320px */
+  --toast-max-width: 24rem; /* 384px */
+  --toast-padding: var(--space-4);
+  --toast-border-radius: var(--radius-lg);
+  --toast-enter-duration: 300ms;
+  --toast-exit-duration: 200ms;
+  --toast-gap: var(--space-3);
+  --toast-icon-size: 1.25rem; /* 20px */
+  --toast-close-size: 1.5rem; /* 24px */
+
+  /* ================================
+     ALERT COMPONENT TOKENS
+     ================================ */
+
+  --alert-padding: var(--space-4);
+  --alert-border-radius: var(--radius-md);
+  --alert-border-width: 1px;
+  --alert-icon-size: 1.25rem; /* 20px */
+  --alert-close-size: 1.5rem; /* 24px */
+  --alert-title-gap: var(--space-2);
+
+  /* ================================
      CHECKBOX & RADIO COMPONENT TOKENS
      ================================ */
 
