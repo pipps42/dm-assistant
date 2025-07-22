@@ -240,6 +240,58 @@
   --card-padding-lg: var(--space-6);
   --card-radius: var(--radius-lg);
 
+  /* Table Component Tokens */
+  --table-border-width: 1px;
+  --table-header-height-sm: 2.5rem; /* 40px */
+  --table-header-height-md: 3rem; /* 48px */
+  --table-header-height-lg: 3.5rem; /* 56px */
+  --table-row-height-sm: 2.5rem; /* 40px */
+  --table-row-height-md: 3rem; /* 48px */
+  --table-row-height-lg: 3.5rem; /* 56px */
+  --table-selection-width: 3rem; /* 48px */
+  --table-checkbox-size: 1rem; /* 16px */
+
+  /* Pagination Component Tokens */
+  --pagination-button-size: 2rem; /* 32px */
+  --pagination-button-size-sm: 1.75rem; /* 28px */
+  --pagination-gap: var(--space-1);
+
+  /* Table Component Tokens */
+  --table-border-width: 1px;
+  --table-header-height-sm: 2.5rem; /* 40px */
+  --table-header-height-md: 3rem; /* 48px */
+  --table-header-height-lg: 3.5rem; /* 56px */
+  --table-row-height-sm: 2.5rem; /* 40px */
+  --table-row-height-md: 3rem; /* 48px */
+  --table-row-height-lg: 3.5rem; /* 56px */
+  --table-selection-width: 3rem; /* 48px */
+  --table-checkbox-size: 1rem; /* 16px */
+
+  /* Pagination Component Tokens */
+  --pagination-button-size: 2rem; /* 32px */
+  --pagination-button-size-sm: 1.75rem; /* 28px */
+  --pagination-gap: var(--space-1);
+
+  /* Select Component Tokens */
+  --select-min-height-sm: var(--input-height-sm);
+  --select-min-height-md: var(--input-height-md);
+  --select-min-height-lg: var(--input-height-lg);
+  --select-dropdown-max-height: 12rem; /* 192px */
+  --select-dropdown-offset: var(--space-1);
+  --select-option-height: 2.5rem; /* 40px */
+  --select-option-padding-x: var(--space-3);
+  --select-option-padding-y: var(--space-2);
+  --select-group-label-height: 2rem; /* 32px */
+  --select-search-height: 3rem; /* 48px */
+  --select-clear-size: 1rem; /* 16px */
+  --select-arrow-size: 0.75rem; /* 12px */
+
+  /* Form Component Tokens (for integration) */
+  --form-field-gap: var(--space-2);
+  --form-section-gap: var(--space-6);
+  --form-actions-gap: var(--space-3);
+  --form-group-padding: var(--space-4);
+
   /* ================================
      ANIMATION & TRANSITIONS
      ================================ */

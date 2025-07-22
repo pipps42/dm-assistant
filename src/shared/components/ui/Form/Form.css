@@ -1,0 +1,509 @@
+/* ================================================================
+   FORM COMPONENT STYLES - USING DESIGN SYSTEM TOKENS
+   ================================================================ */
+
+/* ================================
+   FORM CONTAINER
+   ================================ */
+
+.dm-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  width: 100%;
+}
+
+.dm-form:focus-within {
+  /* Form is active when any field has focus */
+}
+
+/* ================================
+   FORM FIELD
+   ================================ */
+
+.dm-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.dm-form-field-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  line-height: var(--line-height-tight);
+}
+
+.dm-form-field-required {
+  color: var(--state-error);
+  margin-left: var(--space-1);
+  font-weight: var(--font-weight-bold);
+}
+
+.dm-form-field-input {
+  position: relative;
+}
+
+/* ================================
+   FORM ACTIONS
+   ================================ */
+
+.dm-form-actions {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-primary);
+  flex-wrap: wrap;
+}
+
+.dm-form-actions-left {
+  justify-content: flex-start;
+}
+
+.dm-form-actions-center {
+  justify-content: center;
+}
+
+.dm-form-actions-right {
+  justify-content: flex-end;
+}
+
+.dm-form-actions-space-between {
+  justify-content: space-between;
+}
+
+/* Ensure buttons in form actions have consistent sizing */
+.dm-form-actions .button-base {
+  min-width: 6rem;
+}
+
+/* ================================
+   FORM SECTION
+   ================================ */
+
+.dm-form-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.dm-form-section + .dm-form-section {
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-primary);
+}
+
+.dm-form-section-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.dm-form-section-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: var(--line-height-tight);
+}
+
+.dm-form-section-description {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: var(--line-height-normal);
+}
+
+.dm-form-section-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ================================
+   FORM LAYOUT VARIANTS
+   ================================ */
+
+/* Inline form (fields side by side) */
+.dm-form-inline {
+  flex-direction: row;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.dm-form-inline .dm-form-field {
+  flex: 1;
+  min-width: 12rem;
+}
+
+.dm-form-inline .dm-form-actions {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+  flex-shrink: 0;
+}
+
+/* Compact form (reduced spacing) */
+.dm-form-compact {
+  gap: var(--space-4);
+}
+
+.dm-form-compact .dm-form-field {
+  gap: var(--space-1);
+}
+
+.dm-form-compact .dm-form-section {
+  gap: var(--space-3);
+}
+
+.dm-form-compact .dm-form-section-content {
+  gap: var(--space-3);
+}
+
+/* Grid form (two columns) */
+.dm-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4) var(--space-6);
+  align-items: start;
+}
+
+.dm-form-grid .dm-form-field-full {
+  grid-column: 1 / -1;
+}
+
+.dm-form-grid .dm-form-actions {
+  grid-column: 1 / -1;
+  margin-top: var(--space-2);
+}
+
+/* ================================
+   FORM STATES
+   ================================ */
+
+/* Loading state */
+.dm-form-loading {
+  pointer-events: none;
+  opacity: 0.7;
+  position: relative;
+}
+
+.dm-form-loading::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--bg-overlay);
+  border-radius: inherit;
+  z-index: var(--z-dropdown);
+}
+
+/* Disabled state */
+.dm-form:has(.dm-form-field-input input:disabled),
+.dm-form:has(.dm-form-field-input textarea:disabled) {
+  /* Form with disabled fields styling */
+}
+
+/* ================================
+   FORM FIELD GROUPS
+   ================================ */
+
+/* Field group (for related fields like address) */
+.dm-form-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  background-color: var(--surface-secondary);
+}
+
+.dm-form-field-group-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2) 0;
+}
+
+/* Horizontal field group (fields side by side) */
+.dm-form-field-group-horizontal {
+  flex-direction: row;
+  gap: var(--space-4);
+}
+
+.dm-form-field-group-horizontal .dm-form-field {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ================================
+   FORM VALIDATION STYLING
+   ================================ */
+
+/* Form with errors */
+.dm-form:has(.dm-form-field-input [aria-invalid="true"]) {
+  /* Form contains validation errors */
+}
+
+/* Required field indicator */
+.dm-form-field:has([required]) .dm-form-field-label::after {
+  content: " *";
+  color: var(--state-error);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Hide asterisk if already present in label text */
+.dm-form-field:has([required])
+  .dm-form-field-label:has(.dm-form-field-required)::after {
+  display: none;
+}
+
+/* ================================
+   CHARACTER CREATION FORM LAYOUTS
+   ================================ */
+
+/* D&D Character form specific styling */
+.dm-character-form {
+  max-width: 48rem;
+}
+
+.dm-character-form .dm-form-section-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4) var(--space-6);
+}
+
+.dm-character-form .dm-form-field-full {
+  grid-column: 1 / -1;
+}
+
+/* NPC form styling */
+.dm-npc-form .dm-form-section-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4) var(--space-6);
+}
+
+/* Monster form styling */
+.dm-monster-form .dm-form-section-content {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+.dm-monster-form .dm-form-field-wide {
+  grid-column: span 2;
+}
+
+.dm-monster-form .dm-form-field-full {
+  grid-column: 1 / -1;
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+
+@media (max-width: 768px) {
+  /* Stack grid forms on tablet */
+  .dm-form-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .dm-character-form .dm-form-section-content,
+  .dm-npc-form .dm-form-section-content {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .dm-monster-form .dm-form-section-content {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Stack field groups horizontally */
+  .dm-form-field-group-horizontal {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  /* Adjust form actions */
+  .dm-form-actions {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .dm-form-actions-space-between {
+    flex-direction: column-reverse;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Full mobile layout */
+  .dm-form {
+    gap: var(--space-4);
+  }
+
+  .dm-form-section {
+    gap: var(--space-3);
+  }
+
+  .dm-form-section-content {
+    gap: var(--space-3);
+  }
+
+  /* Make inline forms stack */
+  .dm-form-inline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dm-form-inline .dm-form-field {
+    min-width: 0;
+  }
+
+  /* Single column monster forms */
+  .dm-monster-form .dm-form-section-content {
+    grid-template-columns: 1fr;
+  }
+
+  /* Reduce section padding */
+  .dm-form-field-group {
+    padding: var(--space-3);
+  }
+
+  /* Stack form actions */
+  .dm-form-actions .button-base {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* ================================
+   ACCESSIBILITY IMPROVEMENTS
+   ================================ */
+
+/* Focus management */
+.dm-form-field:focus-within .dm-form-field-label {
+  color: var(--color-primary-600);
+}
+
+html.dark .dm-form-field:focus-within .dm-form-field-label {
+  color: var(--color-primary-400);
+}
+
+/* Screen reader improvements */
+.dm-form[aria-busy="true"] {
+  /* Form is submitting */
+}
+
+.dm-form-field[aria-required="true"] .dm-form-field-label {
+  /* Required field styling */
+}
+
+/* ================================
+   HIGH CONTRAST MODE
+   ================================ */
+
+@media (prefers-contrast: high) {
+  .dm-form-section + .dm-form-section,
+  .dm-form-actions {
+    border-top-width: 2px;
+  }
+
+  .dm-form-field-group {
+    border-width: 2px;
+  }
+
+  .dm-form-field-required {
+    font-weight: var(--font-weight-bold);
+    text-shadow: 0 0 1px currentColor;
+  }
+}
+
+/* ================================
+   REDUCED MOTION
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-form-field:focus-within .dm-form-field-label {
+    transition: none;
+  }
+}
+
+/* ================================
+   PRINT STYLES
+   ================================ */
+
+@media print {
+  .dm-form {
+    break-inside: avoid;
+    gap: var(--space-4);
+  }
+
+  .dm-form-actions {
+    display: none;
+  }
+
+  .dm-form-section + .dm-form-section {
+    border-top: 1px solid black;
+    page-break-inside: avoid;
+  }
+
+  .dm-form-field-group {
+    border: 1px solid black;
+    break-inside: avoid;
+  }
+
+  /* Show form values for print */
+  .dm-form-field-input input,
+  .dm-form-field-input textarea {
+    background: white !important;
+    border: 1px solid black !important;
+    color: black !important;
+  }
+}
+
+/* ================================
+   FORM ANIMATION UTILITIES
+   ================================ */
+
+/* Smooth field transitions */
+.dm-form-field-animate {
+  transition: all var(--transition-normal);
+}
+
+.dm-form-field-animate:focus-within {
+  transform: translateY(-1px);
+}
+
+/* Stagger animation for form sections */
+.dm-form-stagger .dm-form-section:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.dm-form-stagger .dm-form-section:nth-child(2) {
+  animation-delay: 100ms;
+}
+
+.dm-form-stagger .dm-form-section:nth-child(3) {
+  animation-delay: 200ms;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dm-form-stagger .dm-form-section {
+  animation: fadeInUp var(--transition-normal) ease-out;
+  animation-fill-mode: both;
+}

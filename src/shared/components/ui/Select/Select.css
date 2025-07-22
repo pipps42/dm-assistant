@@ -1,0 +1,691 @@
+/* ================================================================
+   SELECT COMPONENT STYLES - USING DESIGN SYSTEM TOKENS
+   ================================================================ */
+
+/* ================================
+   SELECT CONTAINER
+   ================================ */
+
+.dm-select-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.dm-select-full-width {
+  width: 100%;
+}
+
+/* ================================
+   SELECT LABEL
+   ================================ */
+
+.dm-select-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  line-height: var(--line-height-tight);
+}
+
+.dm-select-required {
+  color: var(--state-error);
+  margin-left: var(--space-1);
+  font-weight: var(--font-weight-bold);
+}
+
+/* ================================
+   SELECT WRAPPER
+   ================================ */
+
+.dm-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* ================================
+   SELECT TRIGGER
+   ================================ */
+
+.dm-select-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  background-color: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  text-align: left;
+  font-family: inherit;
+}
+
+.dm-select-trigger:hover:not(.dm-select-disabled) {
+  border-color: var(--border-secondary);
+}
+
+.dm-select-trigger:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-focus);
+}
+
+.dm-select-trigger.dm-select-open {
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-focus);
+}
+
+.dm-select-trigger.dm-select-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--surface-tertiary);
+}
+
+/* ================================
+   SELECT SIZE VARIANTS
+   ================================ */
+
+.dm-select-sm {
+  height: var(--input-height-sm);
+  padding: var(--input-padding-y-sm) var(--input-padding-x-sm);
+  font-size: var(--font-size-sm);
+}
+
+.dm-select-md {
+  height: var(--input-height-md);
+  padding: var(--input-padding-y-md) var(--input-padding-x-md);
+  font-size: var(--font-size-sm);
+}
+
+.dm-select-lg {
+  height: var(--input-height-lg);
+  padding: var(--input-padding-y-lg) var(--input-padding-x-lg);
+  font-size: var(--font-size-base);
+}
+
+/* ================================
+   SELECT VARIANT STYLES
+   ================================ */
+
+/* Outlined variant (default) */
+.dm-select-outlined {
+  background-color: var(--surface-primary);
+  border-color: var(--border-primary);
+}
+
+/* Filled variant */
+.dm-select-filled {
+  background-color: var(--surface-tertiary);
+  border-color: transparent;
+}
+
+.dm-select-filled:hover:not(.dm-select-disabled) {
+  background-color: var(--surface-secondary);
+}
+
+.dm-select-filled:focus,
+.dm-select-filled.dm-select-open {
+  background-color: var(--surface-primary);
+  border-color: var(--border-focus);
+}
+
+/* Ghost variant */
+.dm-select-ghost {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.dm-select-ghost:hover:not(.dm-select-disabled) {
+  background-color: var(--surface-secondary);
+}
+
+.dm-select-ghost:focus,
+.dm-select-ghost.dm-select-open {
+  background-color: var(--surface-primary);
+  border-color: var(--border-primary);
+}
+
+/* ================================
+   SELECT STATE VARIANTS
+   ================================ */
+
+/* Error state */
+.dm-select-error {
+  border-color: var(--border-error) !important;
+  background-color: var(--state-error-bg);
+}
+
+.dm-select-error:focus,
+.dm-select-error.dm-select-open {
+  border-color: var(--border-error) !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+/* Success state */
+.dm-select-success {
+  border-color: var(--border-success) !important;
+  background-color: var(--state-success-bg);
+}
+
+.dm-select-success:focus,
+.dm-select-success.dm-select-open {
+  border-color: var(--border-success) !important;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+/* Warning state */
+.dm-select-warning {
+  border-color: var(--border-warning) !important;
+  background-color: var(--state-warning-bg);
+}
+
+.dm-select-warning:focus,
+.dm-select-warning.dm-select-open {
+  border-color: var(--border-warning) !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+/* ================================
+   SELECT DISPLAY CONTENT
+   ================================ */
+
+.dm-select-display {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.dm-select-value {
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dm-select-placeholder {
+  color: var(--text-placeholder);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ================================
+   SELECT ICONS
+   ================================ */
+
+.dm-select-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+}
+
+.dm-select-icon-left {
+  margin-right: var(--space-1);
+}
+
+.dm-select-icon-right {
+  margin-left: var(--space-1);
+}
+
+.dm-select-icons {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.dm-select-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border: none;
+  background: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  transition: var(--transition-fast);
+}
+
+.dm-select-clear:hover {
+  background-color: var(--surface-secondary);
+  color: var(--text-primary);
+}
+
+.dm-select-arrow {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  transition: var(--transition-fast);
+}
+
+.dm-select-arrow-up {
+  transform: rotate(180deg);
+}
+
+/* ================================
+   SELECT DROPDOWN
+   ================================ */
+
+.dm-select-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: var(--z-dropdown);
+  background-color: var(--surface-elevated);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  margin-top: var(--space-1);
+  overflow: hidden;
+  animation: slideDown var(--transition-fast) ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================
+   SELECT SEARCH
+   ================================ */
+
+.dm-select-search {
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--border-primary);
+  background-color: var(--surface-secondary);
+}
+
+.dm-select-search-input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-base);
+  background-color: var(--surface-primary);
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  transition: var(--transition-fast);
+}
+
+.dm-select-search-input:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-focus);
+}
+
+.dm-select-search-input::placeholder {
+  color: var(--text-placeholder);
+}
+
+/* ================================
+   SELECT OPTIONS
+   ================================ */
+
+.dm-select-options {
+  max-height: inherit;
+  overflow-y: auto;
+  padding: var(--space-1) 0;
+}
+
+.dm-select-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dm-select-options::-webkit-scrollbar-track {
+  background: var(--surface-secondary);
+}
+
+.dm-select-options::-webkit-scrollbar-thumb {
+  background: var(--border-secondary);
+  border-radius: var(--radius-sm);
+}
+
+.dm-select-options::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+/* ================================
+   SELECT OPTION
+   ================================ */
+
+.dm-select-option {
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  border-left: 3px solid transparent;
+}
+
+.dm-select-option:hover:not(.dm-select-option-disabled) {
+  background-color: var(--surface-secondary);
+}
+
+.dm-select-option-focused {
+  background-color: var(--surface-secondary);
+  border-left-color: var(--color-primary-500);
+}
+
+.dm-select-option-selected {
+  background-color: var(--color-primary-50);
+  border-left-color: var(--color-primary-500);
+}
+
+html.dark .dm-select-option-selected {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.dm-select-option-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dm-select-option-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.dm-select-option-icon {
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+}
+
+.dm-select-option-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.dm-select-option-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  line-height: var(--line-height-tight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dm-select-option-description {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  line-height: var(--line-height-tight);
+  margin-top: var(--space-0-5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dm-select-option-check {
+  flex-shrink: 0;
+  color: var(--color-primary-500);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+}
+
+/* ================================
+   SELECT GROUPS
+   ================================ */
+
+.dm-select-group {
+  /* Group container */
+}
+
+.dm-select-group-label {
+  padding: var(--space-2) var(--space-3) var(--space-1) var(--space-3);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: var(--surface-tertiary);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.dm-select-group:not(:first-child) .dm-select-group-label {
+  border-top: 1px solid var(--border-primary);
+}
+
+/* ================================
+   SELECT LOADING STATE
+   ================================ */
+
+.dm-select-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  gap: var(--space-2);
+  color: var(--text-secondary);
+}
+
+.dm-select-spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid var(--border-primary);
+  border-top-color: var(--color-primary-500);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ================================
+   SELECT EMPTY STATE
+   ================================ */
+
+.dm-select-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+}
+
+/* ================================
+   SELECT HELPER TEXT
+   ================================ */
+
+.dm-select-helper {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-tight);
+  color: var(--text-secondary);
+}
+
+.dm-select-error-text {
+  color: var(--state-error);
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+
+@media (max-width: 640px) {
+  .dm-select-lg {
+    height: var(--input-height-md);
+    font-size: var(--font-size-sm);
+  }
+
+  .dm-select-dropdown {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 50vh;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    animation: slideUp var(--transition-normal) ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .dm-select-options {
+    max-height: calc(50vh - 4rem);
+  }
+
+  /* Add safe area for mobile */
+  .dm-select-dropdown {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+}
+
+/* ================================
+   ACCESSIBILITY IMPROVEMENTS
+   ================================ */
+
+.dm-select-trigger:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.dm-select-option:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: -2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .dm-select-trigger,
+  .dm-select-dropdown {
+    border-width: 2px;
+  }
+
+  .dm-select-option-focused,
+  .dm-select-option-selected {
+    border-left-width: 4px;
+  }
+
+  .dm-select-option-selected {
+    font-weight: var(--font-weight-semibold);
+  }
+}
+
+/* ================================
+   REDUCED MOTION
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-select-dropdown,
+  .dm-select-arrow,
+  .dm-select-trigger,
+  .dm-select-option,
+  .dm-select-clear {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* ================================
+   PRINT STYLES
+   ================================ */
+
+@media print {
+  .dm-select-dropdown {
+    display: none;
+  }
+
+  .dm-select-trigger {
+    border: 1px solid black !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  .dm-select-value {
+    font-weight: var(--font-weight-medium);
+  }
+
+  .dm-select-arrow,
+  .dm-select-clear,
+  .dm-select-icon-right {
+    display: none;
+  }
+}
+
+/* ================================
+   DARK MODE SPECIFIC ADJUSTMENTS
+   ================================ */
+
+html.dark .dm-select-dropdown {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3),
+    0 4px 6px -2px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+html.dark .dm-select-option-focused {
+  border-left-color: var(--color-primary-400);
+}
+
+html.dark .dm-select-option-selected {
+  border-left-color: var(--color-primary-400);
+}
+
+/* ================================
+   D&D THEMED ENHANCEMENTS
+   ================================ */
+
+/* Special styling for D&D preset selects */
+.dm-select-dnd-class .dm-select-option-icon {
+  font-size: 1.2rem;
+}
+
+.dm-select-dnd-race .dm-select-group-label {
+  color: var(--color-primary-600);
+}
+
+html.dark .dm-select-dnd-race .dm-select-group-label {
+  color: var(--color-primary-400);
+}
+
+.dm-select-dnd-alignment .dm-select-option-description {
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+/* Creature type specific styling */
+.dm-select-creature-type .dm-select-option[data-type="dragon"] {
+  border-left-color: var(--color-error-500);
+}
+
+.dm-select-creature-type .dm-select-option[data-type="celestial"] {
+  border-left-color: var(--color-warning-500);
+}
+
+.dm-select-creature-type .dm-select-option[data-type="fiend"] {
+  border-left-color: var(--color-error-600);
+}
+
+.dm-select-creature-type .dm-select-option[data-type="undead"] {
+  border-left-color: var(--color-secondary-500);
+}
