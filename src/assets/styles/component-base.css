@@ -171,3 +171,59 @@ textarea.dm-input:focus {
   gap: var(--form-field-gap);
   width: 100%;
 }
+
+/* ================================
+   CHECKBOX BASE CLASSES
+   ================================ */
+
+.dm-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+}
+
+.dm-checkbox-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--checkbox-border-width) solid var(--border-primary);
+  border-radius: var(--checkbox-border-radius);
+  background-color: var(--surface-primary);
+  transition: var(--transition-fast);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* ================================
+   RADIO BASE CLASSES
+   ================================ */
+
+.dm-radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+}
+
+.dm-radio-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--radio-border-width) solid var(--border-primary);
+  border-radius: var(--radius-full);
+  background-color: var(--surface-primary);
+  transition: var(--transition-fast);
+  cursor: pointer;
+  flex-shrink: 0;
+}

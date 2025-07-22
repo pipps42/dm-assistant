@@ -4,6 +4,23 @@
 
 :root {
   /* ================================
+     CHECKBOX & RADIO COMPONENT TOKENS
+     ================================ */
+
+  --checkbox-size-sm: 0.875rem; /* 14px */
+  --checkbox-size-md: 1rem; /* 16px */
+  --checkbox-size-lg: 1.125rem; /* 18px */
+  --checkbox-border-width: 2px;
+  --checkbox-border-radius: var(--radius-base);
+  --checkbox-check-size: 0.625rem; /* 10px */
+
+  --radio-size-sm: 0.875rem; /* 14px */
+  --radio-size-md: 1rem; /* 16px */
+  --radio-size-lg: 1.125rem; /* 18px */
+  --radio-border-width: 2px;
+  --radio-dot-size: 0.375rem; /* 6px */
+
+  /* ================================
      INPUT COMPONENT TOKENS
      ================================ */
 

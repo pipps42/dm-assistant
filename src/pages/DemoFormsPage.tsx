@@ -16,6 +16,7 @@ import {
   RaceSelect,
   AlignmentSelect,
 } from "@/shared/components/ui/Select";
+import { Checkbox, Radio, RadioGroup } from "@/shared/components/ui";
 import { Card } from "@/shared/components/ui/Card";
 
 const DemoFormsPage: React.FC = () => {
