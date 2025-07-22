@@ -4,7 +4,7 @@ import DemoTokensPage from "@/pages/DemoTokensPage";
 import DemoComponentsPage from "@/pages/DemoComponentsPage";
 import DemoFormsPage from "@/pages/DemoFormsPage";
 import DemoTablesPage from "@/pages/DemoTablesPage";
-import { ToastProvider } from "@/shared/components/ui/Toast";
+import { ToastProvider } from "@/shared/components/ui/Feedback/Toast";
 
 function App() {
   return (

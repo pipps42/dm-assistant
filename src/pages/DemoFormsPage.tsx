@@ -8,14 +8,14 @@ import {
   CancelButton,
   DeleteButton,
 } from "@/shared/components/ui/Button";
-import { Input } from "@/shared/components/ui/Input";
-import { TextArea } from "@/shared/components/ui/TextArea";
+import { Input } from "@/shared/components/ui/Fields/Input";
+import { TextArea } from "@/shared/components/ui/Fields/TextArea";
 import {
   Select,
   ClassSelect,
   RaceSelect,
   AlignmentSelect,
-} from "@/shared/components/ui/Select";
+} from "@/shared/components/ui/Fields/Select";
 import { Checkbox, Radio, RadioGroup } from "@/shared/components/ui";
 import { Card } from "@/shared/components/ui/Card";
 

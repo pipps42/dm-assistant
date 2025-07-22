@@ -16,6 +16,66 @@
   --appshell-border-width: 1px;
 
   /* ================================
+   SIDEBAR COMPONENT TOKENS
+   ================================ */
+
+  --sidebar-width-sm: 12rem; /* 192px */
+  --sidebar-width-md: 16rem; /* 256px */
+  --sidebar-width-lg: 20rem; /* 320px */
+  --sidebar-width-collapsed: 4rem; /* 64px */
+
+  --sidebar-header-height: 4rem; /* 64px */
+  --sidebar-footer-height: 3rem; /* 48px */
+  --sidebar-padding: var(--space-4);
+  --sidebar-item-height: 2.5rem; /* 40px */
+  --sidebar-item-padding-x: var(--space-3);
+  --sidebar-item-padding-y: var(--space-2);
+  --sidebar-item-gap: var(--space-2);
+  --sidebar-group-gap: var(--space-4);
+  --sidebar-icon-size: 1.25rem; /* 20px */
+  --sidebar-badge-size: 1.125rem; /* 18px */
+  --sidebar-border-radius: var(--radius-md);
+  --sidebar-transition: all var(--transition-normal) ease-in-out;
+
+  /* ================================
+   TABS COMPONENT TOKENS
+   ================================ */
+
+  --tabs-height-sm: 2rem; /* 32px */
+  --tabs-height-md: 2.5rem; /* 40px */
+  --tabs-height-lg: 3rem; /* 48px */
+  --tabs-padding-x-sm: var(--space-3);
+  --tabs-padding-x-md: var(--space-4);
+  --tabs-padding-x-lg: var(--space-5);
+  --tabs-gap: var(--space-1);
+  --tabs-border-width: 2px;
+  --tabs-border-radius: var(--radius-md);
+  --tabs-content-padding: var(--space-4);
+
+  /* ================================
+   BREADCRUMBS COMPONENT TOKENS
+   ================================ */
+
+  --breadcrumb-height: 2rem; /* 32px */
+  --breadcrumb-separator-margin: var(--space-2);
+  --breadcrumb-item-padding: var(--space-1);
+  --breadcrumb-gap: var(--space-1);
+
+  /* ================================
+   MENU COMPONENT TOKENS
+   ================================ */
+
+  --menu-min-width: 8rem; /* 128px */
+  --menu-max-width: 20rem; /* 320px */
+  --menu-max-height: 16rem; /* 256px */
+  --menu-padding: var(--space-1);
+  --menu-item-height: 2.25rem; /* 36px */
+  --menu-item-padding-x: var(--space-3);
+  --menu-item-padding-y: var(--space-2);
+  --menu-border-radius: var(--radius-md);
+  --menu-separator-margin: var(--space-1);
+
+  /* ================================
      TOAST COMPONENT TOKENS
      ================================ */
 
@@ -163,16 +223,6 @@
   --form-group-padding: var(--space-4);
 
   /* ================================
-     TOAST COMPONENT TOKENS
-     ================================ */
-
-  --toast-width: 20rem; /* 320px */
-  --toast-padding: var(--space-4);
-  --toast-border-radius: var(--radius-lg);
-  --toast-enter-duration: 300ms;
-  --toast-exit-duration: 200ms;
-
-  /* ================================
      DROPDOWN COMPONENT TOKENS
      ================================ */
 
@@ -242,15 +292,6 @@
   --switch-border-radius: var(--radius-full);
 
   /* ================================
-     TABS COMPONENT TOKENS
-     ================================ */
-
-  --tab-height: 2.5rem; /* 40px */
-  --tab-padding-x: var(--space-4);
-  --tab-border-width: 2px;
-  --tab-border-radius: var(--radius-md);
-
-  /* ================================
      ACCORDION COMPONENT TOKENS
      ================================ */
 
@@ -258,14 +299,6 @@
   --accordion-trigger-padding: var(--space-4);
   --accordion-content-padding: var(--space-4);
   --accordion-border-radius: var(--radius-lg);
-
-  /* ================================
-     BREADCRUMB COMPONENT TOKENS
-     ================================ */
-
-  --breadcrumb-height: 2rem; /* 32px */
-  --breadcrumb-separator-margin: var(--space-2);
-  --breadcrumb-item-padding: var(--space-1);
 
   /* ================================
      AVATAR COMPONENT TOKENS

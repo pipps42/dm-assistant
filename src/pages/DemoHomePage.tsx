@@ -9,8 +9,8 @@ import {
   EditButton,
   DeleteButton,
 } from "@/shared/components/ui/Button";
-import { Input } from "@/shared/components/ui/Input";
-import { TextArea } from "@/shared/components/ui/TextArea";
+import { Input } from "@/shared/components/ui/Fields/Input";
+import { TextArea } from "@/shared/components/ui/Fields/TextArea";
 import {
   Card,
   FeatureCard,
