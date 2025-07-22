@@ -25,7 +25,7 @@ export interface ButtonProps
   fullWidth?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   asChild?: boolean;
 }
 

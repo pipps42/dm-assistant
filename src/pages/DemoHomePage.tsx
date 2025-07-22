@@ -402,6 +402,20 @@ const DemoHomePage: React.FC = () => {
                 </Link>
               </div>
             </Card>
+
+            <Card variant="interactive" size="lg" clickable>
+              <div className="text-center space-y-4">
+                <div className="text-3xl">📊</div>
+                <h3 className="text-xl font-semibold">Table Components</h3>
+                <p className="text-secondary">
+                  Esplora tabelle con sorting, pagination, selezione e tutte le
+                  varianti.
+                </p>
+                <Link to="/demo/tables">
+                  <PrimaryButton size="sm">Vedi Tabelle</PrimaryButton>
+                </Link>
+              </div>
+            </Card>
           </div>
         </div>
       </section>

@@ -10,6 +10,12 @@ import {
 } from "@/shared/components/ui/Button";
 import { Input } from "@/shared/components/ui/Input";
 import { TextArea } from "@/shared/components/ui/TextArea";
+import {
+  Select,
+  ClassSelect,
+  RaceSelect,
+  AlignmentSelect,
+} from "@/shared/components/ui/Select";
 import { Card } from "@/shared/components/ui/Card";
 
 const DemoFormsPage: React.FC = () => {
@@ -50,6 +56,91 @@ const DemoFormsPage: React.FC = () => {
   >({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+
+  // Select demo states
+  const [selectedClass, setSelectedClass] = useState<string>("");
+  const [selectedRace, setSelectedRace] = useState<string>("");
+  const [selectedAlignment, setSelectedAlignment] = useState<string>("");
+  const [selectedLanguages, setSelectedLanguages] = useState<
+    (string | number)[]
+  >([]);
+  const [selectedSkills, setSelectedSkills] = useState<(string | number)[]>([]);
+  const [customSelect, setCustomSelect] = useState<string>("");
+
+  // Select change handlers to match component signature
+  const handleClassChange = (value: string | number | (string | number)[]) => {
+    setSelectedClass(value as string);
+  };
+
+  const handleRaceChange = (value: string | number | (string | number)[]) => {
+    setSelectedRace(value as string);
+  };
+
+  const handleAlignmentChange = (
+    value: string | number | (string | number)[]
+  ) => {
+    setSelectedAlignment(value as string);
+  };
+
+  const handleLanguagesChange = (
+    value: string | number | (string | number)[]
+  ) => {
+    setSelectedLanguages(Array.isArray(value) ? value : [value]);
+  };
+
+  const handleSkillsChange = (value: string | number | (string | number)[]) => {
+    setSelectedSkills(Array.isArray(value) ? value : [value]);
+  };
+
+  const handleCustomSelectChange = (
+    value: string | number | (string | number)[]
+  ) => {
+    setCustomSelect(value as string);
+  };
+
+  // Select options data
+  const languageOptions = [
+    { value: "common", label: "Comune" },
+    { value: "elvish", label: "Elfico" },
+    { value: "dwarvish", label: "Nanico" },
+    { value: "halfling", label: "Halfling" },
+    { value: "orc", label: "Orchesco" },
+    { value: "draconic", label: "Draconico" },
+    { value: "celestial", label: "Celestiale" },
+    { value: "infernal", label: "Infernale" },
+    { value: "abyssal", label: "Abissale" },
+    { value: "sylvan", label: "Silvano" },
+  ];
+
+  const skillOptions = [
+    { value: "acrobatics", label: "Acrobazia (Des)" },
+    { value: "athletics", label: "Atletica (For)" },
+    { value: "deception", label: "Inganno (Car)" },
+    { value: "history", label: "Storia (Int)" },
+    { value: "insight", label: "Intuizione (Sag)" },
+    { value: "intimidation", label: "Intimidire (Car)" },
+    { value: "investigation", label: "Indagare (Int)" },
+    { value: "medicine", label: "Medicina (Sag)" },
+    { value: "nature", label: "Natura (Int)" },
+    { value: "perception", label: "Percezione (Sag)" },
+    { value: "performance", label: "Intrattenere (Car)" },
+    { value: "persuasion", label: "Persuasione (Car)" },
+    { value: "religion", label: "Religione (Int)" },
+    { value: "sleight", label: "Rapidità di Mano (Des)" },
+    { value: "stealth", label: "Furtività (Des)" },
+    { value: "survival", label: "Sopravvivenza (Sag)" },
+  ];
+
+  const customOptions = [
+    { value: "option1", label: "Prima Opzione" },
+    { value: "option2", label: "Seconda Opzione" },
+    {
+      value: "option3",
+      label: "Terza Opzione con testo molto lungo che dovrebbe essere troncato",
+    },
+    { value: "option4", label: "Quarta Opzione" },
+    { value: "option5", label: "Quinta Opzione" },
+  ];
 
   // Validation functions
   const validateEmail = (email: string): string | null => {
@@ -250,6 +341,225 @@ const DemoFormsPage: React.FC = () => {
                 </SecondaryButton>
               </div>
             </form>
+          </DemoCard>
+        </FormSection>
+
+        {/* Select Components */}
+        <FormSection
+          title="Select Components"
+          description="Dropdown e select per scelte multiple con ricerca, multi-selezione e preset D&D"
+        >
+          {/* Basic Select */}
+          <DemoCard
+            title="Select Base"
+            description="Select con opzioni base e varianti stilistiche"
+          >
+            <div className="grid md:grid-cols-3 gap-6">
+              <Select
+                label="Select Outlined"
+                placeholder="Seleziona un'opzione..."
+                options={customOptions}
+                value={customSelect}
+                onChange={handleCustomSelectChange}
+                variant="outlined"
+              />
+
+              <Select
+                label="Select Filled"
+                placeholder="Stile filled..."
+                options={customOptions.slice(0, 3)}
+                variant="filled"
+              />
+
+              <Select
+                label="Select Ghost"
+                placeholder="Stile ghost..."
+                options={customOptions.slice(0, 3)}
+                variant="ghost"
+              />
+            </div>
+          </DemoCard>
+
+          {/* Select with Search */}
+          <DemoCard
+            title="Select con Ricerca"
+            description="Select con funzionalità di ricerca e filtro opzioni"
+          >
+            <div className="grid md:grid-cols-2 gap-6">
+              <Select
+                label="Linguaggi Conosciuti"
+                placeholder="Cerca e seleziona linguaggi..."
+                options={languageOptions}
+                value={selectedLanguages}
+                onChange={handleLanguagesChange}
+                multiple
+                searchable
+                clearable
+                leftIcon={<span>🗣️</span>}
+                helperText="Puoi selezionare più linguaggi"
+              />
+
+              <Select
+                label="Competenze"
+                placeholder="Cerca competenze..."
+                options={skillOptions}
+                value={selectedSkills}
+                onChange={handleSkillsChange}
+                multiple
+                searchable
+                clearable
+                searchPlaceholder="Cerca competenze..."
+                leftIcon={<span>🎯</span>}
+                maxHeight={200}
+              />
+            </div>
+          </DemoCard>
+
+          {/* D&D Preset Selects */}
+          <DemoCard
+            title="Select Preset D&D"
+            description="Select predefiniti per elementi comuni di D&D"
+          >
+            <div className="grid md:grid-cols-3 gap-6">
+              <ClassSelect
+                label="Classe"
+                value={selectedClass}
+                onChange={handleClassChange}
+                placeholder="Seleziona classe..."
+                required
+              />
+
+              <RaceSelect
+                label="Razza"
+                value={selectedRace}
+                onChange={handleRaceChange}
+                placeholder="Seleziona razza..."
+                required
+              />
+
+              <AlignmentSelect
+                label="Allineamento"
+                value={selectedAlignment}
+                onChange={handleAlignmentChange}
+                placeholder="Seleziona allineamento..."
+              />
+            </div>
+
+            {(selectedClass || selectedRace || selectedAlignment) && (
+              <div className="mt-6 p-4 bg-surface-secondary rounded-lg">
+                <h5 className="font-medium mb-3">Selezione Corrente:</h5>
+                <div className="grid md:grid-cols-3 gap-4 text-sm">
+                  <div>
+                    <span className="text-secondary">Classe:</span>
+                    <div className="font-medium">
+                      {selectedClass || "Non selezionata"}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-secondary">Razza:</span>
+                    <div className="font-medium">
+                      {selectedRace || "Non selezionata"}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-secondary">Allineamento:</span>
+                    <div className="font-medium">
+                      {selectedAlignment || "Non selezionato"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </DemoCard>
+
+          {/* Select States */}
+          <DemoCard
+            title="Stati dei Select"
+            description="Select in diversi stati: normale, errore, disabilitato, caricamento"
+          >
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <Select
+                  label="Select Normale"
+                  options={customOptions.slice(0, 3)}
+                  placeholder="Stato normale"
+                />
+
+                <Select
+                  label="Select con Errore"
+                  options={customOptions.slice(0, 3)}
+                  placeholder="Seleziona opzione"
+                  state="error"
+                  errorText="Questo campo è obbligatorio"
+                />
+              </div>
+
+              <div className="space-y-4">
+                <Select
+                  label="Select Disabilitato"
+                  options={customOptions.slice(0, 3)}
+                  placeholder="Opzione non disponibile"
+                  disabled
+                />
+
+                <Select
+                  label="Select in Caricamento"
+                  options={[]}
+                  placeholder="Caricamento opzioni..."
+                  loading
+                />
+              </div>
+            </div>
+          </DemoCard>
+
+          {/* Advanced Select Features */}
+          <DemoCard
+            title="Funzionalità Avanzate"
+            description="Select con tutte le funzionalità: multi-selezione, ricerca, icone, clearable"
+          >
+            <div className="space-y-6">
+              <Select
+                label="Select Completo"
+                placeholder="Seleziona o cerca opzioni..."
+                options={[
+                  ...languageOptions.map((opt) => ({
+                    ...opt,
+                    group: "Linguaggi",
+                  })),
+                  ...skillOptions
+                    .slice(0, 8)
+                    .map((opt) => ({ ...opt, group: "Competenze" })),
+                ]}
+                multiple
+                searchable
+                clearable
+                leftIcon={<span>🔍</span>}
+                rightIcon={<span>⚡</span>}
+                searchPlaceholder="Digita per cercare..."
+                helperText="Questo select supporta ricerca, multi-selezione e raggruppamento"
+                maxHeight={250}
+              />
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <Select
+                  label="Select con Successo"
+                  options={customOptions.slice(0, 3)}
+                  defaultValue="option1"
+                  state="success"
+                  rightIcon={<span>✓</span>}
+                  helperText="Selezione valida"
+                />
+
+                <Select
+                  label="Select con Warning"
+                  options={customOptions.slice(0, 3)}
+                  defaultValue="option3"
+                  state="warning"
+                  rightIcon={<span>⚠️</span>}
+                  helperText="Controlla questa selezione"
+                />
+              </div>
+            </div>
           </DemoCard>
         </FormSection>
 

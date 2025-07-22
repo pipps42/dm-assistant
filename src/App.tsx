@@ -3,6 +3,7 @@ import DemoHomePage from "@/pages/DemoHomePage";
 import DemoTokensPage from "@/pages/DemoTokensPage";
 import DemoComponentsPage from "@/pages/DemoComponentsPage";
 import DemoFormsPage from "@/pages/DemoFormsPage";
+import DemoTablesPage from "@/pages/DemoTablesPage";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/demo/tokens" element={<DemoTokensPage />} />
         <Route path="/demo/components" element={<DemoComponentsPage />} />
         <Route path="/demo/forms" element={<DemoFormsPage />} />
+        <Route path="/demo/tables" element={<DemoTablesPage />} />
       </Routes>
     </Router>
   );
