@@ -1,0 +1,323 @@
+/* ================================================================
+   CAMPAIGN CARD COMPONENT STYLES - USING DESIGN SYSTEM TOKENS
+   ================================================================ */
+
+/* ================================
+   CAMPAIGN CARD BASE STYLES
+   ================================ */
+
+.dm-campaign-card {
+  transition: all var(--transition-normal) ease-in-out;
+  position: relative;
+}
+
+.dm-campaign-card-clickable {
+  cursor: pointer;
+}
+
+.dm-campaign-card-clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.dm-campaign-card-active {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 1px var(--color-primary-500);
+}
+
+/* ================================
+   CAMPAIGN CARD VARIANTS
+   ================================ */
+
+.dm-campaign-card-compact {
+  padding: var(--space-3);
+}
+
+.dm-campaign-card-default {
+  padding: var(--space-4);
+}
+
+.dm-campaign-card-detailed {
+  padding: var(--space-5);
+}
+
+/* ================================
+   CAMPAIGN CARD SIZES
+   ================================ */
+
+.dm-campaign-card-sm {
+  min-width: 16rem;
+}
+
+.dm-campaign-card-md {
+  min-width: 18rem;
+}
+
+.dm-campaign-card-lg {
+  min-width: 20rem;
+}
+
+/* ================================
+   CAMPAIGN CARD HEADER
+   ================================ */
+
+.dm-campaign-card-header {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.dm-campaign-card-title-area {
+  flex: 1;
+  min-width: 0;
+}
+
+.dm-campaign-card-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+.dm-campaign-card-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: var(--line-height-tight);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+  min-width: 0;
+}
+
+.dm-campaign-card-compact .dm-campaign-card-title {
+  font-size: var(--font-size-base);
+}
+
+.dm-campaign-card-status-area {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.dm-campaign-card-description {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: var(--line-height-normal);
+  margin: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* ================================
+   CAMPAIGN CARD CONTENT
+   ================================ */
+
+.dm-campaign-card-content {
+  margin-bottom: var(--space-3);
+}
+
+.dm-campaign-card-stats {
+  display: flex;
+  gap: var(--space-4);
+  margin-bottom: var(--space-3);
+}
+
+.dm-campaign-card-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.dm-campaign-card-stat-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: var(--font-weight-medium);
+}
+
+.dm-campaign-card-stat-value {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+}
+
+.dm-campaign-card-progress {
+  margin-top: var(--space-3);
+}
+
+.dm-campaign-card-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.dm-campaign-card-progress-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.dm-campaign-card-progress-value {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-600);
+}
+
+/* ================================
+   CAMPAIGN CARD FOOTER
+   ================================ */
+
+.dm-campaign-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-3);
+  border-top: 1px solid var(--border-primary);
+  padding-top: var(--space-3);
+  margin-top: auto;
+}
+
+.dm-campaign-card-compact .dm-campaign-card-footer {
+  border-top: none;
+  padding-top: 0;
+}
+
+.dm-campaign-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+  min-width: 0;
+}
+
+.dm-campaign-card-created,
+.dm-campaign-card-last-played {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
+.dm-campaign-card-quick-actions {
+  flex-shrink: 0;
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+
+@media (max-width: 640px) {
+  .dm-campaign-card-sm,
+  .dm-campaign-card-md,
+  .dm-campaign-card-lg {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .dm-campaign-card-header {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .dm-campaign-card-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .dm-campaign-card-status-area {
+    align-self: flex-end;
+  }
+
+  .dm-campaign-card-stats {
+    justify-content: space-around;
+  }
+
+  .dm-campaign-card-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+  }
+
+  .dm-campaign-card-meta {
+    text-align: center;
+  }
+
+  .dm-campaign-card-quick-actions {
+    align-self: stretch;
+  }
+}
+
+/* ================================
+   DARK MODE SUPPORT
+   ================================ */
+
+html.dark .dm-campaign-card-active {
+  border-color: var(--color-primary-400);
+  box-shadow: 0 0 0 1px var(--color-primary-400);
+}
+
+html.dark .dm-campaign-card-footer {
+  border-top-color: var(--border-secondary);
+}
+
+/* ================================
+   HIGH CONTRAST MODE
+   ================================ */
+
+@media (prefers-contrast: high) {
+  .dm-campaign-card-active {
+    border-width: 2px;
+    box-shadow: 0 0 0 2px var(--color-primary-500);
+  }
+
+  .dm-campaign-card-footer {
+    border-top-width: 2px;
+  }
+}
+
+/* ================================
+   REDUCED MOTION
+   ================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-campaign-card {
+    transition: none;
+  }
+
+  .dm-campaign-card-clickable:hover {
+    transform: none;
+  }
+}
+
+/* ================================
+   PRINT STYLES
+   ================================ */
+
+@media print {
+  .dm-campaign-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid var(--border-primary);
+  }
+
+  .dm-campaign-card-clickable:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .dm-campaign-card-status-area .dm-menu {
+    display: none;
+  }
+}

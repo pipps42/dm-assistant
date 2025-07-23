@@ -4,6 +4,9 @@ import DemoTokensPage from "@/pages/DemoTokensPage";
 import DemoComponentsPage from "@/pages/DemoComponentsPage";
 import DemoFormsPage from "@/pages/DemoFormsPage";
 import DemoTablesPage from "@/pages/DemoTablesPage";
+// import CampaignDashboard from "@/pages/CampaignDashboard_debug";
+import CampaignDashboard from "@/pages/CampaignDashboard";
+
 import { ToastProvider } from "@/shared/components/ui/Feedback/Toast";
 
 function App() {
@@ -11,11 +14,12 @@ function App() {
     <ToastProvider position="top-right" maxToasts={5}>
       <Router>
         <Routes>
-          <Route path="/" element={<DemoHomePage />} />
+          <Route path="/" element={<CampaignDashboard />} />
+          {/* <Route path="/" element={<DemoHomePage />} />
           <Route path="/demo/tokens" element={<DemoTokensPage />} />
           <Route path="/demo/components" element={<DemoComponentsPage />} />
           <Route path="/demo/forms" element={<DemoFormsPage />} />
-          <Route path="/demo/tables" element={<DemoTablesPage />} />
+          <Route path="/demo/tables" element={<DemoTablesPage />} /> */}
         </Routes>
       </Router>
     </ToastProvider>
